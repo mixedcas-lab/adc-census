@@ -311,6 +311,34 @@
     "done": true,
     "next": 201,
     "total": 0
+   },
+   {
+    "key": "Access",
+    "year": 2023,
+    "done": true,
+    "next": 201,
+    "total": 100
+   },
+   {
+    "key": "Access",
+    "year": 2024,
+    "done": true,
+    "next": 201,
+    "total": 115
+   },
+   {
+    "key": "Access",
+    "year": 2025,
+    "done": true,
+    "next": 201,
+    "total": 118
+   },
+   {
+    "key": "Access",
+    "year": 2026,
+    "done": true,
+    "next": 201,
+    "total": 93
    }
   ]
  },
@@ -325,7 +353,8 @@
   "VLSI": true,
   "CICC": true,
   "ESSCIRC": true,
-  "ESSERC": true
+  "ESSERC": true,
+  "Access": true
  },
  "last_delta_end": "20261023"
 }
