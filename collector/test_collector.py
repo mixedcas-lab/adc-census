@@ -69,6 +69,21 @@ class TestRelevance(unittest.TestCase):
              "Enabling ADC-Free Digitization")
         self.assertEqual(self.rel(t), (None, None))
 
+    def test_other_meanings_of_adc(self):
+        for t in ("Attitude Determination and Control System (ADCS) Testbeds for CubeSats: A Review",
+                  "TRACE: Trustworthy Reasoning for Agentic Chemical Evidence in Antibody-Drug Conjugate Design"):
+            self.assertEqual(self.rel(t), (None, None), t)
+        a = "Apparent diffusion coefficient (ADC) maps from MRI are segmented by a CNN."
+        self.assertEqual(self.rel("Predicting Acute Brain Infarct From Magnetic Resonance Images", a), (None, None))
+
+    def test_pll_with_dac_is_not_dac(self):
+        t = "A DTC-Based Snapshot ADPLL With Feedforward Fractional Spur Cancellation and a Calibrated DAC"
+        self.assertEqual(self.rel(t), (None, None))
+        self.assertEqual(self.rel("A Snapshot ADPLL With Fractional Spur Cancellation", "", ["digital-to-analog converter"]),
+                         (None, None))
+        t = "A 2.5-GHz Dynamic Performance-Enhanced Nonlinear DAC-Based Direct-Digital Frequency Synthesizer in 65-nm CMOS"
+        self.assertEqual(self.rel(t), ("DAC", "core"))
+
     def test_incremental_dsm(self):
         t = "A 103.9dB-SFDR 83.8dB-SNDR 3MHz-BW Multi-Bit Quadratic-Exponential Noise-Coupled IDSM with DAC"
         self.assertEqual(self.rel(t), ("ADC", "core"))

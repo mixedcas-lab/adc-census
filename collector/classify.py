@@ -11,7 +11,7 @@ I = re.IGNORECASE
 
 # ---------------------------------------------------------------- relevance
 ADC_PAT = re.compile(
-    r"\bADCs?\b|analog(?:ue)?[- ]to[- ]digital|\bA/D\b|"
+    r"(?-i:\bADCs?\b)|analog(?:ue)?[- ]to[- ]digital|\bA/D\b|"   # case-sensitive: "ADCS" is attitude control
     r"\b(?:delta|sigma)\s*[-–—]?\s*(?:sigma|delta)\b|[ΔΣ∑]\s?[ΔΣ∑]|\b(?:CT|DT|I)?(?:DSM|SDM)s?\b|"
     r"successive[- ]approximation|\bSAR\b|"
     r"noise[- ]shaping|time[- ]interleav|"
@@ -22,6 +22,12 @@ DAC_PAT = re.compile(r"\bDACs?\b|digital[- ]to[- ]analog", I)
 CONVERTER_CTX = re.compile(r"\bADC|conver[st]|modulator|quantiz|\bSNDR\b|\bENOB\b|\bCT\b|[GMk]S/s", I)
 
 # Converter used inside a compute-in-memory / AI macro: keep as "related", not "core"
+# PLL / power papers often name their internal DAC or ADC; not converter papers by themselves
+PLL_OR_POWER = re.compile(r"\b(?:AD|D)?PLLs?\b|fractional[- ]N|DC[- ]DC|buck|boost converter|power converter", I)
+
+# Other meanings of "ADC" (antibody-drug conjugate, MRI apparent diffusion coefficient, satellite ADCS)
+OTHER_ADC = re.compile(r"antibody|drug conjugate|diffusion coefficient|diffusion[- ]weighted|attitude determination", I)
+
 # "ADC-less" / "ADC/DAC-free" designs are not converter papers
 NO_CONVERTER = re.compile(r"\b(?:ADC|DAC)(?:/(?:ADC|DAC))?s?[- ](?:free|less)\b", I)
 
@@ -29,7 +35,7 @@ CIM_CTX = re.compile(r"in[- ]memory|\bCIM\b|\bIMC\b|compute[- ]in|computing[- ]i
 
 NEGATIVE_CTX = re.compile(
     r"synthetic[- ]aperture|specific absorption rate|"
-    r"fractional[- ]N|frequency synthes|\bD?PLLs?\b|"
+    r"fractional[- ]N|frequency synthes|\b(?:AD|D)?PLLs?\b|"
     r"DC[- ]DC|buck|boost converter|power converter", I)
 
 # IEEE controlled terms that are a reliable "this is an ADC paper" signal
@@ -47,6 +53,8 @@ def _adc_hit(text):
     if not text:
         return False
     text = NO_CONVERTER.sub(" ", text)
+    if OTHER_ADC.search(text):
+        return False
     if NEGATIVE_CTX.search(text) and not re.search(r"\bADC|analog(?:ue)?[- ]to[- ]digital", text, I):
         return False
     m = ADC_PAT.search(text)
@@ -66,6 +74,8 @@ def relevance(title, abstract, terms):
     t_dac = bool(DAC_PAT.search(NO_CONVERTER.sub(" ", title or "")))
     term_adc = any(ADC_TERMS.search(x) for x in terms)
     term_dac = any(DAC_TERMS.search(x) for x in terms)
+    if PLL_OR_POWER.search(title or "") and not re.search(r"\bADC|analog[- ]to[- ]digital|digital[- ]to[- ]analog", title or "", I):
+        t_dac = term_adc = term_dac = False   # a PLL/DC-DC paper that mentions its internal DAC or ADC
     if (t_adc or t_dac or term_adc or term_dac) and CIM_CTX.search(title or ""):
         return ("ADC" if t_adc or term_adc else "DAC"), "related"
     if t_adc:
