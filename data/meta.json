@@ -4,10 +4,10 @@
  "updated": "2026-10-23",
  "coverage_from": "2023-01",
  "coverage_to": "2026-10",
- "total": 1677,
+ "total": 1663,
  "by_kind": {
-  "ADC": 1579,
-  "DAC": 98
+  "ADC": 1569,
+  "DAC": 94
  },
  "by_venue": {
   "TCAS-II": 220,
@@ -17,11 +17,11 @@
   "VLSI": 111,
   "CICC": 138,
   "ISSCC": 142,
-  "Access": 170,
-  "SSC-L": 66,
+  "Access": 157,
+  "SSC-L": 65,
   "A-SSCC": 73,
   "ESSCIRC": 84
  },
  "sweep_done": true,
- "last_run_new": 1677
+ "last_run_new": 1663
 }
