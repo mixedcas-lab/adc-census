@@ -328,6 +328,22 @@ def init_sweep(state, config, since_year):
     }
 
 
+def add_new_queries(state, config):
+    """Queue sweep tasks for queries added to venues.json after the initial sweep, so a new
+    venue gets its back catalogue (the monthly delta only covers recent insertions)."""
+    sw = state.get("sweep")
+    if not sw:
+        return []
+    have = {t["key"] for t in sw["tasks"]}
+    added = [q["key"] for q in config["queries"] if q["key"] not in have]
+    years = range(state.get("since_year", 2023), today().year + 1)
+    for k in added:
+        sw["tasks"] += [{"key": k, "year": y, "done": False} for y in years]
+    if added:
+        sw["done"] = False
+    return added
+
+
 def query_params(q, state):
     variant = (state.get("variant") or {}).get(q["key"], "params")
     if variant == "fallback" and q.get("fallback"):
@@ -370,8 +386,9 @@ def run_sweep(client, state, config, run_date):
         task["total"] = total
         save_json(STATE, state)
     state["sweep"]["done"] = True
-    # deltas continue from the day the sweep started (covers insertions during a multi-day sweep)
-    state["last_delta_end"] = state["sweep"]["started"].replace("-", "")
+    # deltas continue from the day the sweep started (covers insertions during a multi-day sweep);
+    # a backfill for a newly added venue keeps the existing delta position
+    state.setdefault("last_delta_end", state["sweep"]["started"].replace("-", ""))
     save_json(STATE, state)
     log("initial sweep complete")
 
@@ -520,6 +537,10 @@ def main():
 
     if args.restart_sweep or "sweep" not in state or state.get("since_year") != args.since_year and not state["sweep"]["done"]:
         init_sweep(state, config, args.since_year)
+        save_json(STATE, state)
+    added = add_new_queries(state, config)
+    if added:
+        log("new queries in venues.json, backfilling from %d: %s" % (state["since_year"], ", ".join(added)))
         save_json(STATE, state)
 
     if state["sweep"]["done"] and args.min_interval_days and state.get("last_delta_end"):

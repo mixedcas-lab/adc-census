@@ -1,6 +1,6 @@
 # ADC Census
 
-ISSCC, VLSI, JSSC, CICC, ESSCIRC/ESSERC, A-SSCC, SSC-L, TCAS-I/II, TVLSI에 실린 ADC·DAC 논문을 매달 자동으로 모아 보여주는 사이트입니다. MCAS Lab(서울시립대학교 첨단융합학부)에서 운영합니다.
+ISSCC, VLSI, JSSC, CICC, ESSCIRC/ESSERC, A-SSCC, SSC-L, TCAS-I/II, TVLSI, IEEE Access에 실린 ADC·DAC 논문을 매달 자동으로 모아 보여주는 사이트입니다. MCAS Lab(서울시립대학교 첨단융합학부)에서 운영합니다.
 
 - 사이트: https://mixedcas-lab.github.io/adc-census/
 - 데이터 출처: IEEE Xplore API (서지 메타데이터와 링크만 공개, 초록·본문은 올리지 않음)
@@ -23,7 +23,7 @@ cache/                          IEEE 원본 응답 (초록 포함, git 제외, �
 ## 동작 방식
 
 1. **초기 수집**: 2023년부터 venue별·연도별로 전체 논문을 받아옵니다. 표준 API 키는 하루 호출 수가 제한되어 있어 하루 190회까지만 쓰고 멈춘 뒤, 다음 날 이어서 받습니다. 보통 1~2일이면 끝납니다.
-2. **월간 갱신**: 초기 수집이 끝나면 IEEE에 새로 등록된 논문(insert date 기준)만 받아옵니다. 한 번에 수십 회 호출이면 충분합니다.
+2. **월간 갱신**: 초기 수집이 끝나면 IEEE에 새로 등록된 논문(insert date 기준)만 받아옵니다. 한 번에 수십 회 호출이면 충분합니다. `collector/venues.json`에 venue를 새로 추가하면 다음 실행 때 그 venue만 초기 수집 범위(2023년~)를 먼저 받아옵니다.
 3. **분류**: 제목·초록·IEEE 색인어로 ADC/DAC 여부를 판별하고 아키텍처(SAR, NS-SAR, Pipelined-SAR, TI, CT-ΔΣ, VCO 등)와 응용(SerDes, RF, Bio, CIS, NAND, CIM 등)을 태깅합니다. 제목과 초록에서 해상도, f<sub>s</sub>, SNDR, 전력, 공정, FoM을 정규식으로 뽑아 energy plot에 씁니다. 초록은 분류에만 쓰고 공개 데이터에는 넣지 않습니다.
 4. **공개**: `data/*.json`이 바뀌면 커밋·push하고, GitHub Pages가 자동으로 반영합니다.
 

@@ -1,6 +1,6 @@
 # ADC Census — Claude Code 작업 지침
 
-ISSCC·VLSI·JSSC·CICC·ESSCIRC/ESSERC·A-SSCC·SSC-L·TCAS-I/II·TVLSI의 ADC/DAC 논문을 IEEE Xplore API로 모아 GitHub Pages(https://mixedcas-lab.github.io/adc-census/)에 공개하는 저장소다. 랩 서버의 cron이 `scripts/update.sh`로 매달 갱신한다. 구조와 데이터 필드는 README.md를 본다. 서버 최초 설정은 docs/server-setup.md를 따른다.
+ISSCC·VLSI·JSSC·CICC·ESSCIRC/ESSERC·A-SSCC·SSC-L·TCAS-I/II·TVLSI·IEEE Access의 ADC/DAC 논문을 IEEE Xplore API로 모아 GitHub Pages(https://mixedcas-lab.github.io/adc-census/)에 공개하는 저장소다. 랩 서버의 cron이 `scripts/update.sh`로 매달 갱신한다. 구조와 데이터 필드는 README.md를 본다. 서버 최초 설정은 docs/server-setup.md를 따른다.
 
 ## 반드시 지킬 것
 

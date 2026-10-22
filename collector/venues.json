@@ -11,7 +11,9 @@
     {"key": "VLSI",   "params": {"publication_title": "Symposium on VLSI Technology and Circuits", "content_type": "Conferences"}},
     {"key": "CICC",   "params": {"publication_title": "Custom Integrated Circuits Conference", "content_type": "Conferences"}},
     {"key": "ESSCIRC","params": {"publication_title": "European Solid State Circuits Conference", "content_type": "Conferences"}},
-    {"key": "ESSERC", "params": {"publication_title": "European Solid-State Electronics Research Conference", "content_type": "Conferences"}}
+    {"key": "ESSERC", "params": {"publication_title": "European Solid-State Electronics Research Conference", "content_type": "Conferences"}},
+    {"key": "Access", "params": {"querytext": "(\"Publication Title\":\"IEEE Access\") AND (\"analog-to-digital\" OR \"digital-to-analog\" OR \"delta-sigma\" OR \"sigma-delta\" OR \"successive approximation\" OR \"noise-shaping\" OR \"time-interleaved\" OR ADC OR DAC)"},
+     "_comment": "~20k papers/year, so only keyword hits are fetched. Do not combine issn with querytext: the API then ignores the issn."}
   ],
   "venues": [
     {"name": "SSC-L",   "match": "solid[- ]state circuits letters"},
@@ -23,6 +25,7 @@
     {"name": "ESSCIRC", "match": "european solid[- ]state (circuits|device and circuits|electronics research)|\\besscirc\\b|\\besserc\\b"},
     {"name": "ISSCC",   "match": "international solid[- ]state circuits conference|\\bisscc\\b"},
     {"name": "VLSI",    "match": "symposium on vlsi"},
-    {"name": "CICC",    "match": "custom integrated circuits conference|\\bcicc\\b"}
+    {"name": "CICC",    "match": "custom integrated circuits conference|\\bcicc\\b"},
+    {"name": "Access",  "match": "^ieee access$"}
   ]
 }

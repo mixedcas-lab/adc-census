@@ -16,7 +16,7 @@
     "VCO/Time-domain", "Pipelined", "Subranging", "Flash", "Single-slope", "Folding", "SAR",
     "RF-DAC", "Current-steering"];
   var OVERSAMPLED = ["ΔΣ", "CT-ΔΣ", "NS-SAR", "Incremental", "Zoom"];
-  var VENUE_ORDER = ["ISSCC", "VLSI", "JSSC", "CICC", "ESSCIRC", "A-SSCC", "SSC-L", "TCAS-I", "TCAS-II", "TVLSI"];
+  var VENUE_ORDER = ["ISSCC", "VLSI", "JSSC", "CICC", "ESSCIRC", "A-SSCC", "SSC-L", "TCAS-I", "TCAS-II", "TVLSI", "Access"];
   var MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   var PAGE = 150;
 
@@ -454,12 +454,12 @@
       var venues = Object.keys(META.by_venue || {}).length;
       if (ALL.length) {
         $("lede").innerHTML = "<strong>" + nA.toLocaleString() + " ADC</strong> and <strong>" + nD.toLocaleString() +
-          " DAC</strong> papers from " + venues + " IEEE solid-state circuits venues, " + esc(fmtDate(META.coverage_from)) +
+          " DAC</strong> papers from " + venues + " IEEE circuits venues, " + esc(fmtDate(META.coverage_from)) +
           " to " + esc(fmtDate(META.coverage_to)) + ". Updated " + esc(META.updated || "") +
           (META.sweep_done && META.last_run_new ? ", with " + META.last_run_new + " papers added in the latest update." : ".") +
           (META.sweep_done ? "" : " The initial collection is still running, so earlier years may be incomplete.");
       } else {
-        $("lede").textContent = "A monthly index of ADC and DAC papers in ISSCC, VLSI, JSSC, CICC, ESSCIRC, A-SSCC, SSC-L, TCAS-I/II and TVLSI. The first collection has not run yet.";
+        $("lede").textContent = "A monthly index of ADC and DAC papers in ISSCC, VLSI, JSSC, CICC, ESSCIRC, A-SSCC, SSC-L, TCAS-I/II, TVLSI and IEEE Access. The first collection has not run yet.";
       }
       $("fresh").parentNode.hidden = !(META.sweep_done && META.last_run_new);
 

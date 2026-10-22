@@ -251,6 +251,30 @@ class TestPipeline(unittest.TestCase):
         self.assertIn("IEEE Journal of Solid-State Circuits", out)
         self.assertIn("core papers by venue and year", out)
 
+    def test_new_venue_is_backfilled(self):
+        config = collect.load_json(collect.CONFIG, None)
+        old = {"queries": [q for q in config["queries"] if q["key"] != "Access"], "venues": config["venues"]}
+        state = {}
+        collect.init_sweep(state, old, 2025)
+        for t in state["sweep"]["tasks"]:
+            t["done"] = True
+        state["sweep"]["done"] = True
+        state["last_delta_end"] = "20261023"
+        self.assertEqual(collect.add_new_queries(state, config), ["Access"])
+        self.assertFalse(state["sweep"]["done"])
+        todo = [t for t in state["sweep"]["tasks"] if not t["done"]]
+        self.assertEqual({t["key"] for t in todo}, {"Access"})
+        self.assertEqual(todo[0]["year"], 2025)
+        collect.run_sweep(FakeClient([]), state, config, "2026-11-01")
+        self.assertTrue(state["sweep"]["done"])
+        self.assertEqual(state["last_delta_end"], "20261023")   # delta position is kept
+        self.assertEqual(collect.add_new_queries(state, config), [])
+
+    def test_access_venue_match(self):
+        venues = collect.load_json(collect.CONFIG, None)["venues"]
+        self.assertEqual(collect.venue_of("IEEE Access", venues), "Access")
+        self.assertIsNone(collect.venue_of("IEEE Access Magazine", venues))
+
 
 if __name__ == "__main__":
     unittest.main()
