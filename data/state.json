@@ -1,7 +1,7 @@
 {
- "since_year": 2023,
+ "since_year": 1997,
  "sweep": {
-  "done": true,
+  "done": false,
   "started": "2026-10-23",
   "tasks": [
    {
@@ -339,6 +339,1288 @@
     "done": true,
     "next": 201,
     "total": 93
+   },
+   {
+    "key": "JSSC",
+    "year": 1997,
+    "done": true,
+    "next": 401,
+    "total": 257
+   },
+   {
+    "key": "JSSC",
+    "year": 1998,
+    "done": true,
+    "next": 401,
+    "total": 283
+   },
+   {
+    "key": "JSSC",
+    "year": 1999,
+    "done": true,
+    "next": 401,
+    "total": 244
+   },
+   {
+    "key": "JSSC",
+    "year": 2000,
+    "done": true,
+    "next": 401,
+    "total": 262
+   },
+   {
+    "key": "JSSC",
+    "year": 2001,
+    "done": true,
+    "next": 401,
+    "total": 254
+   },
+   {
+    "key": "JSSC",
+    "year": 2002,
+    "done": true,
+    "next": 401,
+    "total": 239
+   },
+   {
+    "key": "JSSC",
+    "year": 2003,
+    "done": true,
+    "next": 401,
+    "total": 312
+   },
+   {
+    "key": "JSSC",
+    "year": 2004,
+    "done": true,
+    "next": 401,
+    "total": 371
+   },
+   {
+    "key": "JSSC",
+    "year": 2005,
+    "done": true,
+    "next": 401,
+    "total": 393
+   },
+   {
+    "key": "JSSC",
+    "year": 2006,
+    "done": true,
+    "next": 401,
+    "total": 382
+   },
+   {
+    "key": "JSSC",
+    "year": 2007,
+    "done": true,
+    "next": 401,
+    "total": 376
+   },
+   {
+    "key": "JSSC",
+    "year": 2008,
+    "done": true,
+    "next": 401,
+    "total": 366
+   },
+   {
+    "key": "JSSC",
+    "year": 2009,
+    "done": true,
+    "next": 601,
+    "total": 410
+   },
+   {
+    "key": "JSSC",
+    "year": 2010,
+    "done": true,
+    "next": 401,
+    "total": 340
+   },
+   {
+    "key": "JSSC",
+    "year": 2011,
+    "done": true,
+    "next": 401,
+    "total": 350
+   },
+   {
+    "key": "JSSC",
+    "year": 2012,
+    "done": true,
+    "next": 401,
+    "total": 359
+   },
+   {
+    "key": "JSSC",
+    "year": 2013,
+    "done": true,
+    "next": 401,
+    "total": 352
+   },
+   {
+    "key": "JSSC",
+    "year": 2014,
+    "done": true,
+    "next": 401,
+    "total": 324
+   },
+   {
+    "key": "JSSC",
+    "year": 2015,
+    "done": true,
+    "next": 401,
+    "total": 340
+   },
+   {
+    "key": "JSSC",
+    "year": 2016,
+    "done": true,
+    "next": 401,
+    "total": 364
+   },
+   {
+    "key": "JSSC",
+    "year": 2017,
+    "done": true,
+    "next": 401,
+    "total": 362
+   },
+   {
+    "key": "JSSC",
+    "year": 2018,
+    "done": true,
+    "next": 401,
+    "total": 391
+   },
+   {
+    "key": "JSSC",
+    "year": 2019,
+    "done": true,
+    "next": 401,
+    "total": 383
+   },
+   {
+    "key": "JSSC",
+    "year": 2020,
+    "done": true,
+    "next": 401,
+    "total": 358
+   },
+   {
+    "key": "JSSC",
+    "year": 2021,
+    "done": true,
+    "next": 401,
+    "total": 397
+   },
+   {
+    "key": "JSSC",
+    "year": 2022,
+    "done": true,
+    "next": 401,
+    "total": 390
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2004,
+    "done": true,
+    "next": 401,
+    "total": 323
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2005,
+    "done": true,
+    "next": 401,
+    "total": 353
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2006,
+    "done": true,
+    "next": 401,
+    "total": 390
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2007,
+    "done": true,
+    "next": 401,
+    "total": 349
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2008,
+    "done": true,
+    "next": 401,
+    "total": 391
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2009,
+    "done": true,
+    "next": 401,
+    "total": 308
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2010,
+    "done": true,
+    "next": 401,
+    "total": 345
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2011,
+    "done": true,
+    "next": 401,
+    "total": 321
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2012,
+    "done": true,
+    "next": 401,
+    "total": 344
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2013,
+    "done": true,
+    "next": 401,
+    "total": 363
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2014,
+    "done": true,
+    "next": 401,
+    "total": 397
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2015,
+    "done": true,
+    "next": 401,
+    "total": 371
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2016,
+    "done": false,
+    "next": 201
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2017,
+    "done": false
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2018,
+    "done": false
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2019,
+    "done": false
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2020,
+    "done": false
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2021,
+    "done": false
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2022,
+    "done": false
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2004,
+    "done": false
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2005,
+    "done": false
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2006,
+    "done": false
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2007,
+    "done": false
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2008,
+    "done": false
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2009,
+    "done": false
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2010,
+    "done": false
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2011,
+    "done": false
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2012,
+    "done": false
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2013,
+    "done": false
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2014,
+    "done": false
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2015,
+    "done": false
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2016,
+    "done": false
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2017,
+    "done": false
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2018,
+    "done": false
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2019,
+    "done": false
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2020,
+    "done": false
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2021,
+    "done": false
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2022,
+    "done": false
+   },
+   {
+    "key": "TCAS-I-1992",
+    "year": 1997,
+    "done": false
+   },
+   {
+    "key": "TCAS-I-1992",
+    "year": 1998,
+    "done": false
+   },
+   {
+    "key": "TCAS-I-1992",
+    "year": 1999,
+    "done": false
+   },
+   {
+    "key": "TCAS-I-1992",
+    "year": 2000,
+    "done": false
+   },
+   {
+    "key": "TCAS-I-1992",
+    "year": 2001,
+    "done": false
+   },
+   {
+    "key": "TCAS-I-1992",
+    "year": 2002,
+    "done": false
+   },
+   {
+    "key": "TCAS-I-1992",
+    "year": 2003,
+    "done": false
+   },
+   {
+    "key": "TCAS-II-1992",
+    "year": 1997,
+    "done": false
+   },
+   {
+    "key": "TCAS-II-1992",
+    "year": 1998,
+    "done": false
+   },
+   {
+    "key": "TCAS-II-1992",
+    "year": 1999,
+    "done": false
+   },
+   {
+    "key": "TCAS-II-1992",
+    "year": 2000,
+    "done": false
+   },
+   {
+    "key": "TCAS-II-1992",
+    "year": 2001,
+    "done": false
+   },
+   {
+    "key": "TCAS-II-1992",
+    "year": 2002,
+    "done": false
+   },
+   {
+    "key": "TCAS-II-1992",
+    "year": 2003,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 1997,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 1998,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 1999,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 2000,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 2001,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 2002,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 2003,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 2004,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 2005,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 2006,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 2007,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 2008,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 2009,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 2010,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 2011,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 2012,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 2013,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 2014,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 2015,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 2016,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 2017,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 2018,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 2019,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 2020,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 2021,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 2022,
+    "done": false
+   },
+   {
+    "key": "SSC-L",
+    "year": 2018,
+    "done": false
+   },
+   {
+    "key": "SSC-L",
+    "year": 2019,
+    "done": false
+   },
+   {
+    "key": "SSC-L",
+    "year": 2020,
+    "done": false
+   },
+   {
+    "key": "SSC-L",
+    "year": 2021,
+    "done": false
+   },
+   {
+    "key": "SSC-L",
+    "year": 2022,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 1997,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 1998,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 1999,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 2000,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 2001,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 2002,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 2003,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 2004,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 2005,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 2006,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 2007,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 2008,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 2009,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 2010,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 2011,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 2012,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 2013,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 2014,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 2015,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 2016,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 2017,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 2018,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 2019,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 2020,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 2021,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 2022,
+    "done": false
+   },
+   {
+    "key": "A-SSCC",
+    "year": 2005,
+    "done": false
+   },
+   {
+    "key": "A-SSCC",
+    "year": 2006,
+    "done": false
+   },
+   {
+    "key": "A-SSCC",
+    "year": 2007,
+    "done": false
+   },
+   {
+    "key": "A-SSCC",
+    "year": 2008,
+    "done": false
+   },
+   {
+    "key": "A-SSCC",
+    "year": 2009,
+    "done": false
+   },
+   {
+    "key": "A-SSCC",
+    "year": 2010,
+    "done": false
+   },
+   {
+    "key": "A-SSCC",
+    "year": 2011,
+    "done": false
+   },
+   {
+    "key": "A-SSCC",
+    "year": 2012,
+    "done": false
+   },
+   {
+    "key": "A-SSCC",
+    "year": 2013,
+    "done": false
+   },
+   {
+    "key": "A-SSCC",
+    "year": 2014,
+    "done": false
+   },
+   {
+    "key": "A-SSCC",
+    "year": 2015,
+    "done": false
+   },
+   {
+    "key": "A-SSCC",
+    "year": 2016,
+    "done": false
+   },
+   {
+    "key": "A-SSCC",
+    "year": 2017,
+    "done": false
+   },
+   {
+    "key": "A-SSCC",
+    "year": 2018,
+    "done": false
+   },
+   {
+    "key": "A-SSCC",
+    "year": 2019,
+    "done": false
+   },
+   {
+    "key": "A-SSCC",
+    "year": 2020,
+    "done": false
+   },
+   {
+    "key": "A-SSCC",
+    "year": 2021,
+    "done": false
+   },
+   {
+    "key": "A-SSCC",
+    "year": 2022,
+    "done": false
+   },
+   {
+    "key": "VLSI",
+    "year": 2022,
+    "done": false
+   },
+   {
+    "key": "VLSI-C",
+    "year": 1997,
+    "done": false
+   },
+   {
+    "key": "VLSI-C",
+    "year": 1998,
+    "done": false
+   },
+   {
+    "key": "VLSI-C",
+    "year": 1999,
+    "done": false
+   },
+   {
+    "key": "VLSI-C",
+    "year": 2000,
+    "done": false
+   },
+   {
+    "key": "VLSI-C",
+    "year": 2001,
+    "done": false
+   },
+   {
+    "key": "VLSI-C",
+    "year": 2002,
+    "done": false
+   },
+   {
+    "key": "VLSI-C",
+    "year": 2003,
+    "done": false
+   },
+   {
+    "key": "VLSI-C",
+    "year": 2004,
+    "done": false
+   },
+   {
+    "key": "VLSI-C",
+    "year": 2005,
+    "done": false
+   },
+   {
+    "key": "VLSI-C",
+    "year": 2006,
+    "done": false
+   },
+   {
+    "key": "VLSI-C",
+    "year": 2007,
+    "done": false
+   },
+   {
+    "key": "VLSI-C",
+    "year": 2008,
+    "done": false
+   },
+   {
+    "key": "VLSI-C",
+    "year": 2009,
+    "done": false
+   },
+   {
+    "key": "VLSI-C",
+    "year": 2010,
+    "done": false
+   },
+   {
+    "key": "VLSI-C",
+    "year": 2011,
+    "done": false
+   },
+   {
+    "key": "VLSI-C",
+    "year": 2012,
+    "done": false
+   },
+   {
+    "key": "VLSI-C",
+    "year": 2013,
+    "done": false
+   },
+   {
+    "key": "VLSI-C",
+    "year": 2014,
+    "done": false
+   },
+   {
+    "key": "VLSI-C",
+    "year": 2015,
+    "done": false
+   },
+   {
+    "key": "VLSI-C",
+    "year": 2016,
+    "done": false
+   },
+   {
+    "key": "VLSI-C",
+    "year": 2017,
+    "done": false
+   },
+   {
+    "key": "VLSI-C",
+    "year": 2018,
+    "done": false
+   },
+   {
+    "key": "VLSI-C",
+    "year": 2019,
+    "done": false
+   },
+   {
+    "key": "VLSI-C",
+    "year": 2020,
+    "done": false
+   },
+   {
+    "key": "VLSI-C",
+    "year": 2021,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 1997,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 1998,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 1999,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 2000,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 2001,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 2002,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 2003,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 2004,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 2005,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 2006,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 2007,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 2008,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 2009,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 2010,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 2011,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 2012,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 2013,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 2014,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 2015,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 2016,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 2017,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 2018,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 2019,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 2020,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 2021,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 2022,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 1997,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 1998,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 1999,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 2000,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 2001,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 2002,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 2003,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 2004,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 2005,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 2006,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 2007,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 2008,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 2009,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 2010,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 2011,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 2012,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 2013,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 2014,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 2015,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 2016,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 2017,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 2018,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 2019,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 2020,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 2021,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 2022,
+    "done": false
+   },
+   {
+    "key": "Access",
+    "year": 2013,
+    "done": false
+   },
+   {
+    "key": "Access",
+    "year": 2014,
+    "done": false
+   },
+   {
+    "key": "Access",
+    "year": 2015,
+    "done": false
+   },
+   {
+    "key": "Access",
+    "year": 2016,
+    "done": false
+   },
+   {
+    "key": "Access",
+    "year": 2017,
+    "done": false
+   },
+   {
+    "key": "Access",
+    "year": 2018,
+    "done": false
+   },
+   {
+    "key": "Access",
+    "year": 2019,
+    "done": false
+   },
+   {
+    "key": "Access",
+    "year": 2020,
+    "done": false
+   },
+   {
+    "key": "Access",
+    "year": 2021,
+    "done": false
+   },
+   {
+    "key": "Access",
+    "year": 2022,
+    "done": false
    }
   ]
  },
