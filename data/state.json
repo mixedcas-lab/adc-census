@@ -1,1 +1,248 @@
-{}
+{
+ "since_year": 2023,
+ "sweep": {
+  "done": false,
+  "started": "2026-10-23",
+  "tasks": [
+   {
+    "key": "JSSC",
+    "year": 2023,
+    "done": true,
+    "next": 401,
+    "total": 368
+   },
+   {
+    "key": "JSSC",
+    "year": 2024,
+    "done": true,
+    "next": 601,
+    "total": 411
+   },
+   {
+    "key": "JSSC",
+    "year": 2025,
+    "done": true,
+    "next": 601,
+    "total": 458
+   },
+   {
+    "key": "JSSC",
+    "year": 2026,
+    "done": true,
+    "next": 801,
+    "total": 633
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2023,
+    "done": true,
+    "next": 601,
+    "total": 526
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2024,
+    "done": true,
+    "next": 801,
+    "total": 605
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2025,
+    "done": true,
+    "next": 801,
+    "total": 751
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2026,
+    "done": false,
+    "next": 401
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2023,
+    "done": false
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2024,
+    "done": false
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2025,
+    "done": false
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2026,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 2023,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 2024,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 2025,
+    "done": false
+   },
+   {
+    "key": "TVLSI",
+    "year": 2026,
+    "done": false
+   },
+   {
+    "key": "SSC-L",
+    "year": 2023,
+    "done": false
+   },
+   {
+    "key": "SSC-L",
+    "year": 2024,
+    "done": false
+   },
+   {
+    "key": "SSC-L",
+    "year": 2025,
+    "done": false
+   },
+   {
+    "key": "SSC-L",
+    "year": 2026,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 2023,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 2024,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 2025,
+    "done": false
+   },
+   {
+    "key": "ISSCC",
+    "year": 2026,
+    "done": false
+   },
+   {
+    "key": "A-SSCC",
+    "year": 2023,
+    "done": false
+   },
+   {
+    "key": "A-SSCC",
+    "year": 2024,
+    "done": false
+   },
+   {
+    "key": "A-SSCC",
+    "year": 2025,
+    "done": false
+   },
+   {
+    "key": "A-SSCC",
+    "year": 2026,
+    "done": false
+   },
+   {
+    "key": "VLSI",
+    "year": 2023,
+    "done": false
+   },
+   {
+    "key": "VLSI",
+    "year": 2024,
+    "done": false
+   },
+   {
+    "key": "VLSI",
+    "year": 2025,
+    "done": false
+   },
+   {
+    "key": "VLSI",
+    "year": 2026,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 2023,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 2024,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 2025,
+    "done": false
+   },
+   {
+    "key": "CICC",
+    "year": 2026,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 2023,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 2024,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 2025,
+    "done": false
+   },
+   {
+    "key": "ESSCIRC",
+    "year": 2026,
+    "done": false
+   },
+   {
+    "key": "ESSERC",
+    "year": 2023,
+    "done": false
+   },
+   {
+    "key": "ESSERC",
+    "year": 2024,
+    "done": false
+   },
+   {
+    "key": "ESSERC",
+    "year": 2025,
+    "done": false
+   },
+   {
+    "key": "ESSERC",
+    "year": 2026,
+    "done": false
+   }
+  ]
+ },
+ "verified": {
+  "JSSC": true,
+  "TCAS-I": true
+ }
+}

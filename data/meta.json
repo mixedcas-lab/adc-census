@@ -1,12 +1,18 @@
 {
  "title": "ADC Census",
  "source": "IEEE Xplore API",
- "updated": "2026-10-22",
+ "updated": "2026-10-23",
  "coverage_from": "2023-01",
- "coverage_to": "",
- "total": 0,
- "by_kind": {},
- "by_venue": {},
+ "coverage_to": "2026-10",
+ "total": 504,
+ "by_kind": {
+  "ADC": 472,
+  "DAC": 32
+ },
+ "by_venue": {
+  "JSSC": 317,
+  "TCAS-I": 187
+ },
  "sweep_done": false,
- "last_run_new": 0
+ "last_run_new": 504
 }
