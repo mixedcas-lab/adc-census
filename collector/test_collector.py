@@ -275,15 +275,43 @@ class TestPipeline(unittest.TestCase):
             t["done"] = True
         state["sweep"]["done"] = True
         state["last_delta_end"] = "20261023"
-        self.assertEqual(collect.add_new_queries(state, config), ["Access"])
+        added = collect.add_missing_tasks(state, config)
+        self.assertEqual({k for k, _ in added}, {"Access"})
         self.assertFalse(state["sweep"]["done"])
-        todo = [t for t in state["sweep"]["tasks"] if not t["done"]]
-        self.assertEqual({t["key"] for t in todo}, {"Access"})
-        self.assertEqual(todo[0]["year"], 2025)
+        self.assertEqual(min(y for _, y in added), 2025)
         collect.run_sweep(FakeClient([]), state, config, "2026-11-01")
         self.assertTrue(state["sweep"]["done"])
         self.assertEqual(state["last_delta_end"], "20261023")   # delta position is kept
-        self.assertEqual(collect.add_new_queries(state, config), [])
+        self.assertEqual(collect.add_missing_tasks(state, config), [])
+
+    def test_earlier_since_year_backfills_with_venue_limits(self):
+        config = collect.load_json(collect.CONFIG, None)
+        state = {}
+        collect.init_sweep(state, config, 2023)
+        state["since_year"] = 2000
+        added = set(collect.add_missing_tasks(state, config))
+        self.assertIn(("JSSC", 2000), added)
+        self.assertIn(("TCAS-I-1992", 2003), added)
+        self.assertNotIn(("TCAS-I-1992", 2004), added)   # old ISSN ends in 2003
+        self.assertNotIn(("TCAS-I", 2003), added)
+        self.assertNotIn(("SSC-L", 2017), added)         # launched 2018
+        self.assertIn(("VLSI-C", 2021), added)
+        self.assertNotIn(("VLSI", 2021), added)
+
+    def test_since_year_hides_older_papers(self):
+        with open(os.path.join(HERE, "fixtures", "sample_articles.json"), encoding="utf-8") as f:
+            arts = json.load(f)
+        config = collect.load_json(collect.CONFIG, None)
+        state = {}
+        collect.init_sweep(state, config, 2025)
+        collect.run_sweep(FakeClient(arts), state, config, "2026-10-22")
+        n = len(collect.rebuild(config, "2026-10-22") and collect.load_json(collect.PAPERS, []))
+        state["since_year"] = 2026
+        collect.save_json(collect.STATE, state)
+        collect.rebuild(config, "2026-10-22")
+        papers = collect.load_json(collect.PAPERS, [])
+        self.assertLess(len(papers), n)
+        self.assertTrue(all(p["y"] >= 2026 for p in papers))
 
     def test_access_venue_match(self):
         venues = collect.load_json(collect.CONFIG, None)["venues"]

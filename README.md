@@ -22,8 +22,8 @@ cache/                          IEEE 원본 응답 (초록 포함, git 제외, �
 
 ## 동작 방식
 
-1. **초기 수집**: 2023년부터 venue별·연도별로 전체 논문을 받아옵니다. 표준 API 키는 하루 호출 수가 제한되어 있어 하루 190회까지만 쓰고 멈춘 뒤, 다음 날 이어서 받습니다. 보통 1~2일이면 끝납니다.
-2. **월간 갱신**: 초기 수집이 끝나면 IEEE에 새로 등록된 논문(insert date 기준)만 받아옵니다. 한 번에 수십 회 호출이면 충분합니다. `collector/venues.json`에 venue를 새로 추가하면 다음 실행 때 그 venue만 초기 수집 범위(2023년~)를 먼저 받아옵니다.
+1. **초기 수집**: `collector/venues.json`의 `since_year`(현재 1997)부터 venue별·연도별로 전체 논문을 받아옵니다. 표준 API 키는 하루 호출 수가 제한되어 있어 하루 190회까지만 쓰고 멈춘 뒤, 다음 날 이어서 받습니다. 30년치는 며칠 걸립니다.
+2. **월간 갱신**: 초기 수집이 끝나면 IEEE에 새로 등록된 논문(insert date 기준)만 받아옵니다. 한 번에 수십 회 호출이면 충분합니다. `collector/venues.json`에 venue를 새로 추가하거나 `since_year`를 앞당기면, 다음 실행 때 빠진 venue·연도만 먼저 받아옵니다.
 3. **분류**: 제목·초록·IEEE 색인어로 ADC/DAC 여부를 판별하고 아키텍처(SAR, NS-SAR, Pipelined-SAR, TI, CT-ΔΣ, VCO 등)와 응용(SerDes, RF, Bio, CIS, NAND, CIM 등)을 태깅합니다. 제목과 초록에서 해상도, f<sub>s</sub>, SNDR, 전력, 공정, FoM을 정규식으로 뽑아 energy plot에 씁니다. 초록은 분류에만 쓰고 공개 데이터에는 넣지 않습니다.
 4. **공개**: `data/*.json`이 바뀌면 커밋·push하고, GitHub Pages가 자동으로 반영합니다.
 
@@ -116,6 +116,16 @@ id,exclude,kind,arch,app,res,fs,bw,sndr,p,node,foms,fomw,note,by
 10954321,1,,,,,,,,,,,,PLL paper,홍길동
 ```
 
+## 수집 연도 범위 바꾸기
+
+`collector/venues.json` 맨 위의 `"since_year"`가 수집 시작 연도입니다. GitHub 웹에서 이 값만 고쳐 커밋하면 다음 cron 실행 때 반영됩니다.
+
+- 앞당기면(예: 1997 → 1990) 빠진 연도를 하루 API 한도 안에서 며칠에 걸쳐 받아옵니다.
+- 늦추면(예: 1997 → 2010) 그 이전 논문이 사이트에서 빠집니다. 서버 캐시는 남아 있으므로 다시 앞당기면 API 호출 없이 돌아옵니다.
+- 학회지 이름·ISSN이 바뀐 해는 질의마다 `from`/`to`로 나눠 두었습니다(TCAS-I/II는 2004년, VLSI Symposium은 2022년 통합).
+
+사이트에서는 From/To 선택으로 보고 싶은 연도만 골라 볼 수 있습니다.
+
 ## 분류 규칙 고치기
 
 오탐·누락이 보이면 `collector/classify.py`의 정규식이나 `collector/venues.json`을 고친 뒤, API를 다시 부르지 않고 캐시에서 재분류합니다.
@@ -139,6 +149,10 @@ python3 -m unittest discover -s collector
 | `ar`, `ap`, `cal` | 아키텍처, 응용, 보정 기법 여부 |
 | `s` | 추출 수치: `res`, `fs`, `bw`, `sndr`, `enob`, `p`, `node`, `foms`, `fomw` |
 | `ct`, `first`, `ins` | J/C/EA(early access), 처음 수집한 날, IEEE 등록일 |
+
+## 감사의 글
+
+이 사이트의 아이디어를 주신 중앙대학교 김민휘 교수님께 감사드립니다.
 
 ## 참고
 

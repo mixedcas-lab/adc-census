@@ -6,6 +6,7 @@ ISSCC·VLSI·JSSC·CICC·ESSCIRC/ESSERC·A-SSCC·SSC-L·TCAS-I/II·TVLSI·IEEE A
 
 - **API 키**: `~/.config/adc-census/env`(`IEEE_API_KEY=...`)에만 둔다. 키를 출력하거나(cat, echo, env, set -x 금지), 사용자에게 채팅으로 요청하거나, 저장소에 쓰지 않는다. 파일 확인은 `test -s` 와 `stat -c %a`로만 한다.
 - **cache/는 커밋 금지**: IEEE 원본 응답(초록 포함)이다. 공개 데이터(`data/papers.json`)에도 초록을 넣지 않는다.
+- **수집 범위**: 시작 연도는 `collector/venues.json`의 `since_year`로 정한다. venue 이름·ISSN이 바뀐 해는 질의별 `from`/`to`로 나눈다.
 - **API 한도**: 표준 키는 하루 약 200회다. 디버깅할 때는 `--probe`(1회)나 `--max-calls 10`처럼 작게 쓰고, 분류 규칙은 `--reclassify`로 캐시에서 다시 돌린다(API 호출 없음). 오늘 한도를 다 쓰면 cron이 내일 이어받는다.
 - **공용 서버**: sudo, 시스템 패키지 설치, 다른 사용자의 crontab이나 파일 수정은 하지 않는다. 표준 라이브러리만 쓴다.
 - **코드 수정**: `collector/`를 고치면 `collector/test_collector.py`에 해당 사례를 테스트로 추가하고 `python3 -m unittest discover -s collector`가 통과해야 커밋한다. `data/*.json`은 직접 편집하지 않는다(수집기가 생성). `data/annotations.csv`는 학생 검수용이며 사람의 편집을 덮어쓰지 않는다.

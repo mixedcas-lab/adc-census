@@ -117,7 +117,7 @@ python3 collector/collect.py --status
 python3 collector/collect.py --report
 ```
 
-전체 venue를 2023년부터 받는 데 대략 100회 안팎의 호출이 든다. 한도에 걸려 멈추면(종료 메시지 "stopped: ...") 정상이며 내일 cron이 이어받는다. push가 되었는지 `git log -1 --oneline`과 `git status`로 확인한다.
+전체 venue를 `collector/venues.json`의 `since_year`부터 받는다. 2023년부터면 100회 안팎, 1997년부터면 수백 회의 호출이 들어 며칠에 나눠 받는다. 한도에 걸려 멈추면(종료 메시지 "stopped: ...") 정상이며 내일 cron이 이어받는다. push가 되었는지 `git log -1 --oneline`과 `git status`로 확인한다.
 
 ## 8. cron 등록
 

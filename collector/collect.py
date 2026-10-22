@@ -291,6 +291,9 @@ def rebuild(config, run_date, last_run_new_ids=None):
             from_cache[an] = r
     merged = {k: v for k, v in existing.items() if k not in cached_ids}   # keep records we have no cache for
     merged.update(from_cache)
+    since = load_json(STATE, {}).get("since_year")
+    if since:
+        merged = {k: v for k, v in merged.items() if not v.get("y") or v["y"] >= since}
     papers = sorted(merged.values(), key=lambda r: (r.get("d") or "", r["id"]), reverse=True)
     save_json(PAPERS, papers, compact=True)
 
@@ -318,27 +321,31 @@ def rebuild(config, run_date, last_run_new_ids=None):
 
 
 # ------------------------------------------------------------------ sweep / delta
+def query_years(q, since_year):
+    """Publication years to sweep for one query: since_year .. this year, clipped to the
+    query's optional "from"/"to" (venue launch year, or the years an old ISSN was in use)."""
+    y0 = max(since_year, q.get("from", since_year))
+    y1 = min(today().year, q.get("to", today().year))
+    return range(y0, y1 + 1)
+
+
 def init_sweep(state, config, since_year):
-    years = list(range(since_year, today().year + 1))
     state["since_year"] = since_year
-    state["sweep"] = {
-        "done": False,
-        "started": today().isoformat(),
-        "tasks": [{"key": q["key"], "year": y, "done": False} for q in config["queries"] for y in years],
-    }
+    state["sweep"] = {"done": False, "started": today().isoformat(), "tasks": []}
+    add_missing_tasks(state, config)
 
 
-def add_new_queries(state, config):
-    """Queue sweep tasks for queries added to venues.json after the initial sweep, so a new
-    venue gets its back catalogue (the monthly delta only covers recent insertions)."""
+def add_missing_tasks(state, config):
+    """Queue sweep tasks for (query, year) pairs not swept yet: a query newly added to
+    venues.json, an earlier since_year, or a new calendar year. The monthly delta only covers
+    recent insertions, so this is how a back catalogue gets filled in."""
     sw = state.get("sweep")
     if not sw:
         return []
-    have = {t["key"] for t in sw["tasks"]}
-    added = [q["key"] for q in config["queries"] if q["key"] not in have]
-    years = range(state.get("since_year", 2023), today().year + 1)
-    for k in added:
-        sw["tasks"] += [{"key": k, "year": y, "done": False} for y in years]
+    have = {(t["key"], t["year"]) for t in sw["tasks"]}
+    added = [(q["key"], y) for q in config["queries"] for y in query_years(q, state["since_year"])
+             if (q["key"], y) not in have]
+    sw["tasks"] += [{"key": k, "year": y, "done": False} for k, y in added]
     if added:
         sw["done"] = False
     return added
@@ -491,7 +498,8 @@ def report(config, sample=15):
 
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
-    ap.add_argument("--since-year", type=int, default=2023, help="first publication year of the initial sweep")
+    ap.add_argument("--since-year", type=int, default=None,
+                    help="first publication year to collect (default: since_year in venues.json)")
     ap.add_argument("--restart-sweep", action="store_true", help="start the initial sweep over")
     ap.add_argument("--max-calls", type=int, default=DEFAULT_MAX_CALLS, help="API call budget for this run")
     ap.add_argument("--overlap-days", type=int, default=7, help="delta window overlap with the previous run")
@@ -518,6 +526,8 @@ def main():
         return 0
 
     if args.reclassify:
+        state["since_year"] = args.since_year or config.get("since_year", state.get("since_year", 2023))
+        save_json(STATE, state)
         rebuild(config, run_date)
         return 0
     if args.report:
@@ -535,12 +545,17 @@ def main():
             log("probe failed: %s" % e)
             return 1
 
-    if args.restart_sweep or "sweep" not in state or state.get("since_year") != args.since_year and not state["sweep"]["done"]:
-        init_sweep(state, config, args.since_year)
+    since = args.since_year or config.get("since_year", 2023)
+    if args.restart_sweep or "sweep" not in state:
+        init_sweep(state, config, since)
         save_json(STATE, state)
-    added = add_new_queries(state, config)
+    state["since_year"] = since
+    save_json(STATE, state)
+    added = add_missing_tasks(state, config)
     if added:
-        log("new queries in venues.json, backfilling from %d: %s" % (state["since_year"], ", ".join(added)))
+        keys = sorted({k for k, _ in added})
+        log("queued %d new sweep tasks (%s; years %d-%d)" % (
+            len(added), ", ".join(keys), min(y for _, y in added), max(y for _, y in added)))
         save_json(STATE, state)
 
     if state["sweep"]["done"] and args.min_interval_days and state.get("last_delta_end"):
