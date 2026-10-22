@@ -192,6 +192,15 @@ class TestPipeline(unittest.TestCase):
         again = collect.load_json(collect.PAPERS, [])
         self.assertEqual([p["id"] for p in again], [p["id"] for p in papers])
         self.assertTrue(all(p["first"] == "2026-10-22" for p in again))
+        # the diagnostic report runs on the cache without the API
+        import contextlib
+        import io
+        buf = io.StringIO()
+        with contextlib.redirect_stdout(buf):
+            collect.report(config)
+        out = buf.getvalue()
+        self.assertIn("IEEE Journal of Solid-State Circuits", out)
+        self.assertIn("core papers by venue and year", out)
 
 
 if __name__ == "__main__":

@@ -29,6 +29,8 @@ cache/                          IEEE 원본 응답 (초록 포함, git 제외, �
 
 ## 랩 서버 설정 (1회)
 
+서버의 Claude Code에 맡길 때는 [docs/server-setup.md](docs/server-setup.md)를 따르게 하면 됩니다. 작업 규칙은 [CLAUDE.md](CLAUDE.md)에 있습니다. 직접 하실 때는 아래 순서대로 하시면 됩니다.
+
 ### 1. 저장소 받기 (deploy key 사용)
 
 서버에서 이 저장소에만 쓰기 권한이 있는 SSH 키를 만듭니다.

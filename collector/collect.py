@@ -96,11 +96,11 @@ class Client:
         self.max_calls = max_calls
         self.calls = 0
 
-    def search(self, params, start_record):
+    def search(self, params, start_record, max_records=PAGE):
         if self.calls >= self.max_calls:
             raise QuotaError("max calls for this run reached (%d)" % self.max_calls)
         q = dict(params)
-        q.update({"apikey": self.key, "format": "json", "max_records": PAGE,
+        q.update({"apikey": self.key, "format": "json", "max_records": max_records,
                   "start_record": start_record, "sort_field": "article_number", "sort_order": "asc"})
         url = API + "?" + urllib.parse.urlencode(q)
         last = None
@@ -389,6 +389,86 @@ def run_delta(client, state, config, run_date, overlap_days):
     save_json(STATE, state)
 
 
+# ------------------------------------------------------------------ diagnostics
+def probe(client, config):
+    """One API call: checks key, network and which fields the API returns."""
+    q = config["queries"][0]
+    params, _ = query_params(q, load_json(STATE, {}))
+    y = today().year - 1
+    params.update({"start_year": y, "end_year": y})
+    res = client.search(params, 1, max_records=2)
+    print("query:", json.dumps(params, ensure_ascii=False))
+    print("total_records:", res.get("total_records"))
+    arts = res.get("articles") or []
+    if not arts:
+        print("no articles returned")
+        return 1
+    a = arts[0]
+    print("title:", clean(a.get("title")))
+    print("publication_title:", clean(a.get("publication_title")))
+    for f in ("article_number", "doi", "publication_date", "publication_year", "insert_date",
+              "content_type", "abstract", "index_terms", "authors", "html_url"):
+        print("  %-18s %s" % (f, "present" if a.get(f) else "MISSING"))
+    au = ((a.get("authors") or {}).get("authors") or [{}])[0]
+    print("  %-18s %s" % ("affiliation", "present" if au.get("affiliation") else "MISSING"))
+    return 0
+
+
+def report(config, sample=15):
+    """Human-readable check of venue matching, classification and spec coverage (no API calls)."""
+    import random
+    venues = config["venues"]
+    pubs, n, suspects = {}, 0, []
+    for a in iter_cache():
+        n += 1
+        pub = clean(a.get("publication_title"))
+        pubs[pub] = pubs.get(pub, 0) + 1
+        title = clean(a.get("title"))
+        if venue_of(pub, venues) and title and not C.NON_PAPER.search(title):
+            kind, _ = C.relevance(title, clean(a.get("abstract")), terms_of(a))
+            if not kind and re.search(r"convert|quantiz|digitiz|modulator|sampl", title, re.I):
+                suspects.append(title)
+    print("cached IEEE records: %d" % n)
+    print("\npublication titles in cache (count, venue it maps to):")
+    for pub, c in sorted(pubs.items(), key=lambda kv: -kv[1])[:80]:
+        print("  %6d  %-8s  %s" % (c, venue_of(pub, venues) or "DROPPED", pub[:110]))
+
+    papers = load_json(PAPERS, [])
+    years = sorted({p["y"] for p in papers if p.get("y")})
+    table = {}
+    for p in papers:
+        if p.get("lv") != "core" or not p.get("y"):
+            continue
+        cell = table.setdefault(p["v"], {}).setdefault(p["y"], [0, 0])
+        cell[0 if p["k"] == "ADC" else 1] += 1
+    print("\ncore papers by venue and year (ADC/DAC):")
+    print("  %-8s" % "" + "".join("%10s" % y for y in years))
+    for v in sorted(table):
+        print("  %-8s" % v + "".join("%10s" % ("%d/%d" % tuple(table[v].get(y, [0, 0]))) for y in years))
+
+    core = [p for p in papers if p.get("lv") == "core" and p["k"] == "ADC"]
+    if core:
+        def pct(f):
+            return "%d%%" % round(100.0 * sum(1 for p in core if f(p)) / len(core))
+        print("\nspec coverage over %d core ADC papers: fs %s, SNDR %s, power %s, node %s, "
+              "on energy plot %s, architecture tagged %s" % (
+                  len(core), pct(lambda p: "fs" in p["s"]), pct(lambda p: "sndr" in p["s"]),
+                  pct(lambda p: "p" in p["s"]), pct(lambda p: "node" in p["s"]),
+                  pct(lambda p: p.get("x", {}).get("e_nyq") and p["s"].get("sndr")), pct(lambda p: p["ar"])))
+        print("\nrandom core ADC papers (check that they really are ADC papers and the tags fit):")
+        for p in random.Random(0).sample(core, min(sample, len(core))):
+            print("  - [%s %s] %s  {%s}" % (p["v"], p["y"], p["t"][:120], ", ".join(p["ar"]) or "no arch"))
+    print("\nnot classified as ADC/DAC although the title mentions conversion, modulator or sampling "
+          "(%d, first 25) - check for misses:" % len(suspects))
+    for t in suspects[:25]:
+        print("  - " + t[:140])
+    sw = load_json(STATE, {}).get("sweep") or {}
+    zero = ["%s %s" % (t["key"], t["year"]) for t in sw.get("tasks", []) if t.get("done") and not t.get("total")]
+    if zero:
+        print("\nsweep tasks that returned 0 records (query in venues.json may be wrong):", ", ".join(zero))
+    return 0
+
+
 def main():
     ap = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     ap.add_argument("--since-year", type=int, default=2023, help="first publication year of the initial sweep")
@@ -399,6 +479,8 @@ def main():
                     help="skip the delta update if the previous one is more recent than this (lets cron run daily)")
     ap.add_argument("--reclassify", action="store_true", help="rebuild papers.json from cache only (no API)")
     ap.add_argument("--status", action="store_true")
+    ap.add_argument("--probe", action="store_true", help="one API call to check key, network and returned fields")
+    ap.add_argument("--report", action="store_true", help="check venue matching and classification (no API)")
     args = ap.parse_args()
 
     os.makedirs(DATA, exist_ok=True)
@@ -418,11 +500,20 @@ def main():
     if args.reclassify:
         rebuild(config, run_date)
         return 0
+    if args.report:
+        return report(config)
 
     key = api_key()
     if not key:
         log("ERROR: IEEE_API_KEY is not set (env var or ~/.config/adc-census/env)")
         return 2
+
+    if args.probe:
+        try:
+            return probe(Client(key, 3), config)
+        except (QuotaError, RuntimeError) as e:
+            log("probe failed: %s" % e)
+            return 1
 
     if args.restart_sweep or "sweep" not in state or state.get("since_year") != args.since_year and not state["sweep"]["done"]:
         init_sweep(state, config, args.since_year)
