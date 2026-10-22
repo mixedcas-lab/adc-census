@@ -196,10 +196,12 @@ def clean(s):
     return re.sub(r"\s+", " ", s).strip()
 
 
-def terms_of(a):
+def terms_of(a, kinds=("author_terms",)):
+    """Index terms used for relevance. Only author keywords by default: IEEE's controlled and
+    dynamic terms put "Analog-to-digital" on many CIM, PLL and DC-DC papers."""
     it = a.get("index_terms") or {}
     out = []
-    for k in ("ieee_terms", "author_terms", "dynamic_index_terms"):
+    for k in kinds:
         v = it.get(k) or {}
         out += v.get("terms") or []
     return [clean(x) for x in out]

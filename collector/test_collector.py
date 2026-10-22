@@ -47,6 +47,33 @@ class TestRelevance(unittest.TestCase):
     def test_noise_shaping_without_converter_context(self):
         self.assertEqual(self.rel("Noise-Shaping Techniques for Class-D Amplifiers"), (None, None))
 
+    def test_dsm_spellings_in_title(self):
+        for t in ("A 14-b Energy-Efficient BW/Power Scalable CTDSM With a Frequency-Controlled Current Source",
+                  "An ELDC-Free 4th-Order CT SDM Facilitated by 2nd-Order NS CT-SAR",
+                  "An Energy-Efficient Discrete-Time Delta–Sigma Modulator With Dynamic-Range Enhancement",
+                  "An 18-MS/s 76-dB SNDR Continuous-Time Δ Σ Modulator With a GmC Loop Filter"):
+            self.assertEqual(self.rel(t), ("ADC", "core"), t)
+
+    def test_sar_with_sample_rate(self):
+        t = "A 7 GHz ERBW 1.1 GS/s 6-bit PVT Tolerant Asynchronous Charge-Injection SAR"
+        self.assertEqual(self.rel(t), ("ADC", "core"))
+
+    def test_ctdsm_with_resistor_dac_is_adc(self):
+        t = "A 119-dBA Dynamic Range, 3.3-mW Audio CTDSM With a Class-B Resistor DAC and Continuous-Time Quantizer"
+        self.assertEqual(self.rel(t), ("ADC", "core"))
+
+    def test_cim_adc_is_related(self):
+        t = "Scaling-CIM: eDRAM In-Memory-Computing Accelerator With Dynamic-Scaling ADC and Adaptive Analog Operation"
+        self.assertEqual(self.rel(t), ("ADC", "related"))
+
+    def test_terms_of_ignores_ieee_automatic_terms(self):
+        a = {"index_terms": {"ieee_terms": {"terms": ["Analog-digital conversion"]},
+                             "dynamic_index_terms": {"terms": ["Analog-to-digital Converter"]},
+                             "author_terms": {"terms": ["PLL"]}}}
+        self.assertEqual(collect.terms_of(a), ["PLL"])
+        t = "A Fast Back-to-Lock DPLL-Based 192-210-GHz Chirp Generator"
+        self.assertEqual(self.rel(t, "", collect.terms_of(a)), (None, None))
+
 
 class TestArch(unittest.TestCase):
     def test_pipelined_sar(self):
@@ -60,6 +87,8 @@ class TestArch(unittest.TestCase):
 
     def test_ct_dsm(self):
         self.assertEqual(C.architectures("A Continuous-Time ΔΣ Modulator With 100-MHz Bandwidth", ""), ["CT-ΔΣ"])
+        self.assertEqual(C.architectures("A 14-b Scalable CTDSM With a Frequency-Controlled Current Source", ""), ["CT-ΔΣ"])
+        self.assertEqual(C.architectures("A Discrete-Time Delta–Sigma Modulator With Tri-Level CDAC", ""), ["ΔΣ"])
 
     def test_abstract_fallback_uses_first_sentences_only(self):
         a = "This article presents a VCO-based ADC. Unlike SAR ADCs, it needs no comparator."

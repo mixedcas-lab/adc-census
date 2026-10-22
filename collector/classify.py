@@ -12,14 +12,17 @@ I = re.IGNORECASE
 # ---------------------------------------------------------------- relevance
 ADC_PAT = re.compile(
     r"\bADCs?\b|analog(?:ue)?[- ]to[- ]digital|\bA/D\b|"
-    r"\b(?:delta|sigma)[- ](?:sigma|delta)\b|[ΔΣ]{2}|\bDSMs?\b|"
+    r"\b(?:delta|sigma)\s*[-–—]?\s*(?:sigma|delta)\b|[ΔΣ]\s?[ΔΣ]|\b(?:CT|DT)?(?:DSM|SDM)s?\b|"
     r"successive[- ]approximation|\bSAR\b|"
     r"noise[- ]shaping|time[- ]interleav|"
     r"(?:capacitance|resistance|inductance|impedance|light)[- ]to[- ]digital", I)
 DAC_PAT = re.compile(r"\bDACs?\b|digital[- ]to[- ]analog", I)
 
 # Strong context words that confirm a weak hit (e.g. "SAR", "noise-shaping")
-CONVERTER_CTX = re.compile(r"\bADC|convert|modulator|quantiz|\bSNDR\b|\bENOB\b", I)
+CONVERTER_CTX = re.compile(r"\bADC|conver[st]|modulator|quantiz|\bSNDR\b|\bENOB\b|\bCT\b|[GMk]S/s", I)
+
+# Converter used inside a compute-in-memory / AI macro: keep as "related", not "core"
+CIM_CTX = re.compile(r"in[- ]memory|\bCIM\b|\bIMC\b|compute[- ]in|computing[- ]in|neuromorphic", I)
 
 NEGATIVE_CTX = re.compile(
     r"synthetic[- ]aperture|specific absorption rate|"
@@ -45,18 +48,21 @@ def _adc_hit(text):
     if not m:
         return False
     tok = m.group(0).lower()
-    weak = tok in ("sar",) or tok.startswith("noise") or tok.startswith("time") or tok == "dsm" or tok == "dsms"
+    weak = tok in ("sar", "sdm", "sdms") or tok.startswith("noise") or tok.startswith("time") or tok == "dsm" or tok == "dsms"
     if weak:
         return bool(CONVERTER_CTX.search(text))
     return True
 
 
 def relevance(title, abstract, terms):
-    """Return (kind, level): kind in {ADC, DAC, None}, level in {core, related}."""
+    """Return (kind, level): kind in {ADC, DAC, None}, level in {core, related}.
+    `terms` should be author keywords; IEEE's automatic index terms tag many CIM/PLL/DC-DC papers."""
     t_adc = _adc_hit(title)
     t_dac = bool(DAC_PAT.search(title or ""))
     term_adc = any(ADC_TERMS.search(x) for x in terms)
     term_dac = any(DAC_TERMS.search(x) for x in terms)
+    if (t_adc or t_dac or term_adc or term_dac) and CIM_CTX.search(title or ""):
+        return ("ADC" if t_adc or term_adc else "DAC"), "related"
     if t_adc:
         return "ADC", "core"
     if t_dac:
@@ -77,8 +83,8 @@ ARCH_RULES = [
     ("Pipelined",     r"pipelin(?:e|ed)\b"),
     ("NS-SAR",        r"noise[- ]shaping\s+SAR|\bNS[- ]?SAR\b|noise[- ]shaped\s+SAR"),
     ("SAR",           r"\bSAR\b|successive[- ]approximation"),
-    ("CT-ΔΣ",   r"continuous[- ]time.*(?:delta|sigma|[ΔΣ]|modulator|\bDSM)|\bCT[- ]?(?:ΔΣ|ΣΔ|DSM|DSADC|delta|sigma)"),
-    ("ΔΣ",      r"\b(?:delta|sigma)[- ](?:sigma|delta)\b|[ΔΣ]{2}|\bDSM\b|oversampl"),
+    ("CT-ΔΣ",   r"continuous[- ]time.*(?:delta|sigma|[ΔΣ]|modulator|\bDSM)|\bCT[- ]?(?:Δ\s?Σ|Σ\s?Δ|DSM|SDM|DSADC|delta|sigma)"),
+    ("ΔΣ",      r"\b(?:delta|sigma)\s*[-–—]?\s*(?:sigma|delta)\b|[ΔΣ]\s?[ΔΣ]|\b(?:DT)?(?:DSM|SDM)\b|oversampl"),
     ("Incremental",   r"incremental"),
     ("Zoom",          r"\bzoom"),
     ("VCO/Time-domain", r"VCO[- ]based|ring[- ]oscillator|time[- ]domain|\bTD[- ]?ADC|voltage[- ]to[- ]time|\bVTC\b|time[- ]based|\bTDC[- ]based|\bVCO\b"),
