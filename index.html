@@ -1,0 +1,109 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1">
+<title>ADC Census</title>
+<meta name="description" content="Monthly census of ADC and DAC papers in JSSC, ISSCC, VLSI, CICC, ESSCIRC, A-SSCC, TCAS-I/II, SSC-L and TVLSI. Maintained by MCAS Lab, University of Seoul.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="style.css">
+</head>
+<body>
+<header class="masthead">
+  <div class="wrap">
+    <h1>ADC Census</h1>
+    <p class="lede" id="lede">Loading the paper index…</p>
+  </div>
+</header>
+
+<main class="wrap">
+  <section class="figure" aria-labelledby="plot-title">
+    <div class="figure-head">
+      <h2 id="plot-title">Energy per Nyquist sample vs. SNDR</h2>
+      <p class="figure-note" id="plot-note">Each dot is a paper in the current selection that reports SNDR, power and sample rate (or bandwidth).</p>
+    </div>
+    <div class="figure-body">
+      <div class="plot" id="plot" role="img" aria-label="Scatter plot of SNDR versus energy per Nyquist sample"></div>
+      <aside class="legend" aria-label="Architectures">
+        <p class="legend-hint">Click an architecture to filter.</p>
+        <ul id="legend"></ul>
+        <div class="years" id="years" aria-label="Papers per year"></div>
+      </aside>
+    </div>
+    <div class="tooltip" id="tooltip" hidden></div>
+  </section>
+
+  <section class="controls" aria-label="Filters">
+    <div class="row">
+      <label class="search">
+        <span class="sr">Search</span>
+        <input id="q" type="search" placeholder="Search titles, authors, affiliations" autocomplete="off">
+      </label>
+      <div class="seg" role="group" aria-label="Converter type" id="kind">
+        <button type="button" data-v="ADC" aria-pressed="true">ADC</button>
+        <button type="button" data-v="DAC" aria-pressed="false">DAC</button>
+      </div>
+      <label class="field"><span>From</span><select id="y0"></select></label>
+      <label class="field"><span>To</span><select id="y1"></select></label>
+    </div>
+    <div class="row chips-row">
+      <span class="row-label">Venue</span>
+      <div class="chips" id="venues"></div>
+    </div>
+    <div class="row chips-row">
+      <span class="row-label">Application</span>
+      <div class="chips" id="apps"></div>
+    </div>
+    <div class="row">
+      <label class="field"><span>Country</span><select id="country"><option value="">All</option></select></label>
+      <label class="check"><input type="checkbox" id="related"> Include papers that only mention a converter in the abstract</label>
+      <label class="check"><input type="checkbox" id="cal"> Calibration</label>
+      <label class="check"><input type="checkbox" id="fresh"> Added in the latest update</label>
+      <button type="button" class="link-btn" id="reset">Clear filters</button>
+    </div>
+  </section>
+
+  <section class="results" aria-live="polite">
+    <div class="results-head">
+      <p id="count"></p>
+      <div class="results-tools">
+        <label class="field"><span>Sort</span>
+          <select id="sort">
+            <option value="date">Newest first</option>
+            <option value="fs">Sample rate</option>
+            <option value="sndr">SNDR</option>
+            <option value="foms">FoM<sub>S</sub></option>
+            <option value="energy">Energy per sample</option>
+          </select>
+        </label>
+        <button type="button" class="btn" id="csv">Download CSV</button>
+      </div>
+    </div>
+    <div class="table" role="table" aria-label="Papers">
+      <div class="thead" role="row">
+        <span role="columnheader">Published</span>
+        <span role="columnheader">Paper</span>
+        <span role="columnheader" class="num">Bits</span>
+        <span role="columnheader" class="num">f<sub>s</sub></span>
+        <span role="columnheader" class="num">SNDR</span>
+        <span role="columnheader" class="num">Power</span>
+        <span role="columnheader" class="num">Node</span>
+        <span role="columnheader" class="num">FoM<sub>S</sub></span>
+      </div>
+      <div id="rows"></div>
+    </div>
+    <button type="button" class="btn more" id="more" hidden>Show more</button>
+    <p class="empty" id="empty" hidden></p>
+  </section>
+</main>
+
+<footer class="wrap foot">
+  <p>Grey figures are parsed automatically from titles and abstracts and may be wrong; dark figures were checked by the lab (<a href="https://github.com/mixedcas-lab/adc-census/blob/main/data/annotations.csv">annotations.csv</a>). FoM<sub>S</sub> marked with ≈ is computed from the parsed values assuming Nyquist operation.</p>
+  <p>Bibliographic metadata from the IEEE Xplore API; abstracts and full texts are not hosted. Maintained by <a href="https://mcas.uos.ac.kr">MCAS Lab</a>, University of Seoul. Corrections are welcome as pull requests or issues on <a href="https://github.com/mixedcas-lab/adc-census">GitHub</a>.</p>
+</footer>
+
+<script src="app.js"></script>
+</body>
+</html>

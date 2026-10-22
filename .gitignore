@@ -1,0 +1,7 @@
+# raw IEEE records (contain abstracts) stay on the lab server only
+cache/
+logs/
+__pycache__/
+*.pyc
+*.tmp
+.env

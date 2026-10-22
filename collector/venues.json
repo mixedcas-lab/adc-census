@@ -1,0 +1,28 @@
+{
+  "_comment": "queries: IEEE Xplore API search variants (first one that returns records is used). match: regex on the returned publication_title that assigns the venue. Order of 'venues' matters for matching.",
+  "queries": [
+    {"key": "JSSC",   "params": {"issn": "0018-9200"}, "fallback": {"publication_title": "IEEE Journal of Solid-State Circuits"}},
+    {"key": "TCAS-I", "params": {"issn": "1549-8328"}, "fallback": {"publication_title": "Circuits and Systems I: Regular Papers"}},
+    {"key": "TCAS-II","params": {"issn": "1549-7747"}, "fallback": {"publication_title": "Circuits and Systems II: Express Briefs"}},
+    {"key": "TVLSI",  "params": {"issn": "1063-8210"}, "fallback": {"publication_title": "Very Large Scale Integration (VLSI) Systems"}},
+    {"key": "SSC-L",  "params": {"issn": "2573-9603"}, "fallback": {"publication_title": "IEEE Solid-State Circuits Letters"}},
+    {"key": "ISSCC",  "params": {"publication_title": "International Solid-State Circuits Conference", "content_type": "Conferences"}},
+    {"key": "A-SSCC", "params": {"publication_title": "Asian Solid-State Circuits Conference", "content_type": "Conferences"}},
+    {"key": "VLSI",   "params": {"publication_title": "Symposium on VLSI Technology and Circuits", "content_type": "Conferences"}},
+    {"key": "CICC",   "params": {"publication_title": "Custom Integrated Circuits Conference", "content_type": "Conferences"}},
+    {"key": "ESSCIRC","params": {"publication_title": "European Solid State Circuits Conference", "content_type": "Conferences"}},
+    {"key": "ESSERC", "params": {"publication_title": "European Solid-State Electronics Research Conference", "content_type": "Conferences"}}
+  ],
+  "venues": [
+    {"name": "SSC-L",   "match": "solid[- ]state circuits letters"},
+    {"name": "JSSC",    "match": "journal of solid[- ]state circuits"},
+    {"name": "TCAS-II", "match": "circuits and systems\\s*(ii|2)\\b|express briefs"},
+    {"name": "TCAS-I",  "match": "circuits and systems\\s*(i|1)\\b|regular papers"},
+    {"name": "TVLSI",   "match": "very large scale integration"},
+    {"name": "A-SSCC",  "match": "asian solid[- ]state circuits|\\ba-sscc\\b"},
+    {"name": "ESSCIRC", "match": "european solid[- ]state (circuits|device and circuits|electronics research)|\\besscirc\\b|\\besserc\\b"},
+    {"name": "ISSCC",   "match": "international solid[- ]state circuits conference|\\bisscc\\b"},
+    {"name": "VLSI",    "match": "symposium on vlsi"},
+    {"name": "CICC",    "match": "custom integrated circuits conference|\\bcicc\\b"}
+  ]
+}
