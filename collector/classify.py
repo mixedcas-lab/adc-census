@@ -12,7 +12,7 @@ I = re.IGNORECASE
 # ---------------------------------------------------------------- relevance
 ADC_PAT = re.compile(
     r"\bADCs?\b|analog(?:ue)?[- ]to[- ]digital|\bA/D\b|"
-    r"\b(?:delta|sigma)\s*[-–—]?\s*(?:sigma|delta)\b|[ΔΣ]\s?[ΔΣ]|\b(?:CT|DT)?(?:DSM|SDM)s?\b|"
+    r"\b(?:delta|sigma)\s*[-–—]?\s*(?:sigma|delta)\b|[ΔΣ∑]\s?[ΔΣ∑]|\b(?:CT|DT|I)?(?:DSM|SDM)s?\b|"
     r"successive[- ]approximation|\bSAR\b|"
     r"noise[- ]shaping|time[- ]interleav|"
     r"(?:capacitance|resistance|inductance|impedance|light)[- ]to[- ]digital", I)
@@ -22,11 +22,14 @@ DAC_PAT = re.compile(r"\bDACs?\b|digital[- ]to[- ]analog", I)
 CONVERTER_CTX = re.compile(r"\bADC|conver[st]|modulator|quantiz|\bSNDR\b|\bENOB\b|\bCT\b|[GMk]S/s", I)
 
 # Converter used inside a compute-in-memory / AI macro: keep as "related", not "core"
+# "ADC-less" / "ADC/DAC-free" designs are not converter papers
+NO_CONVERTER = re.compile(r"\b(?:ADC|DAC)(?:/(?:ADC|DAC))?s?[- ](?:free|less)\b", I)
+
 CIM_CTX = re.compile(r"in[- ]memory|\bCIM\b|\bIMC\b|compute[- ]in|computing[- ]in|neuromorphic", I)
 
 NEGATIVE_CTX = re.compile(
     r"synthetic[- ]aperture|specific absorption rate|"
-    r"fractional[- ]N|frequency synthes|\bPLL\b|"
+    r"fractional[- ]N|frequency synthes|\bD?PLLs?\b|"
     r"DC[- ]DC|buck|boost converter|power converter", I)
 
 # IEEE controlled terms that are a reliable "this is an ADC paper" signal
@@ -36,12 +39,14 @@ DAC_TERMS = re.compile(r"^digital[- ]analog conversion$|^digital-to-analog", I)
 NON_PAPER = re.compile(
     r"^(front cover|back cover|table of contents|contents|author index|index|"
     r"call for papers|editorial|guest editorial|reviewers|session \d+ overview|"
+    r"(?:tutorials?|short course|evening (?:event|session)|forum|panel)(?=\s*:|\s*$)|"
     r"(ieee )?(transactions|journal) .*information|blank page|copyright)\b", I)
 
 
 def _adc_hit(text):
     if not text:
         return False
+    text = NO_CONVERTER.sub(" ", text)
     if NEGATIVE_CTX.search(text) and not re.search(r"\bADC|analog(?:ue)?[- ]to[- ]digital", text, I):
         return False
     m = ADC_PAT.search(text)
@@ -58,7 +63,7 @@ def relevance(title, abstract, terms):
     """Return (kind, level): kind in {ADC, DAC, None}, level in {core, related}.
     `terms` should be author keywords; IEEE's automatic index terms tag many CIM/PLL/DC-DC papers."""
     t_adc = _adc_hit(title)
-    t_dac = bool(DAC_PAT.search(title or ""))
+    t_dac = bool(DAC_PAT.search(NO_CONVERTER.sub(" ", title or "")))
     term_adc = any(ADC_TERMS.search(x) for x in terms)
     term_dac = any(DAC_TERMS.search(x) for x in terms)
     if (t_adc or t_dac or term_adc or term_dac) and CIM_CTX.search(title or ""):
@@ -84,7 +89,7 @@ ARCH_RULES = [
     ("NS-SAR",        r"noise[- ]shaping\s+SAR|\bNS[- ]?SAR\b|noise[- ]shaped\s+SAR"),
     ("SAR",           r"\bSAR\b|successive[- ]approximation"),
     ("CT-ΔΣ",   r"continuous[- ]time.*(?:delta|sigma|[ΔΣ]|modulator|\bDSM)|\bCT[- ]?(?:Δ\s?Σ|Σ\s?Δ|DSM|SDM|DSADC|delta|sigma)"),
-    ("ΔΣ",      r"\b(?:delta|sigma)\s*[-–—]?\s*(?:sigma|delta)\b|[ΔΣ]\s?[ΔΣ]|\b(?:DT)?(?:DSM|SDM)\b|oversampl"),
+    ("ΔΣ",      r"\b(?:delta|sigma)\s*[-–—]?\s*(?:sigma|delta)\b|[ΔΣ∑]\s?[ΔΣ∑]|\b(?:DT)?(?:DSM|SDM)\b|oversampl"),
     ("Incremental",   r"incremental"),
     ("Zoom",          r"\bzoom"),
     ("VCO/Time-domain", r"VCO[- ]based|ring[- ]oscillator|time[- ]domain|\bTD[- ]?ADC|voltage[- ]to[- ]time|\bVTC\b|time[- ]based|\bTDC[- ]based|\bVCO\b"),

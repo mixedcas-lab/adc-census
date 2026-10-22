@@ -180,7 +180,8 @@ def fetch_all_pages(client, params, run_date, label, start=1, on_page=None):
 # ------------------------------------------------------------------ record building
 TEX = [(r"\\Delta", "\u0394"), (r"\\Sigma", "\u03a3"), (r"\\mu", "\u00b5"), (r"\\times", "\u00d7"),
        (r"\\pm", "\u00b1"), (r"\\sim", "~"), (r"\\geq?", "\u2265"), (r"\\leq?", "\u2264"),
-       (r"\\Omega", "\u03a9"), (r"\\text\{([^}]*)\}", r"\1"), (r"\\mathrm\{([^}]*)\}", r"\1")]
+       (r"\\Omega", "\u03a9"), (r"\\text\{([^}]*)\}", r"\1"), (r"\\mathrm\{([^}]*)\}", r"\1"),
+       (r"\\(?:mathbf|boldsymbol)\{([^}]*)\}", r"\1")]
 
 
 def clean(s):

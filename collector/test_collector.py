@@ -62,6 +62,23 @@ class TestRelevance(unittest.TestCase):
         t = "A 119-dBA Dynamic Range, 3.3-mW Audio CTDSM With a Class-B Resistor DAC and Continuous-Time Quantizer"
         self.assertEqual(self.rel(t), ("ADC", "core"))
 
+    def test_adc_free_is_not_converter(self):
+        self.assertEqual(self.rel("ADC/DAC-Free Analog Acceleration of Deep Neural Networks With Frequency Transformation"),
+                         (None, None))
+        t = ("34.1 A 128mW 2×4 Radar-on-Chip with Forward-ΔΣ DPLL-Locked Multi-Injection RTWO in 22nm CMOS "
+             "Enabling ADC-Free Digitization")
+        self.assertEqual(self.rel(t), (None, None))
+
+    def test_incremental_dsm(self):
+        t = "A 103.9dB-SFDR 83.8dB-SNDR 3MHz-BW Multi-Bit Quadratic-Exponential Noise-Coupled IDSM with DAC"
+        self.assertEqual(self.rel(t), ("ADC", "core"))
+
+    def test_tutorials_are_not_papers(self):
+        for t in ("Tutorial: Digital Equalization and Timing Recovery Techniques for ADC-DSP Based High-Speed Links",
+                  "Short Course: Principles of Quantum Computing", "Tutorials", "Evening Event: Student Research Preview"):
+            self.assertTrue(C.NON_PAPER.search(t), t)
+        self.assertFalse(C.NON_PAPER.search("Tutorial and Perspectives on MAGICAL: An Open-Source Layout System"))
+
     def test_cim_adc_is_related(self):
         t = "Scaling-CIM: eDRAM In-Memory-Computing Accelerator With Dynamic-Scaling ADC and Adaptive Analog Operation"
         self.assertEqual(self.rel(t), ("ADC", "related"))
@@ -89,6 +106,8 @@ class TestArch(unittest.TestCase):
         self.assertEqual(C.architectures("A Continuous-Time ΔΣ Modulator With 100-MHz Bandwidth", ""), ["CT-ΔΣ"])
         self.assertEqual(C.architectures("A 14-b Scalable CTDSM With a Frequency-Controlled Current Source", ""), ["CT-ΔΣ"])
         self.assertEqual(C.architectures("A Discrete-Time Delta–Sigma Modulator With Tri-Level CDAC", ""), ["ΔΣ"])
+        self.assertEqual(C.architectures("Reducing the Impact of Non-Idealities on Incremental Δ∑ ADCs", ""),
+                         ["ΔΣ", "Incremental"])
 
     def test_abstract_fallback_uses_first_sentences_only(self):
         a = "This article presents a VCO-based ADC. Unlike SAR ADCs, it needs no comparator."
@@ -160,6 +179,7 @@ class TestMisc(unittest.TestCase):
     def test_clean_tex(self):
         self.assertEqual(collect.clean("A <inline-formula><tex-math notation=\"LaTeX\">$\\Delta\\Sigma$</tex-math></inline-formula> ADC"),
                          "A ΔΣ ADC")
+        self.assertEqual(collect.clean("LNA-Embedded CT $\\mathbf{\\Delta\\Sigma}$ ADC"), "LNA-Embedded CT ΔΣ ADC")
 
 
 class FakeClient:
