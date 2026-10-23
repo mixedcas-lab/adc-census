@@ -389,6 +389,13 @@ def query_years(q, since_year):
     return range(y0, y1 + 1)
 
 
+def update_due(last, now, day):
+    """The monthly update date that should already have happened by `now` (the latest `day`-th of a month on or before
+    now) and whether the last update (`last`, a date) is older than it. A missed day (server off) is caught up later."""
+    due = now.replace(day=day) if now.day >= day else (now.replace(day=1) - dt.timedelta(days=1)).replace(day=day)
+    return due, last < due
+
+
 def init_sweep(state, config, since_year):
     state["since_year"] = since_year
     state["sweep"] = {"done": False, "started": today().isoformat(), "tasks": []}
@@ -563,6 +570,8 @@ def main():
     ap.add_argument("--restart-sweep", action="store_true", help="start the initial sweep over")
     ap.add_argument("--max-calls", type=int, default=DEFAULT_MAX_CALLS, help="API call budget for this run")
     ap.add_argument("--overlap-days", type=int, default=7, help="delta window overlap with the previous run")
+    ap.add_argument("--update-day", type=int, default=0, choices=range(0, 29), metavar="1..28",
+                    help="after the initial sweep, update once a month on this day (catching up if that day was missed)")
     ap.add_argument("--min-interval-days", type=int, default=0,
                     help="skip the delta update if the previous one is more recent than this (lets cron run daily)")
     ap.add_argument("--reclassify", action="store_true", help="rebuild papers.json from cache only (no API)")
@@ -618,7 +627,13 @@ def main():
             len(added), ", ".join(keys), min(y for _, y in added), max(y for _, y in added)))
         save_json(STATE, state)
 
-    if state["sweep"]["done"] and args.min_interval_days and state.get("last_delta_end"):
+    if state["sweep"]["done"] and args.update_day and state.get("last_delta_end"):
+        last = dt.datetime.strptime(state["last_delta_end"], "%Y%m%d").date()
+        due, run = update_due(last, today(), args.update_day)
+        if not run:
+            log("last update %s is not older than the monthly update day %s; nothing to do" % (last, due))
+            return 0
+    elif state["sweep"]["done"] and args.min_interval_days and state.get("last_delta_end"):
         last = dt.datetime.strptime(state["last_delta_end"], "%Y%m%d").date()
         if (today() - last).days < args.min_interval_days:
             log("last update %s is less than %d days ago; nothing to do" % (last, args.min_interval_days))

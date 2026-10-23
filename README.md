@@ -84,7 +84,7 @@ python3 collector/collect.py --status           # 진행 상황 확인
 
 ### 4. cron 등록
 
-매일 실행하도록 등록해 두면, 초기 수집 중에는 매일 이어서 받고, 끝난 뒤에는 28일마다 한 번만 실제로 갱신합니다.
+매일 실행하도록 등록해 두면, 초기 수집 중에는 매일 이어서 받고, 끝난 뒤에는 **매달 15일**에만 실제로 갱신합니다. 15일에 서버가 꺼져 있었으면 다음에 실행되는 날 갱신합니다.
 
 ```bash
 mkdir -p ~/adc-census/logs
@@ -93,7 +93,7 @@ crontab -e
 17 6 * * *  $HOME/adc-census/scripts/update.sh >> $HOME/adc-census/logs/update.log 2>&1
 ```
 
-갱신 주기를 바꾸려면 `MIN_INTERVAL_DAYS=7 scripts/update.sh`처럼 환경변수로 지정합니다.
+갱신 날짜를 바꾸려면 cron 줄에 `UPDATE_DAY=1`처럼 환경변수를 넣습니다(1~28일).
 
 ## GitHub Pages 켜기 (1회)
 

@@ -1,11 +1,12 @@
 #!/usr/bin/env bash
 # Collect new papers and publish them to GitHub Pages.
 # Meant for a daily cron job on the lab server: while the initial sweep is running it uses
-# the daily API budget, afterwards it only does work every 28 days (monthly update).
+# the daily API budget, afterwards it only does work once a month, on UPDATE_DAY (default the 15th;
+# if the server was off that day, on the next run).
 #
 #   17 6 * * *  /path/to/adc-census/scripts/update.sh >> /path/to/adc-census/logs/update.log 2>&1
 #
-# Environment (optional): PYTHON (default python3), MIN_INTERVAL_DAYS (default 28).
+# Environment (optional): PYTHON (default python3), UPDATE_DAY (1..28, default 15).
 set -uo pipefail
 cd "$(dirname "$0")/.."
 PY="${PYTHON:-python3}"
@@ -20,7 +21,7 @@ git pull --rebase --quiet origin main || { echo "git pull failed"; exit 1; }
 # Murmann ADC survey (GitHub download, refreshed when the local copy is over a week old); merged by collect.py
 "$PY" collector/murmann.py || echo "murmann survey refresh failed; keeping the previous data/murmann.json"
 
-"$PY" collector/collect.py --min-interval-days "${MIN_INTERVAL_DAYS:-28}" "$@"
+"$PY" collector/collect.py --update-day "${UPDATE_DAY:-15}" "$@"
 status=$?   # 0 = ok, 3 = daily API budget used up (progress saved), anything else = error
 
 # a new survey release is merged into papers.json even when no collection was due today

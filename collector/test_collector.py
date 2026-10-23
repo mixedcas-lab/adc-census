@@ -398,6 +398,15 @@ class TestPipeline(unittest.TestCase):
         self.assertEqual((m["v"], m["y"], m["k"], m["ar"], m["au"]), ("VLSI", 2025, "ADC", ["CT-ΔΣ"], ["Y. Matsuya", "J. Terada"]))
         self.assertEqual(sum(1 for k in ids if k.startswith("m:")), 1)
 
+    def test_monthly_update_day(self):
+        import datetime as dt
+        d = dt.date
+        self.assertEqual(collect.update_due(d(2026, 10, 23), d(2026, 11, 14), 15), (d(2026, 10, 15), False))
+        self.assertEqual(collect.update_due(d(2026, 10, 23), d(2026, 11, 15), 15), (d(2026, 11, 15), True))
+        self.assertEqual(collect.update_due(d(2026, 11, 15), d(2026, 11, 16), 15), (d(2026, 11, 15), False))
+        self.assertEqual(collect.update_due(d(2026, 11, 15), d(2026, 12, 18), 15), (d(2026, 12, 15), True))   # missed day
+        self.assertEqual(collect.update_due(d(2026, 12, 20), d(2027, 1, 3), 15), (d(2026, 12, 15), False))   # across a year
+
     def test_access_venue_match(self):
         venues = collect.load_json(collect.CONFIG, None)["venues"]
         self.assertEqual(collect.venue_of("IEEE Access", venues), "Access")
