@@ -192,7 +192,7 @@ DR_RX = [
     re.compile(NUM + r"\s*-?\s*dB[- ]?(?:A[- ])?" + _DR_WORDS, I),
 ]
 ENOB_RX = re.compile(r"ENOB[^.;\d]{0,20}?" + NUM + r"\s*-?\s*(?:b|bit)", I)
-POWER_VAL = NUM + r"\s*-?\s*([nuµμm]?)W\b"
+POWER_VAL = NUM + r"\s*-?\s*([nuµμm]?)W\b(?!\s*/)"     # not "µW/MHz"
 POWER_CTX_RX = re.compile(r"(?:consum\w*|dissipat\w*|power(?:\s+consumption)?|draw(?:s|ing)|burns?)[^.;]{0,40}?" + POWER_VAL, I)
 # value first: "270-mW power dissipation", "1.0 W of power", "79.3-μW power"
 POWER_AFTER_RX = re.compile(POWER_VAL + r"\s*(?:of\s+)?(?:total\s+|overall\s+|analog\s+)?(?:power|consumption|dissipation)", I)
