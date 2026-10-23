@@ -133,6 +133,34 @@ class TestArch(unittest.TestCase):
 
 
 class TestSpecs(unittest.TestCase):
+    def test_more_spellings(self):
+        s = C.parse_specs(collect.clean("A 2.5-V 12-b 54-Msample/s 0.25-/spl mu/m CMOS ADC in 1-mm/sup 2/"), "")
+        self.assertEqual((s["fs"], s["node"]), (54e6, 250))
+        a = ("It operates with a sampling rate of 5 MSamples/sec and consumes only 870 muW. The prototype in a 40-nm CMOS "
+             "achieves 63.8-dB signal-to-noise-and-distortion ratio.")
+        s = C.parse_specs("A 20 Msample/s pipeline A/D converter", a)
+        self.assertEqual((s["fs"], s["p"], s["sndr"]), (20e6, 870e-6, 63.8))
+        self.assertEqual(C.parse_specs("X", "The prototype is sampled at 630 MHz.")["fs"], 630e6)
+        self.assertEqual(C.parse_specs("X", "consumes 4. 15mW and achieves 58. 5dB SNDR")["sndr"], 58.5)
+        self.assertEqual(C.parse_specs("X", "with 270-mW power dissipation")["p"], 0.27)
+
+    def test_neighbouring_metrics(self):
+        s = C.parse_specs("X", "achieves 74.1-dB SNDR, 83.4-dB SFDR and 20-kHz bandwidth. 92 dB DR, 91 dB SNR and 89 dB SNDR "
+                               "in a 24 kHz audio signal bandwidth")
+        self.assertEqual((s["sndr"], s["snr"], s["dr"], s["bw"]), (74.1, 91.0, 92.0, 2e4))
+        s = C.parse_specs("X", "achieves 75.4-dB dynamic range (DR) and 73.3-dB peak signal-to-noise-and-distortion ratio (SNDR)")
+        self.assertEqual((s["sndr"], s["dr"]), (73.3, 75.4))
+        self.assertNotIn("dr", C.parse_specs("X", "with 90-dB spurious-free dynamic range (SFDR)"))
+        self.assertEqual(C.parse_specs("X", "achieves a low-frequency SFDR/SNDR of 75.2/62.4 dB")["sndr"], 62.4)
+        self.assertEqual(C.parse_specs("X", "the Nyquist SNDR and SFDR are 55 dB and 69 dB respectively")["sndr"], 55.0)
+        self.assertEqual(C.parse_specs("X", "The prototype achieves an SNDR and an SFDR of 63.4 dB and 81.0 dBc")["sndr"], 63.4)
+
+    def test_node_spellings(self):
+        self.assertEqual(C.parse_specs("X", "simulations in 0.13 µ m CMOS technology")["node"], 130)
+        self.assertEqual(C.parse_specs("X", "fabricated in a 0.8 mum Indium-Phosphide HBT process")["node"], 800)
+        self.assertEqual(C.parse_specs("X", "The DAC is fabricated in a 2-µm CMOS process")["node"], 2000)
+        self.assertNotIn("node", C.parse_specs("X", "a pixel pitch of 2 µm"))
+
     def test_title_specs(self):
         s = C.parse_specs("A 64-GS/s 8-b Time-Interleaved SAR ADC for 224-Gb/s PAM-4 Wireline Receivers in 5-nm FinFET", "")
         self.assertEqual(s["fs"], 64e9)

@@ -182,7 +182,11 @@ def fetch_all_pages(client, params, run_date, label, start=1, on_page=None):
 TEX = [(r"\\Delta", "\u0394"), (r"\\Sigma", "\u03a3"), (r"\\mu", "\u00b5"), (r"\\times", "\u00d7"),
        (r"\\pm", "\u00b1"), (r"\\sim", "~"), (r"\\geq?", "\u2265"), (r"\\leq?", "\u2264"),
        (r"\\Omega", "\u03a9"), (r"\\text\{([^}]*)\}", r"\1"), (r"\\mathrm\{([^}]*)\}", r"\1"),
-       (r"\\(?:mathbf|boldsymbol)\{([^}]*)\}", r"\1")]
+       (r"\\(?:mathbf|boldsymbol)\{([^}]*)\}", r"\1"),
+       # pre-2005 IEEE records spell symbols as /spl mu/, /sup 2/ ...
+       (r"/spl (?:mu|micro)/\s*", "\u00b5"), (r"/spl times/", "\u00d7"), (r"/spl Delta/", "\u0394"), (r"/spl Sigma/", "\u03a3"),
+       (r"/spl Omega/", "\u03a9"), (r"/spl plusmn/", "\u00b1"), (r"/spl deg/", "\u00b0"), (r"/spl sim/", "~"),
+       (r"/spl les/", "\u2264"), (r"/spl ges/", "\u2265"), (r"/sup ([^/]*)/", r"\1"), (r"/sub ([^/]*)/", r"\1"), (r"/spl \w+/", "")]
 
 
 def clean(s):

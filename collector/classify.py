@@ -165,38 +165,95 @@ NUM = r"(\d+(?:\.\d+)?)"
 _SI = {"a": 1e-18, "f": 1e-15, "p": 1e-12, "n": 1e-9, "u": 1e-6, "µ": 1e-6, "μ": 1e-6,
        "m": 1e-3, "": 1.0, "k": 1e3, "K": 1e3, "M": 1e6, "G": 1e9, "T": 1e12}
 
-FS_RX = re.compile(NUM + r"\s*-?\s*([kKMGT])\s*(?:S|Sa|samples)\s*/\s*s|" + NUM + r"\s*-?\s*([kKMGT])sps\b")
+FS_RX = re.compile(NUM + r"\s*-?\s*([kKMGT])\s*(?:S|Sa|[Ss]amples?)\s*/\s*(?:s|sec)\b|" + NUM + r"\s*-?\s*([kKMGT])(?:sps|SPS)\b")
+# sample/clock rate given in Hz: "sampled at 630 MHz", "a 48-MHz sample rate", "clocked at 576 MHz"
+FS_HZ_RX = re.compile(r"(?:sampled|sampling(?:\s+rate|\s+frequency)?|sample[- ]rate|clocked|clock(?:ing)?\s+(?:rate|frequency))\s*(?:of|at|=|is)?\s*"
+                      r"(?:up to\s+)?" + NUM + r"\s*-?\s*([kKMG])Hz|" + NUM + r"\s*-?\s*([kKMG])Hz\s+(?:sampl(?:e|ing)[- ]rate|clock)", I)
 RES_RX = re.compile(r"(?<![\w.\-/])(\d{1,2})(?:\.\d+)?\s*-?\s*(?:b|bit|bits)(?![\w/])", I)
 NODE_NM_RX = re.compile(r"(?<![\w.])(\d{1,3})\s*-?\s*nm\b", I)
-NODE_UM_RX = re.compile(r"(?<![\w.])(0\.\d{2,3})\s*-?\s*[µμu]m\b", I)
+NODE_UM_RX = re.compile(r"(?<![\w.])(0\.\d{1,3})\s*-?\s*[µμu]m\b|(?<![\w.])([1-3](?:\.\d)?)\s*-?\s*[µμu]m\s+(?:\w+\s+){0,2}"
+                        r"(?:CMOS|BiCMOS|process|technology|SOI|bipolar|InP|SiGe|GaAs)", I)
+_GAP = r"(?:(?!SFDR|SNDR|\bSNR\b|\bDR\b|THD|dynamic range|signal-to)[^.;\d]){0,25}?"
+_SNDR_WORDS = r"(?:SNDR|S/\(?N\s*\+\s*D\)?|SINAD|signal[- ]to[- ]noise[- ]?(?:and|plus|\+)?[- ]?distortion(?:[- ]ratio)?)"
 SNDR_RX = [
-    re.compile(r"SNDR[^.;\d]{0,25}?" + NUM + r"\s*-?\s*dB", I),
-    re.compile(NUM + r"\s*-?\s*dB[- ](?:peak[- ])?SNDR", I),
-    re.compile(NUM + r"\s*-?\s*dB\s+(?:of\s+)?(?:peak\s+)?SNDR", I),
+    re.compile(_SNDR_WORDS + r"(?:\s*\((?:SNDR|SINAD)\))?" + _GAP + NUM + r"\s*-?\s*dB", I),
+    re.compile(NUM + r"\s*-?\s*dB[- ](?:peak[- ])?" + _SNDR_WORDS, I),
+    re.compile(NUM + r"\s*-?\s*dB\s+(?:of\s+)?(?:peak\s+)?" + _SNDR_WORDS, I),
+]
+_SNR_WORDS = r"(?:\bSNR\b|signal[- ]to[- ]noise[- ]ratio(?![- ]?(?:and|plus|\+)))"
+SNR_RX = [
+    re.compile(_SNR_WORDS + r"(?:\s*\(SNR\))?" + _GAP + NUM + r"\s*-?\s*dB", I),
+    re.compile(NUM + r"\s*-?\s*dB[- ](?:peak[- ])?" + _SNR_WORDS, I),
+    re.compile(NUM + r"\s*-?\s*dB\s+(?:of\s+)?(?:peak\s+)?" + _SNR_WORDS, I),
+]
+_DR_WORDS = r"(?:\bDR\b|dynamic[- ]range)"
+DR_RX = [
+    re.compile(_DR_WORDS + r"(?:\s*\(DR\))?" + _GAP + NUM + r"\s*-?\s*dB", I),
+    re.compile(NUM + r"\s*-?\s*dB[- ]?(?:A[- ])?" + _DR_WORDS, I),
 ]
 ENOB_RX = re.compile(r"ENOB[^.;\d]{0,20}?" + NUM + r"\s*-?\s*(?:b|bit)", I)
 POWER_VAL = NUM + r"\s*-?\s*([nuµμm]?)W\b"
-POWER_CTX_RX = re.compile(r"(?:consum\w*|dissipat\w*|power(?:\s+consumption)?|draws|burns)[^.;]{0,40}?" + POWER_VAL, I)
+POWER_CTX_RX = re.compile(r"(?:consum\w*|dissipat\w*|power(?:\s+consumption)?|draw(?:s|ing)|burns?)[^.;]{0,40}?" + POWER_VAL, I)
+# value first: "270-mW power dissipation", "1.0 W of power", "79.3-μW power"
+POWER_AFTER_RX = re.compile(POWER_VAL + r"\s*(?:of\s+)?(?:total\s+|overall\s+|analog\s+)?(?:power|consumption|dissipation)", I)
 POWER_ANY_RX = re.compile(POWER_VAL)
-BW_RX = re.compile(r"(?:bandwidth|\bBW\b)[^.;\d]{0,20}?" + NUM + r"\s*-?\s*([kKMG]?)Hz|" + NUM + r"\s*-?\s*([kKMG]?)Hz\s+(?:signal\s+|input\s+)?(?:bandwidth|BW)", I)
+BW_RX = re.compile(r"(?<!resolution )(?:signal[- ]band(?:width)?|bandwidth|\bBW\b)(?!\s+mismatch)[^.;\d]{0,20}?" + NUM + r"\s*-?\s*([kKMG]?)Hz|"
+                   + NUM + r"\s*-?\s*([kKMG]?)Hz\s+(?:(?:audio|signal|input|LTE|channel|conversion|baseband|RF|IF)\s+){0,2}(?:bandwidth|BW|signal[- ]band)\b", I)
+# OCR leftovers in older records: "58. 5dB", "4. 15mW"; "0.18 mum", "870 muW"
+_FIXES = [(re.compile(r"(\d)\.\s(\d)"), r"\1.\2"), (re.compile(r"(\d)\s*-?\s*mu(m|W|A|V|s)\b"), r"\1 µ\2"),
+          (re.compile(r"([µμ])\s+m\b"), r"\1m")]
+# several metrics with their values in one breath: "SFDR/SNDR of 75.2/62.4 dB",
+# "the SNDR and SFDR are 55 dB and 69 dB, respectively"
+_METRIC = r"(SNDR|SNR|SFDR|DR|THD|SINAD)"
+LIST_SLASH_RX = re.compile(r"\b" + _METRIC + r"((?:\s*/\s*" + _METRIC + r")+)\s*(?:of|=|:|are|is|were|reach\w*)?\s*"
+                           r"(-?\d+(?:\.\d+)?(?:\s*/\s*-?\d+(?:\.\d+)?)+)\s*-?\s*dB", I)
+LIST_AND_RX = re.compile(r"\b" + _METRIC + r"\s+and\s+(?:an?\s+|the\s+)?" + _METRIC + r"\s*(?:of|are|were|is|=)\s*"
+                         r"(-?\d+(?:\.\d+)?)\s*-?\s*dBc?\s*(?:and|,)\s*(-?\d+(?:\.\d+)?)\s*-?\s*dB", I)
+
+
+def _metric_lists(text):
+    found = {}
+    for m in LIST_SLASH_RX.finditer(text):
+        names = [m.group(1)] + re.findall(_METRIC, m.group(2), I)
+        vals = re.findall(r"-?\d+(?:\.\d+)?", m.group(4))
+        if len(names) == len(vals):
+            for n, v in zip(names, vals):
+                found.setdefault(n.upper().replace("SINAD", "SNDR"), float(v))
+    for m in LIST_AND_RX.finditer(text):
+        found.setdefault(m.group(1).upper().replace("SINAD", "SNDR"), float(m.group(3)))
+        found.setdefault(m.group(2).upper().replace("SINAD", "SNDR"), float(m.group(4)))
+    return found
+
+
+def _norm(text):
+    for rx, rep in _FIXES:
+        text = rx.sub(rep, text)
+    return text
 FOMS_RX = re.compile(r"(?:FoM|figure[- ]of[- ]merit)\s*[_ ]?(?:S|SNDR|DR|Schreier)?[^.;\d]{0,30}?(1[4-9]\d(?:\.\d+)?)\s*-?\s*dB", I)
 FOMW_RX = re.compile(r"(\d+(?:\.\d+)?)\s*-?\s*([afp])J\s*/\s*conv", I)
 
 
-def _first(rx, text):
-    m = rx.search(text or "")
-    return m
+def _earliest(rxs, text, lo, hi):
+    """The in-range value whose match starts first in the text, over all patterns ("74.1-dB SNDR, 83.4-dB SFDR")."""
+    best = None
+    for rx in rxs:
+        for m in rx.finditer(text):
+            if lo <= float(m.group(1)) <= hi:
+                if best is None or m.start() < best.start():
+                    best = m
+                break
+    return float(best.group(1)) if best else None
 
 
 def parse_specs(title, abstract):
-    t = title or ""
-    a = abstract or ""
+    t = _norm(title or "")
+    a = _norm(abstract or "")
     both = t + " . " + a
     out = {}
 
-    m = FS_RX.search(t) or FS_RX.search(a)
+    m = FS_RX.search(t) or FS_RX.search(a) or FS_HZ_RX.search(t) or FS_HZ_RX.search(a)
     if m:
-        val, pre = (m.group(1), m.group(2)) if m.group(1) else (m.group(3), m.group(4))
+        val, pre = next((m.group(i), m.group(i + 1)) for i in range(1, m.re.groups, 2) if m.group(i))
         out["fs"] = float(val) * _SI[pre if pre != "K" else "k"]
 
     m = RES_RX.search(t) or RES_RX.search(a)
@@ -211,21 +268,25 @@ def parse_specs(title, abstract):
     else:
         m = NODE_UM_RX.search(t) or NODE_UM_RX.search(a)
         if m:
-            out["node"] = int(round(float(m.group(1)) * 1000))
+            out["node"] = int(round(float(m.group(1) or m.group(2)) * 1000))
 
-    for rx in SNDR_RX:
-        m = rx.search(both)
-        if m:
-            v = float(m.group(1))
-            if 10 <= v <= 130:
-                out["sndr"] = v
-                break
+    v = _earliest(SNDR_RX, both, 10, 130)
+    if v is not None:
+        out["sndr"] = v
     if "sndr" not in out:
         m = ENOB_RX.search(both)
         if m:
             out["enob"] = float(m.group(1))
+    for key, rxs in (("snr", SNR_RX), ("dr", DR_RX)):
+        v = _earliest(rxs, both, 10, 150)
+        if v is not None:
+            out[key] = v
+    for name, v in _metric_lists(both).items():
+        key = {"SNDR": "sndr", "SNR": "snr", "DR": "dr"}.get(name)
+        if key and key not in out and 10 <= v <= 150:
+            out[key] = v
 
-    m = POWER_CTX_RX.search(a) or POWER_CTX_RX.search(t) or POWER_ANY_RX.search(t)
+    m = POWER_CTX_RX.search(a) or POWER_AFTER_RX.search(a) or POWER_CTX_RX.search(t) or POWER_ANY_RX.search(t)
     if m:
         out["p"] = float(m.group(1)) * _SI[m.group(2) or ""]
 

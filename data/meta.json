@@ -4,16 +4,16 @@
  "updated": "2026-10-23",
  "coverage_from": "1997-01",
  "coverage_to": "2026-10",
- "total": 4021,
+ "total": 4048,
  "by_kind": {
-  "ADC": 3796,
-  "DAC": 225
+  "ADC": 3827,
+  "DAC": 221
  },
  "by_venue": {
   "TCAS-II": 220,
-  "TCAS-I": 670,
+  "TCAS-I": 675,
   "TVLSI": 124,
-  "JSSC": 1643,
+  "JSSC": 1665,
   "VLSI": 311,
   "CICC": 138,
   "ISSCC": 536,
@@ -23,5 +23,5 @@
   "ESSCIRC": 84
  },
  "sweep_done": false,
- "last_run_new": 3429
+ "last_run_new": 3456
 }

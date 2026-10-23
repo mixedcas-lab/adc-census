@@ -246,7 +246,7 @@
   function censusFields(p) {
     var s = p.s, over = p.ar.some(function (a) { return OVERSAMPLED.indexOf(a) >= 0; });
     var fsnyq = s.bw ? 2 * s.bw : (!over && s.fs ? s.fs : null);
-    var f = { sndr: s.sndr, sndr_hf: s.sndr_hf, fin: s.fin, fs: s.fs, fsnyq: fsnyq, bw: fsnyq ? fsnyq / 2 : null, p: s.p,
+    var f = { sndr: s.sndr, sndr_hf: s.sndr_hf, snr: s.snr, dr: s.dr, fin: s.fin, fs: s.fs, fsnyq: fsnyq, bw: fsnyq ? fsnyq / 2 : null, p: s.p,
       node: s.node, res: s.res, area: s.area, foms: p.foms, y: p.y };
     if (s.p && fsnyq) f.e = s.p / fsnyq;
     f.fomw = s.fomw ? s.fomw * 1e-15 : (f.e && s.sndr ? f.e / Math.pow(2, enob(s.sndr)) : null);
@@ -264,6 +264,8 @@
   var AX = {
     sndr:    { name: "SNDR", label: "SNDR (dB)" },
     sndr_hf: { name: "SNDR at high input frequency", label: "SNDR at f_in,hf (dB)" },
+    snr:     { name: "SNR", label: "SNR (dB)" },
+    dr:      { name: "Dynamic range", label: "DR (dB)" },
     foms:    { name: "Schreier FoM", label: "FoM_S (dB)" },
     fomw:    { name: "Walden FoM", label: "FoM_W (J/conv-step)", log: true, unit: "J" },
     e:       { name: "Energy per Nyquist sample", label: "P / f_snyq (J)", log: true, unit: "J" },
