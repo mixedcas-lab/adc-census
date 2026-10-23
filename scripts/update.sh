@@ -20,7 +20,10 @@ git pull --rebase --quiet origin main || { echo "git pull failed"; exit 1; }
 "$PY" collector/collect.py --min-interval-days "${MIN_INTERVAL_DAYS:-28}" "$@"
 status=$?   # 0 = ok, 3 = daily API budget used up (progress saved), anything else = error
 
-git add data/papers.json data/meta.json data/state.json
+# Murmann survey for the plots (GitHub download, refreshed when the local copy is over a week old)
+"$PY" collector/murmann.py || echo "murmann survey refresh failed; keeping the previous data/murmann.json"
+
+git add data/papers.json data/meta.json data/state.json data/murmann.json
 if ! git diff --cached --quiet; then
   n=$("$PY" -c "import json;print(json.load(open('data/meta.json')).get('total',0))")
   git commit --quiet -m "data: update $(date +%F) ($n papers)"

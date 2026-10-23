@@ -1,6 +1,7 @@
 /* ADC Census front end. Plain JS, no build step.
    Data: data/meta.json, data/papers.json (written by collector/collect.py),
-         data/annotations.csv (hand-checked values and corrections, optional). */
+         data/annotations.csv (hand-checked values and corrections, optional),
+         data/murmann.json (B. Murmann's ADC Performance Survey, written by collector/murmann.py). */
 (function () {
   "use strict";
 
@@ -21,12 +22,13 @@
   var PAGE = 150;
 
   var $ = function (id) { return document.getElementById(id); };
-  var META = {}, ALL = [], VIEW = [], LIMIT = PAGE, BYID = {};
+  var META = {}, ALL = [], VIEW = [], LIMIT = PAGE, BYID = {}, SURVEY = [], SBYID = {}, SMETA = {};
   var F = defaults();
 
   function defaults() {
     return { q: "", kind: "ADC", y0: "", y1: "", venues: [], apps: [], arch: [], country: "",
-      related: false, cal: false, fresh: false, sort: "date" };
+      related: false, cal: false, fresh: false, sort: "date",
+      chart: "energy", src: "both", x: "fsnyq", y: "sndr", xs: "", ys: "", color: "arch" };
   }
 
   /* ------------------------------------------------------------ helpers */
@@ -113,13 +115,14 @@
         if (a.arch) p.ar = list(a.arch);
         if (a.app) p.ap = list(a.app);
         if (a.kind || a.arch) p.lv = "core";
-        ["res", "fs", "bw", "sndr", "p", "node", "foms", "fomw"].forEach(function (k) {
+        ["res", "fs", "bw", "sndr", "p", "node", "foms", "fomw", "sndr_hf", "fin", "area"].forEach(function (k) {
           var v = parseSI(a[k]);
           if (v != null && !isNaN(v)) { p.s[k] = v; p.ver[k] = true; }
         });
         p.note = a.note || "";
       }
       derive(p);
+      p.f = censusFields(p);
       out.push(p);
     });
     return out;
@@ -214,7 +217,10 @@
     $("sort").value = F.sort;
   }
   function renderLegend() {
-    var c = counts("arch", function (p) { return p.prim === "Other" ? ["Other"] : p.ar; });
+    var c = showCensus() ? counts("arch", function (p) { return p.prim === "Other" ? ["Other"] : p.ar; }) : {};
+    if (showSurvey()) SURVEY.forEach(function (m) {
+      if (matchSurvey(m, "arch")) (m.prim === "Other" ? ["Other"] : m.ar).forEach(function (a) { c[a] = (c[a] || 0) + 1; });
+    });
     var keys = Object.keys(c).sort(function (a, b) {
       return (a === "Other") - (b === "Other") || c[b] - c[a];
     });
@@ -235,73 +241,327 @@
     }).join("");
   }
 
-  /* ------------------------------------------------------------ rendering: plot */
+  /* ------------------------------------------------------------ plot: data and axes */
+  // Plotted values share one set of keys. Census papers get theirs from the parsed/annotated specs,
+  // survey designs (Murmann, ISSCC & VLSI) from data/murmann.json. Energies and FoM_W are in J.
+  function enob(sndr) { return (sndr - 1.76) / 6.02; }
+  function censusFields(p) {
+    var s = p.s, over = p.ar.some(function (a) { return OVERSAMPLED.indexOf(a) >= 0; });
+    var fsnyq = s.bw ? 2 * s.bw : (!over && s.fs ? s.fs : null);
+    var f = { sndr: s.sndr, sndr_hf: s.sndr_hf, fin: s.fin, fs: s.fs, fsnyq: fsnyq, bw: fsnyq ? fsnyq / 2 : null, p: s.p,
+      node: s.node, res: s.res, area: s.area, foms: p.foms, y: p.y };
+    if (s.p && fsnyq) f.e = s.p / fsnyq;
+    f.fomw = s.fomw ? s.fomw * 1e-15 : (f.e && s.sndr ? f.e / Math.pow(2, enob(s.sndr)) : null);
+    if (f.fin && f.sndr_hf != null) f.jitter = 1 / (2 * Math.PI * f.fin * Math.sqrt(Math.pow(10, f.sndr_hf / 10)));
+    return f;
+  }
+  function surveyPoint(r, i) {
+    var f = { sndr: r.sndr, sndr_hf: r.sndr_hf, fin: r.fin, fs: r.fs, fsnyq: r.fsnyq, bw: r.fsnyq ? r.fsnyq / 2 : null,
+      p: r.p, e: r.e_pj != null ? r.e_pj * 1e-12 : null, foms: r.foms, fomw: r.fomw != null ? r.fomw * 1e-15 : null,
+      node: r.node, area: r.area, snr: r.snr, sfdr: r.sfdr, dr: r.dr, y: r.y };
+    if (r.fin && r.sndr_hf != null) f.jitter = 1 / (2 * Math.PI * r.fin * Math.sqrt(Math.pow(10, r.sndr_hf / 10)));
+    var m = { id: "m" + i, src: "m", t: r.t, au: r.au, v: r.c, y: r.y, sid: r.sid, doi: r.doi, arch: r.arch, ar: r.ar || [], f: f };
+    m.prim = primaryArch(m);
+    return m;
+  }
+  function matchSurvey(m, skip) {
+    // the survey has no application, country or calibration tags: hide it when those filters are on
+    if (F.kind !== "ADC" || F.apps.length || F.country || F.cal || F.fresh) return false;
+    if (skip !== "year") {
+      if (F.y0 && m.y < +F.y0) return false;
+      if (F.y1 && m.y > +F.y1) return false;
+    }
+    if (skip !== "venue" && F.venues.length && F.venues.indexOf(m.v) < 0) return false;
+    if (skip !== "arch" && F.arch.length && !F.arch.some(function (a) { return a === "Other" ? m.prim === "Other" : m.ar.indexOf(a) >= 0; })) return false;
+    if (F.q) {
+      var hay = m._hay || (m._hay = [m.t, m.au, m.v, m.arch, m.ar.join(" ")].join(" ").toLowerCase());
+      var terms = F.q.toLowerCase().split(/\s+/).filter(Boolean);
+      for (var i = 0; i < terms.length; i++) if (hay.indexOf(terms[i]) < 0) return false;
+    }
+    return true;
+  }
+  function showSurvey() { return F.src !== "census" && SURVEY.length > 0; }
+  function showCensus() { return F.src !== "survey"; }
+
+  function nmFmt(v) { return v >= 1000 ? +(v / 1000).toPrecision(3) + " µm" : +v.toPrecision(3) + " nm"; }
+  var AX = {
+    sndr:    { name: "SNDR", label: "SNDR (dB)" },
+    sndr_hf: { name: "SNDR at high input frequency", label: "SNDR at f_in,hf (dB)" },
+    snr:     { name: "SNR (survey)", label: "SNR (dB)" },
+    sfdr:    { name: "SFDR (survey)", label: "SFDR (dB)" },
+    dr:      { name: "DR (survey)", label: "DR (dB)" },
+    foms:    { name: "Schreier FoM", label: "FoM_S (dB)" },
+    fomw:    { name: "Walden FoM", label: "FoM_W (J/conv-step)", log: true, unit: "J" },
+    e:       { name: "Energy per Nyquist sample", label: "P / f_snyq (J)", log: true, unit: "J" },
+    p:       { name: "Power", label: "Power (W)", log: true, unit: "W" },
+    fsnyq:   { name: "Nyquist sample rate", label: "f_snyq (S/s)", log: true, unit: "S/s" },
+    fs:      { name: "Sample rate", label: "f_s (S/s)", log: true, unit: "S/s" },
+    bw:      { name: "Signal bandwidth", label: "Bandwidth (Hz)", log: true, unit: "Hz" },
+    fin:     { name: "Input frequency (high)", label: "f_in,hf (Hz)", log: true, unit: "Hz" },
+    jitter:  { name: "Equivalent jitter", label: "Equivalent aperture jitter (s)", log: true, unit: "s" },
+    node:    { name: "Process node", label: "Process node", log: true, fmt: nmFmt },
+    area:    { name: "Area", label: "Area (mm²)", log: true },
+    res:     { name: "Resolution (census)", label: "Resolution (bits)" },
+    y:       { name: "Year", label: "Year" }
+  };
+  var CHARTS = {
+    energy:       { name: "Energy (P/f_snyq vs. SNDR)", title: "Energy per Nyquist sample vs. SNDR", x: "sndr", y: "e", ref: refEnergy },
+    foms:         { name: "FoM_S vs. f_snyq", title: "Schreier FoM vs. Nyquist sample rate", x: "fsnyq", y: "foms", ref: refFoms },
+    aperture:     { name: "Aperture (SNDR vs. f_in)", title: "SNDR at high input frequency vs. input frequency", x: "fin", y: "sndr_hf", ref: refAperture },
+    foms_trend:   { name: "FoM_S trend by year", title: "FoM_S envelope over time", x: "y", y: "foms", ref: refFomsTrend, faint: true },
+    jitter_trend: { name: "Jitter trend by year", title: "Equivalent aperture jitter over time", x: "y", y: "jitter", ref: refJitterTrend, faint: true },
+    custom:       { name: "Custom axes…", title: "" }
+  };
+  function chartDef() {
+    var c = CHARTS[F.chart] || CHARTS.energy;
+    if (c !== CHARTS.custom) return c;
+    var x = AX[F.x] ? F.x : "fsnyq", y = AX[F.y] ? F.y : "sndr";
+    return { title: AX[y].name + " vs. " + AX[x].name, x: x, y: y, custom: true };
+  }
+  function isLog(key, override) { return override ? override === "log" : !!AX[key].log; }
+  function tickText(key, v) {
+    var a = AX[key];
+    if (a.fmt) return a.fmt(v);
+    if (a.unit) return fmtSI(v, a.unit);
+    if (key === "y") return String(Math.round(v));
+    return String(+v.toPrecision(6));
+  }
+
+  /* ------------------------------------------------------------ plot: reference lines */
+  function mean(a) { return a.reduce(function (s, v) { return s + v; }, 0) / a.length; }
+  function smallest(a, n) { return a.slice().sort(function (p, q) { return p - q; }).slice(0, n); }
+  function largest(a, n) { return a.slice().sort(function (p, q) { return q - p; }).slice(0, n); }
+  function sweep(lo, hi, n, log) {
+    var out = [];
+    for (var i = 0; i <= n; i++) { var t = lo + (hi - lo) * i / n; out.push(log ? Math.pow(10, t) : t); }
+    return out;
+  }
+  function fit(xs, ys) {
+    var mx = mean(xs), my = mean(ys), num = 0, den = 0;
+    xs.forEach(function (x, i) { num += (x - mx) * (ys[i] - my); den += (x - mx) * (x - mx); });
+    var m = den ? num / den : 0;
+    return { m: m, c: my - m * mx };
+  }
+  // Each ref function follows the corresponding notebook in github.com/bmurmann/ADC-survey/plots.
+  // `pts` are the points the envelope is fitted to, `dom` the visible x range (log10 for log axes).
+  function refEnergy(pts, dom) {
+    var e = pts.map(function (p) { return p.f.e; });
+    var k = pts.map(function (p) { return p.f.e / Math.pow(4, enob(p.f.sndr)); });
+    var out = [];
+    if (e.length >= 3) {
+      var pmin = mean(smallest(e, 3)), kmin = mean(smallest(k, 3));
+      out.push({ cls: "ref", label: "Envelope " + fmtSI(pmin, "J") + " + " + fmtSI(kmin, "J") + "·4^ENOB",
+        pts: sweep(dom[0], dom[1], 80).map(function (x) { return [x, pmin + kmin * Math.pow(4, enob(x))]; }) });
+    }
+    [160, 170, 180, 190].forEach(function (fom) {   // constant Schreier FoM: P/f_snyq = 10^((SNDR - FoM_S)/10) / 2
+      out.push({ cls: "fomline", tag: fom + " dB", pts: [dom[0], dom[1]].map(function (x) { return [x, Math.pow(10, (x - fom) / 10) / 2]; }) });
+    });
+    return out;
+  }
+  function refFoms(pts, dom) {
+    if (pts.length < 5) return [];
+    var lin = pts.map(function (p) { return Math.pow(10, p.f.foms / 10); });
+    var asym = mean(largest(lin, 5));
+    var fc = mean(largest(pts.map(function (p, i) { return lin[i] * p.f.fsnyq; }), 5)) / asym;
+    var a = 10 * Math.log10(asym);
+    var env = function (d) {
+      return sweep(Math.log10(dom[0]), Math.log10(dom[1]), 120, true).map(function (f) { return [f, a - 10 * Math.log10(Math.sqrt(1 + Math.pow(f / fc, 2))) - d]; });
+    };
+    return [
+      { cls: "ref", label: "env = " + a.toFixed(1) + " dB − 10log[1+(f_snyq/" + fmtSI(fc, "Hz") + ")²]^0.5", pts: env(0) },
+      { cls: "ref dash", label: "env − 3 dB", pts: env(3) },
+      { cls: "ref dot", label: "env − 6 dB", pts: env(6) }
+    ];
+  }
+  function jitterLine(j, cls, label, dom) {
+    return { cls: cls, label: label, pts: sweep(Math.log10(dom[0]), Math.log10(dom[1]), 60, true).map(function (f) { return [f, -20 * Math.log10(2 * Math.PI * f * j)]; }) };
+  }
+  function refAperture(pts, dom) {
+    var j = pts.map(function (p) { return p.f.jitter; }).filter(function (v) { return v > 0; });
+    var out = [];
+    if (j.length >= 3) { var jm = mean(smallest(j, 3)); out.push(jitterLine(jm, "ref", "Jitter = " + fmtSI(jm, "s"), dom)); }
+    out.push(jitterLine(1e-12, "ref dash", "Jitter = 1 ps", dom));
+    return out;
+  }
+  function byYear(pts) {
+    var ys = pts.map(function (p) { return p.f.y; });
+    var lo = Math.min.apply(null, ys), hi = Math.max.apply(null, ys), out = [];
+    for (var y = lo; y <= hi; y++) out.push({ y: y, pts: pts.filter(function (p) { return p.f.y <= y; }) });   // cumulative
+    return out;
+  }
+  function refFomsTrend(pts) {
+    pts = pts.filter(function (p) { return p.f.fsnyq; });
+    if (pts.length < 5) return [];
+    var yrs = byYear(pts);
+    var lf = yrs.map(function (r) { return [r.y, mean(largest(r.pts.map(function (p) { return p.f.foms; }), 5))]; });
+    var hf = yrs.map(function (r) { return [r.y, mean(largest(r.pts.map(function (p) { return p.f.foms + 10 * Math.log10(p.f.fsnyq); }), 5)) - 90]; });
+    var x = lf.map(function (v) { return v[0]; }), f1 = fit(x, lf.map(function (v) { return v[1]; })), f2 = fit(x, hf.map(function (v) { return v[1]; }));
+    var ends = [x[0], x[x.length - 1]];
+    return [
+      { cls: "limit", label: "8kT × SNR limit (192 dB)", pts: ends.map(function (y) { return [y, 192]; }) },
+      { cls: "series", color: "#1f55c4", marker: true, label: "LF asymptote", pts: lf },
+      { cls: "series dash", color: "#1f55c4", label: f1.m.toFixed(2) + " dB/year", pts: ends.map(function (y) { return [y, f1.m * y + f1.c]; }) },
+      { cls: "series", color: "#d0365a", marker: true, label: "HF asymptote @ 1 GS/s", pts: hf },
+      { cls: "series dash", color: "#d0365a", label: f2.m.toFixed(2) + " dB/year", pts: ends.map(function (y) { return [y, f2.m * y + f2.c]; }) }
+    ];
+  }
+  function refJitterTrend(pts) {
+    if (pts.length < 2) return [];
+    var yrs = byYear(pts);
+    var j = yrs.map(function (r) { return [r.y, mean(smallest(r.pts.map(function (p) { return p.f.jitter; }), 2))]; });
+    return [
+      { cls: "series", color: "#d0365a", marker: true, label: "Best equivalent jitter (2-design mean)", pts: j },
+      { cls: "ref dash", label: "50 fs", pts: [[j[0][0], 50e-15], [j[j.length - 1][0], 50e-15]] }
+    ];
+  }
+
+  /* ------------------------------------------------------------ plot: colours */
+  var VIRIDIS = [[68, 1, 84], [59, 82, 139], [33, 145, 140], [94, 201, 98], [253, 231, 37]];
+  function ramp(t) {
+    t = Math.max(0, Math.min(1, t)) * (VIRIDIS.length - 1);
+    var i = Math.min(Math.floor(t), VIRIDIS.length - 2), u = t - i, a = VIRIDIS[i], b = VIRIDIS[i + 1];
+    return "rgb(" + [0, 1, 2].map(function (k) { return Math.round(a[k] + (b[k] - a[k]) * u); }).join(",") + ")";
+  }
+  function colourScale(pts) {
+    if (F.color === "arch") return { of: function (p) { return ARCH_COLORS[p.prim] || ARCH_COLORS.Other; } };
+    var key = F.color === "year" ? "y" : "fsnyq", log = key === "fsnyq";
+    var vals = pts.map(function (p) { return p.f[key]; }).filter(function (v) { return v > 0; }).map(function (v) { return log ? Math.log10(v) : v; });
+    if (!vals.length) return { of: function () { return ARCH_COLORS.Other; } };
+    var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+    return {
+      of: function (p) { var v = p.f[key]; if (!(v > 0)) return ARCH_COLORS.Other; v = log ? Math.log10(v) : v; return ramp(hi > lo ? (v - lo) / (hi - lo) : 0.5); },
+      bar: { lo: log ? fmtSI(Math.pow(10, lo), "S/s") : String(lo), hi: log ? fmtSI(Math.pow(10, hi), "S/s") : String(hi),
+        name: key === "y" ? "Year" : "f_snyq" }
+    };
+  }
+
+  /* ------------------------------------------------------------ plot: drawing */
+  function niceStep(r) { var e = Math.pow(10, Math.floor(Math.log10(r))), f = r / e; return (f < 1.5 ? 1 : f < 3.5 ? 2 : f < 7.5 ? 5 : 10) * e; }
+  function domainOf(vals, log, intOnly) {
+    if (!vals.length) return log ? [0, 1] : [0, 10];
+    var lo = Math.min.apply(null, vals), hi = Math.max.apply(null, vals);
+    if (log) { lo = Math.floor(lo); hi = Math.ceil(hi); if (hi - lo < 1) { lo -= 1; hi += 1; } return [lo, hi]; }
+    var pad = (hi - lo) * 0.05 || 1; lo -= pad; hi += pad;
+    var st = Math.max(niceStep((hi - lo) / 6), intOnly ? 1 : 0);
+    return [Math.floor(lo / st) * st, Math.ceil(hi / st) * st];
+  }
+  function ticksOf(dom, log, room) {
+    var t = [];
+    if (log) {
+      var step = Math.max(1, Math.ceil((dom[1] - dom[0]) / Math.max(2, room)));
+      for (var e = dom[0]; e <= dom[1]; e += step) t.push(e);
+      return t;
+    }
+    var st = niceStep((dom[1] - dom[0]) / Math.max(2, room));
+    for (var v = Math.ceil(dom[0] / st) * st; v <= dom[1] + st * 1e-9; v += st) t.push(+v.toPrecision(12));
+    return t;
+  }
+  function renderPlotControls(c) {
+    $("chart").value = CHARTS[F.chart] ? F.chart : "energy";
+    Array.prototype.forEach.call($("src").children, function (b) { b.setAttribute("aria-pressed", b.dataset.v === F.src); });
+    $("axes").hidden = !c.custom;
+    if (c.custom) {
+      $("ax-x").value = c.x; $("ax-y").value = c.y;
+      $("ax-xlog").checked = isLog(c.x, F.xs); $("ax-ylog").checked = isLog(c.y, F.ys);
+    }
+    $("color").value = F.color;
+    $("plot-title").textContent = c.title;
+  }
   function renderPlot() {
-    var pts = VIEW.filter(function (p) { return p.e && p.s.sndr; });
-    // draw at the container's real pixel width so text stays legible on phones
-    var W = Math.max(320, Math.round($("plot").clientWidth || 820));
+    var c = chartDef();
+    renderPlotControls(c);
+    var xlog = c.custom ? isLog(c.x, F.xs) : !!AX[c.x].log, ylog = c.custom ? isLog(c.y, F.ys) : !!AX[c.y].log;
+    var ok = function (p) {
+      var x = p.f[c.x], y = p.f[c.y];
+      return x != null && y != null && isFinite(x) && isFinite(y) && (!xlog || x > 0) && (!ylog || y > 0);
+    };
+    var cen = showCensus() ? VIEW.filter(function (p) { return p.f && ok(p); }) : [];
+    var sur = showSurvey() ? SURVEY.filter(function (m) { return matchSurvey(m) && ok(m); }) : [];
+    var pts = sur.concat(cen);
+    var tx = function (v) { return xlog ? Math.log10(v) : v; }, ty = function (v) { return ylog ? Math.log10(v) : v; };
+
+    var W = Math.max(320, Math.round($("plot").clientWidth || 820));   // draw at real pixel width so text stays legible
     var narrow = W < 560;
-    var H = narrow ? Math.round(W * 0.95) : Math.min(440, Math.round(W * 0.52));
-    var L = narrow ? 44 : 56, R = W - (narrow ? 8 : 18), T = 14, B = H - 46;
-    var xs = pts.map(function (p) { return Math.log10(p.e); }), ys = pts.map(function (p) { return p.s.sndr; });
-    var x0 = xs.length ? Math.floor(Math.min.apply(null, xs)) : -15, x1 = xs.length ? Math.ceil(Math.max.apply(null, xs)) : -6;
-    if (x1 - x0 < 3) { x0 -= 1; x1 += 1; }
-    var y0 = ys.length ? Math.floor((Math.min.apply(null, ys) - 2) / 10) * 10 : 20, y1 = ys.length ? Math.ceil((Math.max.apply(null, ys) + 2) / 10) * 10 : 110;
-    if (y1 - y0 < 30) { y0 = Math.max(0, y0 - 10); y1 += 10; }
-    var sx = function (lx) { return L + (lx - x0) / (x1 - x0) * (R - L); };
-    var sy = function (v) { return B - (v - y0) / (y1 - y0) * (B - T); };
+    var H = narrow ? Math.round(W * 0.95) : Math.min(460, Math.round(W * 0.54));
+    var L = narrow ? 52 : 66, R = W - (narrow ? 8 : 18), T = 14, B = H - 46;
+    var dx = domainOf(pts.map(function (p) { return tx(p.f[c.x]); }), xlog, c.x === "y");
+    var dy = domainOf(pts.map(function (p) { return ty(p.f[c.y]); }), ylog, c.y === "y");
+    var sx = function (v) { return L + (v - dx[0]) / (dx[1] - dx[0]) * (R - L); };
+    var sy = function (v) { return B - (v - dy[0]) / (dy[1] - dy[0]) * (B - T); };
+    var X = function (v) { return sx(tx(v)); }, Y = function (v) { return sy(ty(v)); };
+
     var g = [];
     g.push('<svg viewBox="0 0 ' + W + " " + H + '" xmlns="http://www.w3.org/2000/svg"><defs><clipPath id="pc"><rect x="' + L + '" y="' + T + '" width="' + (R - L) + '" height="' + (B - T) + '"/></clipPath></defs>');
-    var JL = { "-18": "1 aJ", "-17": "10 aJ", "-16": "100 aJ", "-15": "1 fJ", "-14": "10 fJ", "-13": "100 fJ", "-12": "1 pJ", "-11": "10 pJ", "-10": "100 pJ", "-9": "1 nJ", "-8": "10 nJ", "-7": "100 nJ", "-6": "1 µJ", "-5": "10 µJ", "-4": "100 µJ", "-3": "1 mJ" };
     g.push('<g class="axis">');
-    var step = (x1 - x0) * 62 > (R - L) ? 2 : 1;   // thin out decade labels when space is short
-    for (var lx = x0; lx <= x1; lx++) {
-      g.push('<line class="gridline" x1="' + sx(lx) + '" x2="' + sx(lx) + '" y1="' + T + '" y2="' + B + '"/>');
-      if ((lx - x0) % step === 0) g.push('<text x="' + sx(lx) + '" y="' + (B + 18) + '" text-anchor="middle">' + (JL[lx] || "1e" + lx + " J") + "</text>");
-    }
-    for (var yv = y0; yv <= y1; yv += 10) {
-      g.push('<line class="gridline" x1="' + L + '" x2="' + R + '" y1="' + sy(yv) + '" y2="' + sy(yv) + '"/>');
-      g.push('<text x="' + (L - 8) + '" y="' + (sy(yv) + 4) + '" text-anchor="end">' + yv + "</text>");
-    }
+    ticksOf(dx, xlog, Math.floor((R - L) / (narrow ? 70 : 80))).forEach(function (v) {
+      g.push('<line class="gridline" x1="' + sx(v) + '" x2="' + sx(v) + '" y1="' + T + '" y2="' + B + '"/>');
+      g.push('<text x="' + sx(v) + '" y="' + (B + 18) + '" text-anchor="middle">' + esc(tickText(c.x, xlog ? Math.pow(10, v) : v)) + "</text>");
+    });
+    ticksOf(dy, ylog, Math.floor((B - T) / 42)).forEach(function (v) {
+      g.push('<line class="gridline" x1="' + L + '" x2="' + R + '" y1="' + sy(v) + '" y2="' + sy(v) + '"/>');
+      g.push('<text x="' + (L - 8) + '" y="' + (sy(v) + 4) + '" text-anchor="end">' + esc(tickText(c.y, ylog ? Math.pow(10, v) : v)) + "</text>");
+    });
     g.push('<line x1="' + L + '" x2="' + R + '" y1="' + B + '" y2="' + B + '"/><line x1="' + L + '" x2="' + L + '" y1="' + T + '" y2="' + B + '"/></g>');
-    g.push('<text class="axis-title" x="' + ((L + R) / 2) + '" y="' + (H - 6) + '" text-anchor="middle">Energy per Nyquist sample, P / f' +
-      '<tspan baseline-shift="sub" font-size="9">s,Nyq</tspan></text>');
-    g.push('<text class="axis-title" transform="translate(12 ' + ((T + B) / 2) + ') rotate(-90)" text-anchor="middle">SNDR (dB)</text>');
+    g.push('<text class="axis-title" x="' + ((L + R) / 2) + '" y="' + (H - 6) + '" text-anchor="middle">' + esc(AX[c.x].label) + "</text>");
+    g.push('<text class="axis-title" transform="translate(12 ' + ((T + B) / 2) + ') rotate(-90)" text-anchor="middle">' + esc(AX[c.y].label) + "</text>");
 
-    // Schreier FoM contours: SNDR = FoMs + 10 log10(2E); labelled where each line leaves the bottom or right edge
+    // reference lines are fitted to the survey when it is shown (curated numbers), otherwise to the census points
+    var refs = c.ref ? c.ref(sur.length ? sur : cen, dx.map(function (v) { return xlog ? Math.pow(10, v) : v; })) : [];
     g.push('<g clip-path="url(#pc)">');
-    var k2 = 10 * Math.log10(2);
-    [150, 160, 170, 180, 190].forEach(function (fom) {
-      var a = fom + k2 + 10 * x0, b = fom + k2 + 10 * x1;
-      g.push('<line class="fomline" x1="' + sx(x0) + '" y1="' + sy(a) + '" x2="' + sx(x1) + '" y2="' + sy(b) + '"/>');
+    refs.forEach(function (r) {
+      var d = r.pts.filter(function (q) { return isFinite(q[1]) && (!ylog || q[1] > 0); })
+        .map(function (q, i) { return (i ? "L" : "M") + X(q[0]).toFixed(1) + " " + Y(q[1]).toFixed(1); }).join("");
+      if (d) g.push('<path class="' + r.cls + '" d="' + d + '"' + (r.color ? ' style="stroke:' + r.color + '"' : "") + "/>");
+      if (r.marker) r.pts.forEach(function (q) {
+        g.push('<rect class="mk" x="' + (X(q[0]) - 3).toFixed(1) + '" y="' + (Y(q[1]) - 3).toFixed(1) + '" width="6" height="6" style="fill:' + r.color + '"/>');
+      });
     });
     g.push("</g>");
-    [150, 160, 170, 180, 190].forEach(function (fom) {
-      var ya = fom + k2 + 10 * x0, x, y;                       // where the line enters at the left edge
-      if (ya >= y0 + 3 && ya <= y1 - 3) { x = L + 4; y = sy(ya) - 5; }
-      else {
-        var yb = y0 + 1.5, xb = (yb - fom - k2) / 10;          // otherwise where it crosses the bottom
-        if (xb < x0 || xb > x1 || sx(xb) > R - 60) return;
-        x = sx(xb) + 5; y = sy(yb) - 3;
-      }
-      g.push('<text class="fomlabel" x="' + x + '" y="' + y + '">' + fom + "</text>");
+    refs.forEach(function (r) {   // FoM contour tags where each line leaves the plot
+      if (!r.tag) return;
+      var last = null;
+      r.pts.length && sweep(tx(r.pts[0][0]), tx(r.pts[r.pts.length - 1][0]), 200).forEach(function (u) {
+        var xv = xlog ? Math.pow(10, u) : u, yv = r.pts[0][1] * Math.pow(10, (xv - r.pts[0][0]) / 10);
+        var px = X(xv), py = Y(yv);
+        if (px >= L && px <= R - 40 && py >= T + 10 && py <= B - 4) last = [px, py];
+      });
+      if (last) g.push('<text class="fomlabel" x="' + (last[0] + 4) + '" y="' + (last[1] - 4) + '">' + esc(r.tag) + "</text>");
     });
+    var named = refs.filter(function (r) { return r.label; });
+    if (named.length) {
+      var lw = narrow ? 200 : 290, lh = 16, lx = L + 8, ly = T + 6;
+      g.push('<g class="curve-legend"><rect x="' + lx + '" y="' + ly + '" width="' + lw + '" height="' + (named.length * lh + 8) + '" rx="4"/>');
+      named.forEach(function (r, i) {
+        var yy = ly + 12 + i * lh;
+        g.push('<line class="' + r.cls + '" x1="' + (lx + 6) + '" x2="' + (lx + 28) + '" y1="' + yy + '" y2="' + yy + '"' + (r.color ? ' style="stroke:' + r.color + '"' : "") + "/>");
+        g.push('<text x="' + (lx + 34) + '" y="' + (yy + 4) + '">' + esc(r.label) + "</text>");
+      });
+      g.push("</g>");
+    }
 
     if (!pts.length) {
       g.push('<text class="placeholder" x="' + ((L + R) / 2) + '" y="' + ((T + B) / 2) + '" text-anchor="middle">' +
-        (ALL.length ? "No paper in this selection reports SNDR, power and sample rate together." : "No data yet.") + "</text>");
+        (ALL.length || SURVEY.length ? "Nothing in this selection reports both values." : "No data yet.") + "</text>");
     }
+    var col = colourScale(pts), r0 = narrow ? 3.2 : 4.3;
     g.push('<g clip-path="url(#pc)">');
-    // draw newest on top
-    pts.slice().sort(function (a, b) { return (a.d || "").localeCompare(b.d || ""); }).forEach(function (p) {
-      g.push('<circle data-id="' + esc(p.id) + '" cx="' + sx(Math.log10(p.e)).toFixed(1) + '" cy="' + sy(p.s.sndr).toFixed(1) +
-        '" r="' + (narrow ? 3.4 : 4.6) + '" fill="' + (ARCH_COLORS[p.prim] || ARCH_COLORS.Other) + '"/>');
+    // survey designs are filled dots, census papers rings; census on top so they can be clicked through to the list
+    sur.concat(cen.slice().sort(function (a, b) { return (a.d || "").localeCompare(b.d || ""); })).forEach(function (p) {
+      var fill = col.of(p), ring = p.src !== "m";
+      g.push('<circle data-id="' + esc(p.id) + '" class="' + (ring ? "ring" : "dot") + (c.faint ? " faint" : "") + '" cx="' + X(p.f[c.x]).toFixed(1) +
+        '" cy="' + Y(p.f[c.y]).toFixed(1) + '" r="' + r0 + '" style="' + (ring ? "stroke:" + fill : "fill:" + fill) + '"/>');
     });
     g.push("</g></svg>");
     $("plot").innerHTML = g.join("");
-    $("plot-note").textContent = pts.length
-      ? pts.length + " of " + VIEW.length + " papers in this selection report SNDR, power and sample rate (or bandwidth for oversampled converters). Dashed lines are constant Schreier FoM, labelled in dB."
-      : "Each dot is a paper in the current selection that reports SNDR, power and sample rate (or bandwidth).";
+
+    var parts = [];
+    if (sur.length) parts.push(sur.length + " survey designs (filled, Murmann ISSCC & VLSI)");
+    if (cen.length) parts.push(cen.length + " census papers (rings, values parsed from titles and abstracts)");
+    var note = parts.length ? parts.join(" and ") + " report both values." : "No point in this selection reports both values.";
+    if (c.ref && refs.length) note += " Lines follow the Murmann survey plots" + (sur.length ? ", fitted to the survey designs shown." : ", fitted to the census points shown.");
+    if (showSurvey() && !sur.length && (F.apps.length || F.country || F.cal || F.fresh)) note += " The survey has no application, country or calibration tags, so it is hidden with those filters.";
+    $("plot-note").innerHTML = esc(note) + (col.bar ? ' <span class="cbar"><span>' + esc(col.bar.name + " " + col.bar.lo) +
+      '</span><span class="ramp"></span><span>' + esc(col.bar.hi) + "</span></span>" : "");
   }
 
   /* ------------------------------------------------------------ rendering: rows */
@@ -382,14 +642,26 @@
     $("reset").addEventListener("click", reset);
     $("more").addEventListener("click", function () { LIMIT += PAGE; renderRows(); });
     $("csv").addEventListener("click", downloadCSV);
+    $("chart").addEventListener("change", function (e) { F.chart = e.target.value; F.xs = F.ys = ""; update({ keepLimit: true }); });
+    $("src").addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) { F.src = b.dataset.v; update({ keepLimit: true }); } });
+    $("ax-x").addEventListener("change", function (e) { F.x = e.target.value; F.xs = ""; update({ keepLimit: true }); });
+    $("ax-y").addEventListener("change", function (e) { F.y = e.target.value; F.ys = ""; update({ keepLimit: true }); });
+    $("ax-xlog").addEventListener("change", function (e) { F.xs = e.target.checked ? "log" : "lin"; update({ keepLimit: true }); });
+    $("ax-ylog").addEventListener("change", function (e) { F.ys = e.target.checked ? "log" : "lin"; update({ keepLimit: true }); });
+    $("color").addEventListener("change", function (e) { F.color = e.target.value; update({ keepLimit: true }); });
 
     var tip = $("tooltip"), fig = document.querySelector(".figure");
     $("plot").addEventListener("mousemove", function (e) {
       var c = e.target.closest("circle");
       if (!c) { tip.hidden = true; return; }
-      var p = BYID[c.dataset.id];
-      tip.innerHTML = "<b>" + esc(p.t) + "</b>" + esc(p.v + ", " + fmtDate(p.d)) + "<br>" +
-        esc([p.s.sndr ? p.s.sndr.toFixed(1) + " dB SNDR" : "", fmtSI(p.s.fs, "S/s"), fmtSI(p.s.p, "W")].filter(Boolean).join(", "));
+      var p = BYID[c.dataset.id] || SBYID[c.dataset.id];
+      if (!p) { tip.hidden = true; return; }
+      var f = p.f, ch = chartDef();
+      var vals = [ch.x, ch.y].concat(["sndr", "fsnyq", "p"]).filter(function (k, i, a) { return a.indexOf(k) === i && f[k] != null && k !== "y"; })
+        .map(function (k) { return AX[k].name + " " + tickText(k, f[k]); });
+      tip.innerHTML = "<b>" + esc(p.t) + "</b>" +
+        esc(p.src === "m" ? p.v + " " + p.y + (p.sid ? ", paper " + p.sid : "") + " · Murmann survey" + (p.arch ? " · " + p.arch : "")
+          : p.v + ", " + fmtDate(p.d) + " · census") + "<br>" + esc(vals.join(", "));
       var r = fig.getBoundingClientRect();
       tip.hidden = false;
       var x = e.clientX - r.left + 14, y = e.clientY - r.top + 14;
@@ -400,6 +672,8 @@
     $("plot").addEventListener("click", function (e) {
       var c = e.target.closest("circle");
       if (!c) return;
+      var m = SBYID[c.dataset.id];
+      if (m) { if (m.doi) window.open("https://doi.org/" + m.doi, "_blank", "noopener"); return; }
       var idx = VIEW.indexOf(BYID[c.dataset.id]);
       if (idx >= LIMIT) { LIMIT = Math.ceil((idx + 1) / PAGE) * PAGE; renderRows(); }
       var row = document.querySelector('.tr[data-id="' + c.dataset.id + '"]');
@@ -443,9 +717,17 @@
   function getJSON(u) { return fetch(u, { cache: "no-cache" }).then(function (r) { if (!r.ok) throw new Error(u + " " + r.status); return r.json(); }); }
   function getText(u) { return fetch(u, { cache: "no-cache" }).then(function (r) { return r.ok ? r.text() : ""; }).catch(function () { return ""; }); }
 
-  Promise.all([getJSON("data/meta.json").catch(function () { return {}; }), getJSON("data/papers.json").catch(function () { return []; }), getText("data/annotations.csv")])
+  Promise.all([getJSON("data/meta.json").catch(function () { return {}; }), getJSON("data/papers.json").catch(function () { return []; }),
+    getText("data/annotations.csv"), getJSON("data/murmann.json").catch(function () { return {}; })])
     .then(function (res) {
       META = res[0] || {};
+      SMETA = res[3] || {};
+      SURVEY = (SMETA.rows || []).map(surveyPoint);
+      SURVEY.forEach(function (m) { SBYID[m.id] = m; });
+      $("chart").innerHTML = Object.keys(CHARTS).map(function (k) { return '<option value="' + k + '">' + esc(CHARTS[k].name) + "</option>"; }).join("");
+      var axo = Object.keys(AX).map(function (k) { return '<option value="' + k + '">' + esc(AX[k].name) + "</option>"; }).join("");
+      $("ax-x").innerHTML = axo; $("ax-y").innerHTML = axo;
+      if (SMETA.citation) $("survey-cite").textContent = SMETA.citation;
       ALL = applyAnnotations(res[1] || [], parseCSV(res[2] || ""));
       ALL.forEach(function (p) { BYID[p.id] = p; });
 
@@ -463,7 +745,7 @@
       }
       $("fresh").parentNode.hidden = !(META.sweep_done && META.last_run_new);
 
-      var years = ALL.map(function (p) { return p.y; }).filter(Boolean);
+      var years = ALL.map(function (p) { return p.y; }).concat(SURVEY.map(function (m) { return m.y; })).filter(Boolean);
       var ymin = years.length ? Math.min.apply(null, years) : 2023, ymax = years.length ? Math.max.apply(null, years) : new Date().getFullYear();
       var opts = "";
       for (var y = ymax; y >= ymin; y--) opts += '<option value="' + y + '">' + y + "</option>";

@@ -319,5 +319,59 @@ class TestPipeline(unittest.TestCase):
         self.assertIsNone(collect.venue_of("IEEE Access Magazine", venues))
 
 
+
+def _xlsx(path, sheets):
+    """Minimal .xlsx with inline strings, enough for murmann.read_sheets()."""
+    import zipfile
+    from xml.sax.saxutils import escape
+
+    def col(i):
+        return chr(ord("A") + i) if i < 26 else "A" + chr(ord("A") + i - 26)
+
+    with zipfile.ZipFile(path, "w") as z:
+        ns = 'xmlns="http://schemas.openxmlformats.org/spreadsheetml/2006/main"'
+        rns = 'xmlns:r="http://schemas.openxmlformats.org/officeDocument/2006/relationships"'
+        z.writestr("xl/workbook.xml", "<workbook %s %s><sheets>%s</sheets></workbook>" % (ns, rns, "".join(
+            '<sheet name="%s" sheetId="%d" r:id="rId%d"/>' % (n, i + 1, i + 1) for i, n in enumerate(sheets))))
+        z.writestr("xl/_rels/workbook.xml.rels", '<Relationships xmlns="http://schemas.openxmlformats.org/package/2006/relationships">%s</Relationships>' % "".join(
+            '<Relationship Id="rId%d" Target="worksheets/sheet%d.xml"/>' % (i + 1, i + 1) for i in range(len(sheets))))
+        for i, rows in enumerate(sheets.values()):
+            xml = "".join("<row>%s</row>" % "".join(
+                '<c r="%s%d" t="inlineStr"><is><t>%s</t></is></c>' % (col(j), k + 1, escape(str(v)))
+                if isinstance(v, str) else '<c r="%s%d"><v>%s</v></c>' % (col(j), k + 1, v)
+                for j, v in enumerate(row) if v is not None) for k, row in enumerate(rows))
+            z.writestr("xl/worksheets/sheet%d.xml" % (i + 1), "<worksheet %s><sheetData>%s</sheetData></worksheet>" % (ns, xml))
+
+
+class TestMurmann(unittest.TestCase):
+    HEAD = ["YEAR", "ID", "TYPE", "ARCHITECTURE", "TECHNOLOGY", "TITLE", "ABSTRACT", "AUTHORS", "DOI",
+            "SNDR_plot [dB]", "P [W]", "fsnyq [Hz]", "P/fsnyq [pJ]", "FOMS_hf [dB]", "fin_hf [Hz]", "SNDR_hf [dB]"]
+
+    def test_convert(self):
+        import murmann
+        tmp = tempfile.mkdtemp()
+        try:
+            path = os.path.join(tmp, "s.xlsx")
+            _xlsx(path, {"Readme": [["x"]], "ISSCC": [self.HEAD,
+                [2024, "10.1", "NQ", "Pipe, SAR, TI", "2.8E-2", "A 12b ADC", "secret abstract text", "A. B", "10.1109/x",
+                 62.5, 0.01, 1e9, 10.0, 169.5, 4.9e8, 61.0],
+                [2022, "25.5", "OS", "SDCT", "0.028", "Placeholder row", "", "C. D", "", 1, None, 2.4e8, 1e10, 1, None, None]],
+                "VLSI": [self.HEAD, [2005, "C3.2", "OS", "Incremental, SDSC", "0.18 BiCMOS", "A ΔΣ", "", "E. F", "", 90, 1e-3, 2e4, 5e4, 160, None, None]]})
+            d = murmann.convert(path)
+        finally:
+            shutil.rmtree(tmp)
+        rows = d["rows"]
+        self.assertEqual(len(rows), 3)
+        self.assertNotIn("secret", json.dumps(d))                  # abstracts are never copied
+        a = rows[0]
+        self.assertEqual((a["c"], a["y"], a["node"], a["ar"]), ("ISSCC", 2024, 28, ["TI", "Pipelined-SAR"]))
+        self.assertEqual((a["sndr"], a["fsnyq"], a["e_pj"], a["foms"], a["fin"]), (62.5, 1e9, 10.0, 169.5, 4.9e8))
+        self.assertNotIn("sndr", rows[1])                           # 1 dB placeholder
+        self.assertNotIn("e_pj", rows[1])                           # no power, so no energy or FoM
+        self.assertNotIn("foms", rows[1])
+        self.assertEqual((rows[2]["c"], rows[2]["node"], rows[2]["ar"]), ("VLSI", 180, ["ΔΣ", "Incremental"]))
+        self.assertEqual(d["years"], [2005, 2024])
+
+
 if __name__ == "__main__":
     unittest.main()

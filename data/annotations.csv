@@ -1,4 +1,4 @@
-id,exclude,kind,arch,app,res,fs,bw,sndr,p,node,foms,fomw,note,by
+id,exclude,kind,arch,app,res,fs,bw,sndr,p,node,foms,fomw,sndr_hf,fin,area,note,by
 # One row per paper. id = IEEE article number (last number in the Xplore URL). Leave a cell empty to keep the automatic value.
 # exclude=1 drops a false positive. arch/app take several values separated by ";" (e.g. TI;SAR).
-# Units: fs in S/s, bw in Hz, p in W, node in nm, foms in dB, fomw in fJ/conv-step. SI suffixes are fine: 1G, 500M, 8.4m, 3.7u.
+# Units: fs in S/s, bw in Hz, p in W, node in nm, foms in dB, fomw in fJ/conv-step, sndr_hf in dB at input frequency fin (Hz), area in mm2. SI suffixes are fine: 1G, 500M, 8.4m, 3.7u.

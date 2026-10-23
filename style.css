@@ -84,6 +84,25 @@ a { color: var(--signal); text-underline-offset: 2px; }
 .plot circle.dim { opacity: 0.12; }
 .plot circle:hover, .plot circle.hl { stroke: var(--ink); stroke-width: 2; }
 .plot .placeholder { fill: var(--muted); font-size: 14px; }
+.plot circle.dot { stroke: var(--panel); }
+.plot circle.ring { fill: var(--panel); stroke-width: 1.8; }
+.plot circle.faint { opacity: 0.3; }
+.plot .ref { stroke: var(--ink-2); stroke-width: 1.6; fill: none; }
+.plot .ref.dash, .plot .series.dash { stroke-dasharray: 7 4; }
+.plot .ref.dot { stroke-dasharray: 2 3; }
+.plot .limit { stroke: var(--ink); stroke-width: 3.5; fill: none; }
+.plot .series { stroke-width: 2; fill: none; }
+.plot .series.dash { stroke-width: 1.2; }
+.plot .mk { stroke: var(--panel); stroke-width: 0.8; }
+.plot .curve-legend rect { fill: var(--panel); fill-opacity: 0.92; stroke: var(--rule); }
+.plot .curve-legend text { fill: var(--ink-2); font-size: 11.5px; }
+.plot-controls { display: flex; flex-wrap: wrap; align-items: center; gap: 8px 14px; margin-top: 12px; }
+.plot-controls .axes { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
+.plot-controls .axes[hidden] { display: none; }
+.plot-controls select { max-width: 230px; }
+.plot-controls .seg { flex-wrap: wrap; max-width: 100%; }
+.cbar { display: inline-flex; align-items: center; gap: 6px; margin-left: 6px; white-space: nowrap; }
+.cbar .ramp { width: 90px; height: 8px; border-radius: 2px; background: linear-gradient(90deg, rgb(68,1,84), rgb(59,82,139), rgb(33,145,140), rgb(94,201,98), rgb(253,231,37)); }
 
 .legend { font-size: 13.5px; }
 .legend-hint { margin: 0 0 6px; color: var(--muted); font-size: 12.5px; }

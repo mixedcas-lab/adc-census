@@ -23,6 +23,19 @@
     <div class="figure-head">
       <h2 id="plot-title">Energy per Nyquist sample vs. SNDR</h2>
       <p class="figure-note" id="plot-note">Each dot is a paper in the current selection that reports SNDR, power and sample rate (or bandwidth).</p>
+      <div class="plot-controls">
+        <label class="field"><span>Chart</span><select id="chart"></select></label>
+        <div class="seg" role="group" aria-label="Data shown in the plot" id="src">
+          <button type="button" data-v="both">Survey + census</button><button type="button" data-v="survey">Murmann survey</button><button type="button" data-v="census">Census</button>
+        </div>
+        <span class="axes" id="axes" hidden>
+          <label class="field"><span>X</span><select id="ax-x"></select></label>
+          <label class="check"><input type="checkbox" id="ax-xlog"> log</label>
+          <label class="field"><span>Y</span><select id="ax-y"></select></label>
+          <label class="check"><input type="checkbox" id="ax-ylog"> log</label>
+        </span>
+        <label class="field"><span>Colour</span><select id="color"><option value="arch">Architecture</option><option value="year">Year</option><option value="fsnyq">f_snyq</option></select></label>
+      </div>
     </div>
     <div class="figure-body">
       <div class="plot" id="plot" role="img" aria-label="Scatter plot of SNDR versus energy per Nyquist sample"></div>
@@ -102,6 +115,7 @@
 <footer class="wrap foot">
   <p>Grey figures are parsed automatically from titles and abstracts and may be wrong; dark figures were checked by the lab (<a href="https://github.com/mixedcas-lab/adc-census/blob/main/data/annotations.csv">annotations.csv</a>). FoM<sub>S</sub> marked with ≈ is computed from the parsed values assuming Nyquist operation.</p>
   <p>Bibliographic metadata from the IEEE Xplore API; abstracts and full texts are not hosted. Maintained by <a href="https://mcas.uos.ac.kr">MCAS Lab</a>, University of Seoul. Corrections are welcome as pull requests or issues on <a href="https://github.com/mixedcas-lab/adc-census">GitHub</a>.</p>
+  <p>Filled dots in the plot are from the ADC Performance Survey by Boris Murmann (BSD 3-Clause License, Copyright © 2022 Boris Murmann): <span id="survey-cite">B. Murmann, "ADC Performance Survey 1997-2026," [Online]. Available: https://github.com/bmurmann/ADC-survey.</span> Envelope and jitter lines follow the survey's plotting notebooks.</p>
   <p>We thank Prof. 김민휘 (Chung-Ang University) for the idea behind this site.</p>
 </footer>
 

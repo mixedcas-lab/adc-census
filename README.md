@@ -95,6 +95,12 @@ crontab -e
 
 무료 플랜에서는 저장소가 Public이어야 Pages가 동작합니다.
 
+## 그래프
+
+사이트 상단 그래프는 Chart 메뉴에서 고릅니다. Murmann ADC Performance Survey의 다섯 가지 그래프(Energy, FoM<sub>S</sub> vs. f<sub>snyq</sub>, Aperture, FoM<sub>S</sub> 추세, jitter 추세)와 x·y축을 직접 고르는 Custom이 있습니다. 채운 점은 Murmann Survey(ISSCC·VLSI, 수작업 정리, `data/murmann.json`), 테두리 점은 이 사이트가 자동 추출한 논문입니다. 기준선(envelope, jitter 선)은 Survey 저장소의 노트북과 같은 방식으로 계산합니다.
+
+`collector/murmann.py`가 https://github.com/bmurmann/ADC-survey 의 최신 엑셀을 주 1회 받아 `data/murmann.json`으로 바꿉니다(`scripts/update.sh`에서 실행). 엑셀의 ABSTRACT 열은 가져오지 않습니다. Survey는 BSD 3-Clause 라이선스이며 사이트 하단에 저작권과 인용 문구를 표시합니다.
+
 ## 검수 값 넣기 (학생용)
 
 자동 추출 수치는 회색으로, 검수한 수치는 진한 색으로 표시됩니다. GitHub 웹에서 `data/annotations.csv`를 열어 연필 아이콘으로 바로 편집하면 됩니다. 수집기를 다시 돌릴 필요 없이 사이트에 즉시 반영됩니다.
@@ -106,6 +112,7 @@ crontab -e
 | `kind` | `ADC` 또는 `DAC` |
 | `arch`, `app` | 여러 개면 `;`로 구분 (예: `TI;SAR`) |
 | `res`, `fs`, `bw`, `sndr`, `p`, `node`, `foms`, `fomw` | 단위: b, S/s, Hz, dB, W, nm, dB, fJ/conv-step. `1G`, `500M`, `8.4m`, `3.7u` 같은 접미사 사용 가능 |
+| `sndr_hf`, `fin`, `area` | 고주파 입력에서의 SNDR(dB), 그때의 입력 주파수(Hz), 면적(mm²). Aperture·jitter 그래프에 쓰임 |
 | `note`, `by` | 메모, 검수자 |
 
 예:
