@@ -609,448 +609,624 @@
    {
     "key": "TCAS-I",
     "year": 2016,
+    "done": true,
+    "next": 401,
+    "total": 287
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2017,
+    "done": true,
+    "next": 401,
+    "total": 341
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2018,
+    "done": true,
+    "next": 601,
+    "total": 446
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2019,
+    "done": true,
+    "next": 601,
+    "total": 477
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2020,
+    "done": true,
+    "next": 601,
+    "total": 549
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2021,
+    "done": true,
+    "next": 601,
+    "total": 508
+   },
+   {
+    "key": "TCAS-I",
+    "year": 2022,
+    "done": true,
+    "next": 601,
+    "total": 518
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2004,
+    "done": true,
+    "next": 401,
+    "total": 206
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2005,
+    "done": true,
+    "next": 401,
+    "total": 266
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2006,
+    "done": true,
+    "next": 401,
+    "total": 399
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2007,
+    "done": true,
+    "next": 401,
+    "total": 310
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2008,
+    "done": true,
+    "next": 401,
+    "total": 334
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2009,
+    "done": true,
+    "next": 401,
+    "total": 261
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2010,
+    "done": true,
+    "next": 401,
+    "total": 261
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2011,
+    "done": true,
+    "next": 401,
+    "total": 246
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2012,
+    "done": true,
+    "next": 401,
+    "total": 259
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2013,
+    "done": true,
+    "next": 401,
+    "total": 238
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2014,
+    "done": true,
+    "next": 401,
+    "total": 261
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2015,
+    "done": true,
+    "next": 401,
+    "total": 293
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2016,
+    "done": true,
+    "next": 401,
+    "total": 285
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2017,
+    "done": true,
+    "next": 401,
+    "total": 338
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2018,
+    "done": true,
+    "next": 601,
+    "total": 461
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2019,
+    "done": true,
+    "next": 601,
+    "total": 467
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2020,
+    "done": true,
+    "next": 801,
+    "total": 775
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2021,
+    "done": true,
+    "next": 801,
+    "total": 770
+   },
+   {
+    "key": "TCAS-II",
+    "year": 2022,
+    "done": true,
+    "next": 1201,
+    "total": 1087
+   },
+   {
+    "key": "TCAS-I-1992",
+    "year": 1997,
+    "done": true,
+    "next": 201,
+    "total": 166
+   },
+   {
+    "key": "TCAS-I-1992",
+    "year": 1998,
+    "done": true,
+    "next": 201,
+    "total": 171
+   },
+   {
+    "key": "TCAS-I-1992",
+    "year": 1999,
+    "done": true,
+    "next": 201,
+    "total": 192
+   },
+   {
+    "key": "TCAS-I-1992",
+    "year": 2000,
+    "done": true,
+    "next": 401,
+    "total": 223
+   },
+   {
+    "key": "TCAS-I-1992",
+    "year": 2001,
+    "done": true,
+    "next": 201,
+    "total": 199
+   },
+   {
+    "key": "TCAS-I-1992",
+    "year": 2002,
+    "done": true,
+    "next": 401,
+    "total": 243
+   },
+   {
+    "key": "TCAS-I-1992",
+    "year": 2003,
+    "done": true,
+    "next": 401,
+    "total": 222
+   },
+   {
+    "key": "TCAS-II-1992",
+    "year": 1997,
+    "done": true,
+    "next": 201,
+    "total": 139
+   },
+   {
+    "key": "TCAS-II-1992",
+    "year": 1998,
+    "done": true,
+    "next": 401,
+    "total": 221
+   },
+   {
+    "key": "TCAS-II-1992",
+    "year": 1999,
+    "done": true,
+    "next": 401,
+    "total": 210
+   },
+   {
+    "key": "TCAS-II-1992",
+    "year": 2000,
+    "done": true,
+    "next": 401,
+    "total": 211
+   },
+   {
+    "key": "TCAS-II-1992",
+    "year": 2001,
+    "done": true,
+    "next": 201,
+    "total": 154
+   },
+   {
+    "key": "TCAS-II-1992",
+    "year": 2002,
+    "done": true,
+    "next": 201,
+    "total": 94
+   },
+   {
+    "key": "TCAS-II-1992",
+    "year": 2003,
+    "done": true,
+    "next": 201,
+    "total": 127
+   },
+   {
+    "key": "TVLSI",
+    "year": 1997,
+    "done": true,
+    "next": 201,
+    "total": 52
+   },
+   {
+    "key": "TVLSI",
+    "year": 1998,
+    "done": true,
+    "next": 201,
+    "total": 87
+   },
+   {
+    "key": "TVLSI",
+    "year": 1999,
+    "done": true,
+    "next": 201,
+    "total": 58
+   },
+   {
+    "key": "TVLSI",
+    "year": 2000,
+    "done": true,
+    "next": 201,
+    "total": 88
+   },
+   {
+    "key": "TVLSI",
+    "year": 2001,
+    "done": true,
+    "next": 201,
+    "total": 100
+   },
+   {
+    "key": "TVLSI",
+    "year": 2002,
+    "done": true,
+    "next": 201,
+    "total": 101
+   },
+   {
+    "key": "TVLSI",
+    "year": 2003,
+    "done": true,
+    "next": 201,
+    "total": 116
+   },
+   {
+    "key": "TVLSI",
+    "year": 2004,
+    "done": true,
+    "next": 401,
+    "total": 238
+   },
+   {
+    "key": "TVLSI",
+    "year": 2005,
+    "done": true,
+    "next": 401,
+    "total": 224
+   },
+   {
+    "key": "TVLSI",
+    "year": 2006,
+    "done": true,
+    "next": 401,
+    "total": 221
+   },
+   {
+    "key": "TVLSI",
+    "year": 2007,
+    "done": true,
+    "next": 401,
+    "total": 205
+   },
+   {
+    "key": "TVLSI",
+    "year": 2008,
+    "done": true,
+    "next": 401,
+    "total": 230
+   },
+   {
+    "key": "TVLSI",
+    "year": 2009,
+    "done": true,
+    "next": 401,
+    "total": 230
+   },
+   {
+    "key": "TVLSI",
+    "year": 2010,
+    "done": true,
+    "next": 401,
+    "total": 248
+   },
+   {
+    "key": "TVLSI",
+    "year": 2011,
+    "done": true,
+    "next": 401,
+    "total": 293
+   },
+   {
+    "key": "TVLSI",
+    "year": 2012,
+    "done": true,
+    "next": 401,
+    "total": 293
+   },
+   {
+    "key": "TVLSI",
+    "year": 2013,
+    "done": true,
+    "next": 401,
+    "total": 297
+   },
+   {
+    "key": "TVLSI",
+    "year": 2014,
+    "done": true,
+    "next": 401,
+    "total": 324
+   },
+   {
+    "key": "TVLSI",
+    "year": 2015,
+    "done": true,
+    "next": 401,
+    "total": 380
+   },
+   {
+    "key": "TVLSI",
+    "year": 2016,
+    "done": true,
+    "next": 401,
+    "total": 387
+   },
+   {
+    "key": "TVLSI",
+    "year": 2017,
+    "done": true,
+    "next": 401,
+    "total": 375
+   },
+   {
+    "key": "TVLSI",
+    "year": 2018,
+    "done": true,
+    "next": 401,
+    "total": 320
+   },
+   {
+    "key": "TVLSI",
+    "year": 2019,
+    "done": true,
+    "next": 401,
+    "total": 321
+   },
+   {
+    "key": "TVLSI",
+    "year": 2020,
+    "done": true,
+    "next": 401,
+    "total": 292
+   },
+   {
+    "key": "TVLSI",
+    "year": 2021,
+    "done": true,
+    "next": 401,
+    "total": 242
+   },
+   {
+    "key": "TVLSI",
+    "year": 2022,
+    "done": true,
+    "next": 401,
+    "total": 221
+   },
+   {
+    "key": "SSC-L",
+    "year": 2018,
+    "done": true,
+    "next": 201,
+    "total": 102
+   },
+   {
+    "key": "SSC-L",
+    "year": 2019,
+    "done": true,
+    "next": 201,
+    "total": 117
+   },
+   {
+    "key": "SSC-L",
+    "year": 2020,
+    "done": true,
+    "next": 201,
+    "total": 139
+   },
+   {
+    "key": "SSC-L",
+    "year": 2021,
+    "done": true,
+    "next": 201,
+    "total": 65
+   },
+   {
+    "key": "SSC-L",
+    "year": 2022,
+    "done": true,
+    "next": 201,
+    "total": 85
+   },
+   {
+    "key": "ISSCC",
+    "year": 1997,
+    "done": true,
+    "next": 201,
+    "total": 165
+   },
+   {
+    "key": "ISSCC",
+    "year": 1998,
+    "done": true,
+    "next": 601,
+    "total": 415
+   },
+   {
+    "key": "ISSCC",
+    "year": 1999,
+    "done": true,
+    "next": 201,
+    "total": 174
+   },
+   {
+    "key": "ISSCC",
+    "year": 2000,
+    "done": true,
+    "next": 201,
+    "total": 178
+   },
+   {
+    "key": "ISSCC",
+    "year": 2001,
+    "done": true,
+    "next": 601,
+    "total": 526
+   },
+   {
+    "key": "ISSCC",
+    "year": 2002,
+    "done": true,
+    "next": 401,
+    "total": 389
+   },
+   {
+    "key": "ISSCC",
+    "year": 2003,
+    "done": true,
+    "next": 401,
+    "total": 236
+   },
+   {
+    "key": "ISSCC",
+    "year": 2004,
+    "done": true,
+    "next": 1001,
+    "total": 859
+   },
+   {
+    "key": "ISSCC",
+    "year": 2005,
+    "done": true,
+    "next": 401,
+    "total": 292
+   },
+   {
+    "key": "ISSCC",
+    "year": 2006,
+    "done": true,
+    "next": 1001,
+    "total": 988
+   },
+   {
+    "key": "ISSCC",
+    "year": 2007,
+    "done": true,
+    "next": 401,
+    "total": 294
+   },
+   {
+    "key": "ISSCC",
+    "year": 2008,
+    "done": true,
+    "next": 1201,
+    "total": 1096
+   },
+   {
+    "key": "ISSCC",
+    "year": 2009,
+    "done": true,
+    "next": 601,
+    "total": 407
+   },
+   {
+    "key": "ISSCC",
+    "year": 2010,
+    "done": true,
+    "next": 1201,
+    "total": 1014
+   },
+   {
+    "key": "ISSCC",
+    "year": 2011,
+    "done": true,
+    "next": 601,
+    "total": 458
+   },
+   {
+    "key": "ISSCC",
+    "year": 2012,
+    "done": true,
+    "next": 1001,
+    "total": 893
+   },
+   {
+    "key": "ISSCC",
+    "year": 2013,
+    "done": true,
+    "next": 601,
+    "total": 492
+   },
+   {
+    "key": "ISSCC",
+    "year": 2014,
     "done": false,
     "next": 201
-   },
-   {
-    "key": "TCAS-I",
-    "year": 2017,
-    "done": false
-   },
-   {
-    "key": "TCAS-I",
-    "year": 2018,
-    "done": false
-   },
-   {
-    "key": "TCAS-I",
-    "year": 2019,
-    "done": false
-   },
-   {
-    "key": "TCAS-I",
-    "year": 2020,
-    "done": false
-   },
-   {
-    "key": "TCAS-I",
-    "year": 2021,
-    "done": false
-   },
-   {
-    "key": "TCAS-I",
-    "year": 2022,
-    "done": false
-   },
-   {
-    "key": "TCAS-II",
-    "year": 2004,
-    "done": false
-   },
-   {
-    "key": "TCAS-II",
-    "year": 2005,
-    "done": false
-   },
-   {
-    "key": "TCAS-II",
-    "year": 2006,
-    "done": false
-   },
-   {
-    "key": "TCAS-II",
-    "year": 2007,
-    "done": false
-   },
-   {
-    "key": "TCAS-II",
-    "year": 2008,
-    "done": false
-   },
-   {
-    "key": "TCAS-II",
-    "year": 2009,
-    "done": false
-   },
-   {
-    "key": "TCAS-II",
-    "year": 2010,
-    "done": false
-   },
-   {
-    "key": "TCAS-II",
-    "year": 2011,
-    "done": false
-   },
-   {
-    "key": "TCAS-II",
-    "year": 2012,
-    "done": false
-   },
-   {
-    "key": "TCAS-II",
-    "year": 2013,
-    "done": false
-   },
-   {
-    "key": "TCAS-II",
-    "year": 2014,
-    "done": false
-   },
-   {
-    "key": "TCAS-II",
-    "year": 2015,
-    "done": false
-   },
-   {
-    "key": "TCAS-II",
-    "year": 2016,
-    "done": false
-   },
-   {
-    "key": "TCAS-II",
-    "year": 2017,
-    "done": false
-   },
-   {
-    "key": "TCAS-II",
-    "year": 2018,
-    "done": false
-   },
-   {
-    "key": "TCAS-II",
-    "year": 2019,
-    "done": false
-   },
-   {
-    "key": "TCAS-II",
-    "year": 2020,
-    "done": false
-   },
-   {
-    "key": "TCAS-II",
-    "year": 2021,
-    "done": false
-   },
-   {
-    "key": "TCAS-II",
-    "year": 2022,
-    "done": false
-   },
-   {
-    "key": "TCAS-I-1992",
-    "year": 1997,
-    "done": false
-   },
-   {
-    "key": "TCAS-I-1992",
-    "year": 1998,
-    "done": false
-   },
-   {
-    "key": "TCAS-I-1992",
-    "year": 1999,
-    "done": false
-   },
-   {
-    "key": "TCAS-I-1992",
-    "year": 2000,
-    "done": false
-   },
-   {
-    "key": "TCAS-I-1992",
-    "year": 2001,
-    "done": false
-   },
-   {
-    "key": "TCAS-I-1992",
-    "year": 2002,
-    "done": false
-   },
-   {
-    "key": "TCAS-I-1992",
-    "year": 2003,
-    "done": false
-   },
-   {
-    "key": "TCAS-II-1992",
-    "year": 1997,
-    "done": false
-   },
-   {
-    "key": "TCAS-II-1992",
-    "year": 1998,
-    "done": false
-   },
-   {
-    "key": "TCAS-II-1992",
-    "year": 1999,
-    "done": false
-   },
-   {
-    "key": "TCAS-II-1992",
-    "year": 2000,
-    "done": false
-   },
-   {
-    "key": "TCAS-II-1992",
-    "year": 2001,
-    "done": false
-   },
-   {
-    "key": "TCAS-II-1992",
-    "year": 2002,
-    "done": false
-   },
-   {
-    "key": "TCAS-II-1992",
-    "year": 2003,
-    "done": false
-   },
-   {
-    "key": "TVLSI",
-    "year": 1997,
-    "done": false
-   },
-   {
-    "key": "TVLSI",
-    "year": 1998,
-    "done": false
-   },
-   {
-    "key": "TVLSI",
-    "year": 1999,
-    "done": false
-   },
-   {
-    "key": "TVLSI",
-    "year": 2000,
-    "done": false
-   },
-   {
-    "key": "TVLSI",
-    "year": 2001,
-    "done": false
-   },
-   {
-    "key": "TVLSI",
-    "year": 2002,
-    "done": false
-   },
-   {
-    "key": "TVLSI",
-    "year": 2003,
-    "done": false
-   },
-   {
-    "key": "TVLSI",
-    "year": 2004,
-    "done": false
-   },
-   {
-    "key": "TVLSI",
-    "year": 2005,
-    "done": false
-   },
-   {
-    "key": "TVLSI",
-    "year": 2006,
-    "done": false
-   },
-   {
-    "key": "TVLSI",
-    "year": 2007,
-    "done": false
-   },
-   {
-    "key": "TVLSI",
-    "year": 2008,
-    "done": false
-   },
-   {
-    "key": "TVLSI",
-    "year": 2009,
-    "done": false
-   },
-   {
-    "key": "TVLSI",
-    "year": 2010,
-    "done": false
-   },
-   {
-    "key": "TVLSI",
-    "year": 2011,
-    "done": false
-   },
-   {
-    "key": "TVLSI",
-    "year": 2012,
-    "done": false
-   },
-   {
-    "key": "TVLSI",
-    "year": 2013,
-    "done": false
-   },
-   {
-    "key": "TVLSI",
-    "year": 2014,
-    "done": false
-   },
-   {
-    "key": "TVLSI",
-    "year": 2015,
-    "done": false
-   },
-   {
-    "key": "TVLSI",
-    "year": 2016,
-    "done": false
-   },
-   {
-    "key": "TVLSI",
-    "year": 2017,
-    "done": false
-   },
-   {
-    "key": "TVLSI",
-    "year": 2018,
-    "done": false
-   },
-   {
-    "key": "TVLSI",
-    "year": 2019,
-    "done": false
-   },
-   {
-    "key": "TVLSI",
-    "year": 2020,
-    "done": false
-   },
-   {
-    "key": "TVLSI",
-    "year": 2021,
-    "done": false
-   },
-   {
-    "key": "TVLSI",
-    "year": 2022,
-    "done": false
-   },
-   {
-    "key": "SSC-L",
-    "year": 2018,
-    "done": false
-   },
-   {
-    "key": "SSC-L",
-    "year": 2019,
-    "done": false
-   },
-   {
-    "key": "SSC-L",
-    "year": 2020,
-    "done": false
-   },
-   {
-    "key": "SSC-L",
-    "year": 2021,
-    "done": false
-   },
-   {
-    "key": "SSC-L",
-    "year": 2022,
-    "done": false
-   },
-   {
-    "key": "ISSCC",
-    "year": 1997,
-    "done": false
-   },
-   {
-    "key": "ISSCC",
-    "year": 1998,
-    "done": false
-   },
-   {
-    "key": "ISSCC",
-    "year": 1999,
-    "done": false
-   },
-   {
-    "key": "ISSCC",
-    "year": 2000,
-    "done": false
-   },
-   {
-    "key": "ISSCC",
-    "year": 2001,
-    "done": false
-   },
-   {
-    "key": "ISSCC",
-    "year": 2002,
-    "done": false
-   },
-   {
-    "key": "ISSCC",
-    "year": 2003,
-    "done": false
-   },
-   {
-    "key": "ISSCC",
-    "year": 2004,
-    "done": false
-   },
-   {
-    "key": "ISSCC",
-    "year": 2005,
-    "done": false
-   },
-   {
-    "key": "ISSCC",
-    "year": 2006,
-    "done": false
-   },
-   {
-    "key": "ISSCC",
-    "year": 2007,
-    "done": false
-   },
-   {
-    "key": "ISSCC",
-    "year": 2008,
-    "done": false
-   },
-   {
-    "key": "ISSCC",
-    "year": 2009,
-    "done": false
-   },
-   {
-    "key": "ISSCC",
-    "year": 2010,
-    "done": false
-   },
-   {
-    "key": "ISSCC",
-    "year": 2011,
-    "done": false
-   },
-   {
-    "key": "ISSCC",
-    "year": 2012,
-    "done": false
-   },
-   {
-    "key": "ISSCC",
-    "year": 2013,
-    "done": false
-   },
-   {
-    "key": "ISSCC",
-    "year": 2014,
-    "done": false
    },
    {
     "key": "ISSCC",
@@ -1636,7 +1812,9 @@
   "CICC": true,
   "ESSCIRC": true,
   "ESSERC": true,
-  "Access": true
+  "Access": true,
+  "TCAS-I-1992": true,
+  "TCAS-II-1992": true
  },
  "last_delta_end": "20261023"
 }

@@ -1,27 +1,27 @@
 {
  "title": "ADC Census",
  "source": "IEEE Xplore API",
- "updated": "2026-10-23",
+ "updated": "2026-10-24",
  "coverage_from": "1997-01",
  "coverage_to": "2026-10",
- "total": 4048,
+ "total": 5729,
  "by_kind": {
-  "ADC": 3827,
-  "DAC": 221
+  "ADC": 5335,
+  "DAC": 394
  },
  "by_venue": {
-  "TCAS-II": 220,
-  "TCAS-I": 675,
-  "TVLSI": 124,
+  "TCAS-II": 974,
+  "TCAS-I": 1002,
+  "TVLSI": 333,
   "JSSC": 1665,
   "VLSI": 311,
   "CICC": 138,
-  "ISSCC": 536,
+  "ISSCC": 842,
   "Access": 157,
-  "SSC-L": 65,
+  "SSC-L": 150,
   "A-SSCC": 73,
   "ESSCIRC": 84
  },
  "sweep_done": false,
- "last_run_new": 3456
+ "last_run_new": 1929
 }
