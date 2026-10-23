@@ -271,7 +271,7 @@ def build_record(a, venues, force_adc=False):
         "vt": pub,
         "y": year,
         "d": date,
-        "au": names[:12] + (["et al."] if len(names) > 12 else []),
+        "au": names,
         "org": orgs[:5],
         "cn": countries,
         "k": kind,

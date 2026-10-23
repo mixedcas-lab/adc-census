@@ -688,7 +688,7 @@
   }
   function rowCells(p) {
     var au = p.au || [];
-    var names = au.slice(0, 3).join(", ") + (au.length > 3 ? " et al." : "");
+    var names = au.filter(function (a) { return a !== "et al."; }).join(", ");   // every author
     var tags = p.ar.map(function (a) {
       return '<span class="tag arch" style="background:' + (ARCH_COLORS[a] || ARCH_COLORS.Other) + '">' + esc(a) + "</span>";
     }).concat(p.ap.map(function (a) { return '<span class="tag">' + esc(a) + "</span>"; }));
