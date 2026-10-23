@@ -1028,7 +1028,7 @@
       if (ALL.length) {
         $("lede").innerHTML = "<strong>" + nA.toLocaleString() + " ADC</strong> and <strong>" + nD.toLocaleString() +
           " DAC</strong> papers from " + venues + " IEEE circuits venues, " + esc(fmtDate(META.coverage_from)) +
-          " to " + esc(fmtDate(META.coverage_to)) + ". Updated " + esc(META.updated || "") +
+          " to " + esc(fmtDate(META.coverage_to)) + ". Updated automatically every month; last update " + esc(META.updated || "") +
           (META.sweep_done && META.last_run_new ? ", with " + META.last_run_new + " papers added in the latest update." : ".") +
           (META.sweep_done ? "" : " The initial collection is still running, so earlier years may be incomplete.");
       } else {
