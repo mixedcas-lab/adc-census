@@ -236,7 +236,7 @@ def build_record(a, venues, force_adc=False):
     if not kind:
         return None
     arch = C.architectures(title, abstract)
-    specs = C.parse_specs(title, abstract)
+    specs, src = C.spec_sources(title, abstract)
     authors = sorted((a.get("authors") or {}).get("authors") or [], key=lambda x: x.get("author_order") or 0)
     names, orgs, countries = [], [], []
     for au in authors:
@@ -277,6 +277,7 @@ def build_record(a, venues, force_adc=False):
         "ap": C.applications(title, abstract),
         "cal": C.has_calibration(title, abstract),
         "s": specs,
+        "src": src,                      # t = title, a = abstract (survey fields are listed in "sv")
         "x": C.derived(specs, arch),
         "ct": "EA" if "early" in ctype.lower() else ("C" if "conf" in ctype.lower() else "J"),
         "url": a.get("html_url") or ("https://doi.org/" + a["doi"] if a.get("doi") else ""),
@@ -324,6 +325,9 @@ def absorb_survey(merged, rows):
             rec["s"].pop("enob", None)
         rec["s"].update(sv)
         rec["sv"] = sorted(sv)
+        rec["s"].pop("foms_b", None) if "foms" in sv else None
+        for k in sv:
+            (rec.get("src") or {}).pop(k, None)
         rec["x"] = C.derived(rec["s"], rec["ar"])
 
 

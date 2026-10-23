@@ -167,9 +167,19 @@ _SI = {"a": 1e-18, "f": 1e-15, "p": 1e-12, "n": 1e-9, "u": 1e-6, "µ": 1e-6, "μ
 
 FS_RX = re.compile(NUM + r"\s*-?\s*([kKMGT])\s*(?:S|Sa|[Ss]amples?)\s*/\s*(?:s|sec)\b|" + NUM + r"\s*-?\s*([kKMGT])(?:sps|SPS)\b")
 # sample/clock rate given in Hz: "sampled at 630 MHz", "a 48-MHz sample rate", "clocked at 576 MHz"
-FS_HZ_RX = re.compile(r"(?:sampled|sampling(?:\s+rate|\s+frequency)?|sample[- ]rate|clocked|clock(?:ing)?\s+(?:rate|frequency))\s*(?:of|at|=|is)?\s*"
-                      r"(?:up to\s+)?" + NUM + r"\s*-?\s*([kKMG])Hz|" + NUM + r"\s*-?\s*([kKMG])Hz\s+(?:sampl(?:e|ing)[- ]rate|clock)", I)
+FS_HZ_RX = re.compile(r"(?:sampled|sampling(?:\s+rate|\s+frequency)?|sample[- ]rate)\s*(?:of|at|=|is)?\s*"
+                      r"(?:up to\s+)?" + NUM + r"\s*-?\s*([kKMG])Hz|" + NUM + r"\s*-?\s*([kKMG])Hz\s+(?:sampl(?:e|ing)[- ]rate)", I)
 RES_RX = re.compile(r"(?<![\w.\-/])(\d{1,2})(?:\.\d+)?\s*-?\s*(?:b|bit|bits)(?![\w/])", I)
+RES_SUBBLOCK = re.compile(r"^[\s-]*(?:multi[- ]?bit\s+)?(?:\w+[- ]){0,2}?(?:quantiz|DAC|CDAC|sub-?ADC|stage|flash|coarse|fine|MSB|LSB|"
+                          r"comparator|TDC|counter|segment|thermometer|unary|ELD|redundan|per[- ]cycle|/cycle|digital[- ]to)", I)
+
+
+def _resolution(*texts):
+    for text in texts:
+        for m in RES_RX.finditer(text):
+            if not RES_SUBBLOCK.search(text[m.end():m.end() + 30]):
+                return int(m.group(1))
+    return None
 NODE_NM_RX = re.compile(r"(?<![\w.])(\d{1,3})\s*-?\s*nm\b", I)
 NODE_UM_RX = re.compile(r"(?<![\w.])(0\.\d{1,3})\s*-?\s*[µμu]m\b|(?<![\w.])([1-3](?:\.\d)?)\s*-?\s*[µμu]m\s+(?:\w+\s+){0,2}"
                         r"(?:CMOS|BiCMOS|process|technology|SOI|bipolar|InP|SiGe|GaAs)", I)
@@ -207,6 +217,8 @@ _FIXES = [(re.compile(r"(\d)\.\s(\d)"), r"\1.\2"), (re.compile(r"(\d)\s*-?\s*mu(
 _METRIC = r"(SNDR|SNR|SFDR|DR|THD|SINAD)"
 LIST_SLASH_RX = re.compile(r"\b" + _METRIC + r"((?:\s*/\s*" + _METRIC + r")+)\s*(?:of|=|:|are|is|were|reach\w*)?\s*"
                            r"(-?\d+(?:\.\d+)?(?:\s*/\s*-?\d+(?:\.\d+)?)+)\s*-?\s*dB", I)
+LIST_VFIRST_RX = re.compile(r"(-?\d+(?:\.\d+)?(?:\s*/\s*-?\d+(?:\.\d+)?)+)\s*-?\s*dB[- ]?(?:peak[- ])?" + _METRIC +
+                            r"((?:\s*/\s*" + _METRIC + r")+)", I)
 LIST_AND_RX = re.compile(r"\b" + _METRIC + r"\s+and\s+(?:an?\s+|the\s+)?" + _METRIC + r"\s*(?:of|are|were|is|=)\s*"
                          r"(-?\d+(?:\.\d+)?)\s*-?\s*dBc?\s*(?:and|,)\s*(-?\d+(?:\.\d+)?)\s*-?\s*dB", I)
 
@@ -216,6 +228,12 @@ def _metric_lists(text):
     for m in LIST_SLASH_RX.finditer(text):
         names = [m.group(1)] + re.findall(_METRIC, m.group(2), I)
         vals = re.findall(r"-?\d+(?:\.\d+)?", m.group(4))
+        if len(names) == len(vals):
+            for n, v in zip(names, vals):
+                found.setdefault(n.upper().replace("SINAD", "SNDR"), float(v))
+    for m in LIST_VFIRST_RX.finditer(text):
+        vals = re.findall(r"-?\d+(?:\.\d+)?", m.group(1))
+        names = [m.group(2)] + re.findall(_METRIC, m.group(3), I)
         if len(names) == len(vals):
             for n, v in zip(names, vals):
                 found.setdefault(n.upper().replace("SINAD", "SNDR"), float(v))
@@ -256,11 +274,9 @@ def parse_specs(title, abstract):
         val, pre = next((m.group(i), m.group(i + 1)) for i in range(1, m.re.groups, 2) if m.group(i))
         out["fs"] = float(val) * _SI[pre if pre != "K" else "k"]
 
-    m = RES_RX.search(t) or RES_RX.search(a)
-    if m:
-        r = int(m.group(1))
-        if 3 <= r <= 24:
-            out["res"] = r
+    r = _resolution(t, a)
+    if r and 3 <= r <= 24:
+        out["res"] = r
 
     m = NODE_NM_RX.search(t) or NODE_NM_RX.search(a)
     if m and 2 <= int(m.group(1)) <= 500:
@@ -281,10 +297,12 @@ def parse_specs(title, abstract):
         v = _earliest(rxs, both, 10, 150)
         if v is not None:
             out[key] = v
-    for name, v in _metric_lists(both).items():
+    for name, v in _metric_lists(both).items():   # explicit pairings beat the single-value patterns above
         key = {"SNDR": "sndr", "SNR": "snr", "DR": "dr"}.get(name)
-        if key and key not in out and 10 <= v <= 150:
+        if key and 10 <= v <= 150:
             out[key] = v
+            if key == "sndr":
+                out.pop("enob", None)
 
     m = POWER_CTX_RX.search(a) or POWER_AFTER_RX.search(a) or POWER_CTX_RX.search(t) or POWER_ANY_RX.search(t)
     if m:
@@ -298,10 +316,21 @@ def parse_specs(title, abstract):
     m = FOMS_RX.search(both)
     if m:
         out["foms"] = float(m.group(1))
+        if re.search(r"(?<!SN)DR\b|dynamic range", m.group(0), I):
+            out["foms_b"] = "DR"
+        elif re.search(r"SNDR", m.group(0), I):
+            out["foms_b"] = "SNDR"
     m = FOMW_RX.search(both)
     if m:
         out["fomw"] = float(m.group(1)) * _SI[m.group(2).lower()] / 1e-15  # in fJ/conv
     return out
+
+
+def spec_sources(title, abstract):
+    """parse_specs() plus where each value came from: {"key": "t" | "a"}."""
+    full = parse_specs(title, abstract)
+    only_title = parse_specs(title, "")
+    return full, {k: ("t" if only_title.get(k) == v else "a") for k, v in full.items() if k != "foms_b"}
 
 
 def derived(specs, arch):
@@ -325,20 +354,61 @@ ORG_HINT = re.compile(r"universit|institut|college|school|KAIST|POSTECH|UNIST|DG
                       r"apple|google|huawei|broadcom|analog devices|texas instruments", I)
 
 
+US_STATES = ("AL AK AZ AR CA CO CT DE FL GA HI ID IL IN IA KS KY LA ME MD MA MI MN MS MO MT NE NV NH NJ NM NY NC ND OH OK "
+             "OR PA RI SC SD TN TX UT VT VA WA WV WI WY DC").split()
+COUNTRY_ALIASES = {"thenetherlands": "Netherlands", "netherlands": "Netherlands", "holland": "Netherlands",
+                   "uk": "UK", "unitedkingdom": "UK", "england": "UK", "scotland": "UK", "greatbritain": "UK",
+                   "republicofsingapore": "Singapore", "hongkong": "Hong Kong", "hongkongsar": "Hong Kong",
+                   "rocchina": "Taiwan", "taiwanroc": "Taiwan", "taiwan,roc": "Taiwan", "roc": "Taiwan",
+                   "korearepublicof": "South Korea", "southkorea": "South Korea", "usa": "USA", "us": "USA"}
+COUNTRY_ALIASES.update({st.lower(): "USA" for st in US_STATES})
+COUNTRY_ALIASES.update({"uae": "United Arab Emirates", "türkiye": "Turkey", "turkiye": "Turkey", "macao": "Macau", "hk": "Hong Kong",
+                        "kr": "South Korea", "korea": "South Korea", "republicofkorea": "South Korea", "korea(south)": "South Korea",
+                        "sg": "Singapore", "taiwan(roc)": "Taiwan", "prc": "China", "prchina": "China", "peoplesrepublicofchina": "China",
+                        "people'srepublicofchina": "China", "unitedstates": "USA", "unitedstatesofamerica": "USA", "california": "USA",
+                        "oregon": "USA", "texas": "USA", "massachusetts": "USA", "czechia": "Czech Republic", "russianfederation": "Russia"})
+COUNTRIES = {"USA", "China", "South Korea", "Taiwan", "Netherlands", "Japan", "Belgium", "Canada", "Germany", "Italy", "India",
+             "Switzerland", "Singapore", "Spain", "UK", "Ireland", "Austria", "France", "Sweden", "Finland", "Portugal", "Hong Kong",
+             "United Arab Emirates", "Norway", "Iran", "Israel", "Saudi Arabia", "Egypt", "Argentina", "Australia", "Brazil", "Denmark",
+             "Turkey", "Qatar", "Malaysia", "Vietnam", "Greece", "Colombia", "Macau", "Lebanon", "Romania", "Hungary", "Tunisia",
+             "Czech Republic", "Philippines", "Poland", "Mexico", "Russia", "Chile", "Bahrain", "Iraq", "Indonesia", "Pakistan",
+             "Thailand", "Kazakhstan", "New Zealand", "Estonia", "Mauritius", "Ukraine", "Slovenia", "Slovakia", "Serbia", "Croatia",
+             "Bulgaria", "Luxembourg", "Cyprus", "Morocco", "Algeria", "Jordan", "Kuwait", "Oman", "Nigeria", "South Africa", "Kenya",
+             "Bangladesh", "Sri Lanka", "Nepal", "Peru", "Uruguay", "Venezuela", "Ecuador", "Iceland", "Lithuania", "Latvia",
+             "Belarus", "Armenia"}
+# affiliation parts that name a city or an institution instead of a country
+PLACE_COUNTRY = [(re.compile(p, I), c) for p, c in (
+    (r"\b(?:delft|eindhoven|twente|enschede)\b", "Netherlands"), (r"\b(?:dallas|san diego|corvallis|san jose|santa clara)\b", "USA"),
+    (r"\b(?:daejeon|seoul|pohang|ulsan|suwon|samsung|sk hynix|kaist|postech)\b", "South Korea"),
+    (r"\b(?:beijing|shanghai|tsinghua|peking|zhejiang|fudan|xi'?an|nanjing|shenzhen|hangzhou|chengdu)\b", "China"),
+    (r"\b(?:tokyo|osaka|kyoto|hiroshima)\b", "Japan"), (r"\bmaca[uo]\b", "Macau"), (r"\bnational taiwan\b|\bhsinchu\b|\btaipei\b", "Taiwan"),
+    (r"\btu berlin\b|\bbosch\b|\bmunich\b", "Germany"), (r"\bcesson|\bparis\b|\bgrenoble\b", "France"),
+    (r"\b(?:oregon state|brigham young|university of utah|emory|purdue|university of florida|university of washington|northeastern|"
+     r"intel|qualcomm)\b", "USA"), (r"\banalog devices canada\b", "Canada"))]
+
+
+def _country(parts, aff):
+    """The country of an affiliation, or None: the parts from the end first, then known cities and institutions."""
+    for raw in reversed(parts):
+        c = re.sub(r"\s+\d[\d\- ]*$", "", raw).strip()
+        c = COUNTRY_ALIASES.get(re.sub(r"[\s.]", "", c).lower(), c)
+        if c.isupper() and len(c) > 3:
+            c = c.title()                    # "MEXICO", "SPAIN"
+        if c in COUNTRIES:
+            return c
+    for rx, c in PLACE_COUNTRY:
+        if rx.search(aff):
+            return c
+    return None
+
+
 def org_and_country(aff):
     if not aff:
         return None, None
     parts = [p.strip() for p in aff.split(",") if p.strip()]
     if not parts:
         return None, None
-    country = parts[-1]
-    country = re.sub(r"\s+\d[\d\- ]*$", "", country)  # strip trailing postal codes
-    if re.fullmatch(r"(korea|south korea|republic of korea|korea \(south\))", country, I):
-        country = "South Korea"
-    elif re.fullmatch(r"(usa|u\.s\.a\.|united states|united states of america|us)", country, I):
-        country = "USA"
-    elif re.fullmatch(r"(prc|p\.r\. china|people's republic of china)", country, I):
-        country = "China"
+    country = _country(parts, aff)
     org = None
     for p in parts:
         if ORG_HINT.search(p) and not re.match(r"(department|dept|school of|faculty|division)\b", p, I):
@@ -346,8 +416,6 @@ def org_and_country(aff):
             break
     if org is None:
         org = parts[1] if len(parts) > 2 else parts[0]
-    if len(country) > 30 or re.search(r"\d", country):
-        country = None
     return org, country
 
 

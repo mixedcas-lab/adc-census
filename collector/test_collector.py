@@ -155,6 +155,23 @@ class TestSpecs(unittest.TestCase):
         self.assertEqual(C.parse_specs("X", "the Nyquist SNDR and SFDR are 55 dB and 69 dB respectively")["sndr"], 55.0)
         self.assertEqual(C.parse_specs("X", "The prototype achieves an SNDR and an SFDR of 63.4 dB and 81.0 dBc")["sndr"], 63.4)
 
+    def test_reported_misreads(self):
+        self.assertEqual(C.parse_specs("A 0.5V 86/83 dB SNR/SNDR Incremental ADC", ""), {"snr": 86.0, "sndr": 83.0})
+        self.assertNotIn("fs", C.parse_specs("A 12-bit Single-Slope ADC", "The single-slope ADC is clocked at 150 MHz."))
+        self.assertEqual(C.parse_specs("An Incremental ADC Using a 4-Bit Quantizer", "achieves 18-bit resolution")["res"], 18)
+        self.assertNotIn("res", C.parse_specs("A CT ΔΣ Modulator With a 4-Bit Quantizer", ""))
+        self.assertEqual(C.parse_specs("X", "achieves a FoM_DR of 182.1 dB")["foms_b"], "DR")
+
+    def test_value_sources(self):
+        specs, src = C.spec_sources("A 12-b 1-GS/s SAR ADC", "It consumes 5 mW in 28-nm CMOS.")
+        self.assertEqual(src, {"res": "t", "fs": "t", "p": "a", "node": "a"})
+
+    def test_country_spellings(self):
+        for aff, cn in (("Delft University of Technology, Delft, The Netherlands", "Netherlands"),
+                        ("Imperial College London, London, U.K.", "UK"), ("Stanford University, Stanford, CA", "USA"),
+                        ("National Taiwan University, Taipei, Taiwan, R.O.C.", "Taiwan")):
+            self.assertEqual(C.org_and_country(aff)[1], cn)
+
     def test_node_spellings(self):
         self.assertEqual(C.parse_specs("X", "simulations in 0.13 µ m CMOS technology")["node"], 130)
         self.assertEqual(C.parse_specs("X", "fabricated in a 0.8 mum Indium-Phosphide HBT process")["node"], 800)
