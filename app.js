@@ -675,15 +675,12 @@
       "annotations.csv row to fill in:", "id," + ANN_HEAD.slice(1).join(","), p.id + "," + ANN_HEAD.slice(1).map(function () { return ""; }).join(",")]).join("\n");
     return REPO + "/issues/new?title=" + encodeURIComponent("Correction: " + p.t.slice(0, 80)) + "&body=" + encodeURIComponent(body);
   }
-  function badge(p, k) {
-    var src = p.vs[k] || "t", b = SRC[src];
-    return '<sup class="src src-' + src + '" title="' + esc(b[1]) + '">' + b[0] + "</sup>";
-  }
+  function badge() { return ""; }   // sources are in the cell tooltip only (badges made the table busy)
   function spec(p, k, text, lbl) {
     if (p.ver[k] === "deleted") return '<span class="spec"><span class="lbl">' + lbl + '</span><span class="del" title="Removed by the lab: not reported or wrong">—</span></span>';
     if (!text) return '<span class="spec"></span>';
     var src = p.vs[k] || "t";
-    return '<span class="spec' + (RANK[src] >= 3 ? "" : src === "ai" ? " ai" : " auto") + '"><span class="lbl">' + lbl + "</span>" + text + badge(p, k) + "</span>";
+    return '<span class="spec' + (RANK[src] >= 3 ? "" : src === "ai" ? " ai" : " auto") + '" title="' + esc(SRC[src][1]) + '"><span class="lbl">' + lbl + "</span>" + text + "</span>";
   }
   function rowHTML(p) {
     var html = rowCells(p);
