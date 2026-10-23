@@ -32,6 +32,12 @@
           <label class="check"><input type="checkbox" id="ax-ylog"> log</label>
         </span>
         <label class="field"><span>Colour</span><select id="color"><option value="arch">Architecture</option><option value="year">Year</option><option value="fsnyq">f_snyq</option></select></label>
+        <label class="field"><span>Highlight</span><select id="hl"><option value="">None</option><option value="1">Latest year</option><option value="3">Last 3 years</option><option value="5">Last 5 years</option></select></label>
+        <span class="plot-tools">
+          <button type="button" class="btn small" id="zoom-reset" hidden>Reset zoom</button>
+          <button type="button" class="btn small" id="dl-png" title="Download the plot as a PNG image">PNG</button>
+          <button type="button" class="btn small" id="dl-svg" title="Download the plot as an SVG vector image">SVG</button>
+        </span>
       </div>
     </div>
     <div class="figure-body">

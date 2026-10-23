@@ -100,6 +100,10 @@ a { color: var(--signal); text-underline-offset: 2px; }
 .plot-controls .axes { display: inline-flex; flex-wrap: wrap; align-items: center; gap: 8px 10px; }
 .plot-controls .axes[hidden] { display: none; }
 .plot-controls select { max-width: 230px; }
+.plot-tools { display: inline-flex; gap: 6px; margin-left: auto; }
+.btn.small { padding: 5px 10px; font-size: 12.5px; }
+.plot svg { cursor: crosshair; user-select: none; }
+.plot .zoombox { fill: var(--signal); fill-opacity: 0.12; stroke: var(--signal); stroke-width: 1; }
 .cbar { display: inline-flex; align-items: center; gap: 6px; margin-left: 6px; white-space: nowrap; }
 .cbar .ramp { width: 90px; height: 8px; border-radius: 2px; background: linear-gradient(90deg, rgb(68,1,84), rgb(59,82,139), rgb(33,145,140), rgb(94,201,98), rgb(253,231,37)); }
 

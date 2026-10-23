@@ -25,11 +25,12 @@
   var $ = function (id) { return document.getElementById(id); };
   var META = {}, ALL = [], VIEW = [], LIMIT = PAGE, BYID = {};
   var F = defaults();
+  var YMAX = 0, PG = null;   // latest publication year; geometry of the last drawn plot (zoom, export)
 
   function defaults() {
     return { q: "", kind: "ADC", y0: "", y1: "", venues: [], apps: [], arch: [], country: "",
       related: false, cal: false, fresh: false, sort: "date",
-      chart: "energy", x: "fsnyq", y: "sndr", xs: "", ys: "", color: "arch" };
+      chart: "energy", x: "fsnyq", y: "sndr", xs: "", ys: "", color: "arch", hl: "", zoom: "" };
   }
 
   /* ------------------------------------------------------------ helpers */
@@ -444,7 +445,14 @@
     var t = [];
     if (log) {
       var step = Math.max(1, Math.ceil((dom[1] - dom[0]) / Math.max(2, room)));
-      for (var e = dom[0]; e <= dom[1]; e += step) t.push(e);
+      for (var e = Math.ceil(dom[0] - 1e-9); e <= dom[1] + 1e-9; e += step) t.push(e);
+      if (t.length < 3) {   // zoomed into about a decade: 1-2-5 ticks
+        t = [];
+        for (var d = Math.floor(dom[0]); d <= dom[1]; d++) [1, 2, 5].forEach(function (m) {
+          var v = d + Math.log10(m);
+          if (v >= dom[0] - 1e-9 && v <= dom[1] + 1e-9) t.push(v);
+        });
+      }
       return t;
     }
     var st = niceStep((dom[1] - dom[0]) / Math.max(2, room));
@@ -459,6 +467,8 @@
       $("ax-xlog").checked = isLog(c.x, F.xs); $("ax-ylog").checked = isLog(c.y, F.ys);
     }
     $("color").value = F.color;
+    $("hl").value = F.hl;
+    $("zoom-reset").hidden = !F.zoom;
     $("plot-title").textContent = c.title;
   }
   function renderPlot() {
@@ -479,6 +489,8 @@
     var L = narrow ? 52 : 66, R = W - (narrow ? 8 : 18), T = 14, B = H - 46;
     var dx = domainOf(pts.map(function (p) { return tx(p.f[c.x]); }), xlog, c.x === "y");
     var dy = domainOf(pts.map(function (p) { return ty(p.f[c.y]); }), ylog, c.y === "y");
+    var zm = (F.zoom || "").split(",").map(Number);   // drag-zoom box, in axis units (log10 for log axes)
+    if (zm.length === 4 && zm.every(isFinite) && zm[1] > zm[0] && zm[3] > zm[2]) { dx = [zm[0], zm[1]]; dy = [zm[2], zm[3]]; }
     var sx = function (v) { return L + (v - dx[0]) / (dx[1] - dx[0]) * (R - L); };
     var sy = function (v) { return B - (v - dy[0]) / (dy[1] - dy[0]) * (B - T); };
     var X = function (v) { return sx(tx(v)); }, Y = function (v) { return sy(ty(v)); };
@@ -539,13 +551,20 @@
     var col = colourScale(pts), r0 = narrow ? 3.2 : 4.3;
     g.push('<g clip-path="url(#pc)">');
     // filled: survey or hand-checked numbers; rings: parsed automatically. Newest on top.
-    pts.slice().sort(function (a, b) { return (a.d || "").localeCompare(b.d || ""); }).forEach(function (p) {
+    // highlight: papers from the last F.hl years on top, the rest dimmed
+    var hot = function (p) { return !F.hl || (p.y || 0) > YMAX - +F.hl; };
+    var used = {};
+    pts.slice().sort(function (a, b) { return (hot(a) - hot(b)) || (a.d || "").localeCompare(b.d || ""); }).forEach(function (p) {
       var fill = col.of(p), ring = !(curated(p, c.x) && curated(p, c.y));
-      g.push('<circle data-id="' + esc(p.id) + '" class="' + (ring ? "ring" : "dot") + (c.faint ? " faint" : "") + '" cx="' + X(p.f[c.x]).toFixed(1) +
-        '" cy="' + Y(p.f[c.y]).toFixed(1) + '" r="' + r0 + '" style="' + (ring ? "stroke:" + fill : "fill:" + fill) + '"/>');
+      var px = X(p.f[c.x]), py = Y(p.f[c.y]);
+      if (F.color === "arch" && px >= L && px <= R && py >= T && py <= B) used[p.prim] = fill;   // legend of what is visible
+      g.push('<circle data-id="' + esc(p.id) + '" class="' + (ring ? "ring" : "dot") + (c.faint ? " faint" : "") + (hot(p) ? "" : " dim") +
+        '" cx="' + px.toFixed(1) + '" cy="' + py.toFixed(1) + '" r="' + r0 + '" style="' + (ring ? "stroke:" + fill : "fill:" + fill) + '"/>');
     });
     g.push("</g></svg>");
     $("plot").innerHTML = g.join("");
+    PG = { W: W, H: H, L: L, R: R, T: T, B: B, dx: dx, dy: dy, title: c.title, bar: col.bar,
+      legend: Object.keys(used).map(function (k) { return [k, used[k]]; }) };
 
     var note = pts.length ? pts.length + " papers in this selection report both values (filled: from the ISSCC/VLSI survey or hand-checked; rings: parsed from titles and abstracts)."
       : "No paper in this selection reports both values.";
@@ -634,12 +653,17 @@
     $("reset").addEventListener("click", reset);
     $("more").addEventListener("click", function () { LIMIT += PAGE; renderRows(); });
     $("csv").addEventListener("click", downloadCSV);
-    $("chart").addEventListener("change", function (e) { F.chart = e.target.value; F.xs = F.ys = ""; update({ keepLimit: true }); });
-    $("ax-x").addEventListener("change", function (e) { F.x = e.target.value; F.xs = ""; update({ keepLimit: true }); });
-    $("ax-y").addEventListener("change", function (e) { F.y = e.target.value; F.ys = ""; update({ keepLimit: true }); });
-    $("ax-xlog").addEventListener("change", function (e) { F.xs = e.target.checked ? "log" : "lin"; update({ keepLimit: true }); });
-    $("ax-ylog").addEventListener("change", function (e) { F.ys = e.target.checked ? "log" : "lin"; update({ keepLimit: true }); });
+    $("chart").addEventListener("change", function (e) { F.chart = e.target.value; F.xs = F.ys = F.zoom = ""; update({ keepLimit: true }); });
+    $("ax-x").addEventListener("change", function (e) { F.x = e.target.value; F.xs = F.zoom = ""; update({ keepLimit: true }); });
+    $("ax-y").addEventListener("change", function (e) { F.y = e.target.value; F.ys = F.zoom = ""; update({ keepLimit: true }); });
+    $("ax-xlog").addEventListener("change", function (e) { F.xs = e.target.checked ? "log" : "lin"; F.zoom = ""; update({ keepLimit: true }); });
+    $("ax-ylog").addEventListener("change", function (e) { F.ys = e.target.checked ? "log" : "lin"; F.zoom = ""; update({ keepLimit: true }); });
     $("color").addEventListener("change", function (e) { F.color = e.target.value; update({ keepLimit: true }); });
+    $("hl").addEventListener("change", function (e) { F.hl = e.target.value; update({ keepLimit: true }); });
+    $("zoom-reset").addEventListener("click", function () { F.zoom = ""; update({ keepLimit: true }); });
+    $("dl-png").addEventListener("click", function () { exportPlot("png"); });
+    $("dl-svg").addEventListener("click", function () { exportPlot("svg"); });
+    bindZoom();
 
     var tip = $("tooltip"), fig = document.querySelector(".figure");
     $("plot").addEventListener("mousemove", function (e) {
@@ -684,6 +708,96 @@
     });
   }
 
+  /* ------------------------------------------------------------ plot: drag-zoom and export */
+  function plotXY(e) {   // pointer position in SVG user units
+    var svg = $("plot").querySelector("svg"), r = svg.getBoundingClientRect();
+    return [(e.clientX - r.left) * PG.W / r.width, (e.clientY - r.top) * PG.H / r.height];
+  }
+  function bindZoom() {
+    var start = null, box = null;
+    $("plot").addEventListener("mousedown", function (e) {
+      if (e.button !== 0 || !PG) return;
+      var q = plotXY(e);
+      if (q[0] < PG.L || q[0] > PG.R || q[1] < PG.T || q[1] > PG.B) return;
+      start = q;
+      e.preventDefault();
+    });
+    window.addEventListener("mousemove", function (e) {
+      if (!start) return;
+      var q = plotXY(e), svg = $("plot").querySelector("svg");
+      if (!box) { box = document.createElementNS("http://www.w3.org/2000/svg", "rect"); box.setAttribute("class", "zoombox"); svg.appendChild(box); }
+      var x0 = Math.max(PG.L, Math.min(start[0], q[0])), x1 = Math.min(PG.R, Math.max(start[0], q[0]));
+      var y0 = Math.max(PG.T, Math.min(start[1], q[1])), y1 = Math.min(PG.B, Math.max(start[1], q[1]));
+      box.setAttribute("x", x0); box.setAttribute("y", y0); box.setAttribute("width", x1 - x0); box.setAttribute("height", y1 - y0);
+    });
+    window.addEventListener("mouseup", function (e) {
+      if (!start) return;
+      var q = plotXY(e), a = start;
+      start = null;
+      if (box) { box.remove(); box = null; }
+      if (Math.abs(q[0] - a[0]) < 8 || Math.abs(q[1] - a[1]) < 8) return;   // a click, not a drag
+      var ux = function (px) { return PG.dx[0] + (Math.max(PG.L, Math.min(PG.R, px)) - PG.L) / (PG.R - PG.L) * (PG.dx[1] - PG.dx[0]); };
+      var uy = function (py) { return PG.dy[0] + (PG.B - Math.max(PG.T, Math.min(PG.B, py))) / (PG.B - PG.T) * (PG.dy[1] - PG.dy[0]); };
+      var z = [ux(Math.min(a[0], q[0])), ux(Math.max(a[0], q[0])), uy(Math.max(a[1], q[1])), uy(Math.min(a[1], q[1]))];
+      F.zoom = z.map(function (v) { return +v.toPrecision(5); }).join(",");
+      update({ keepLimit: true });
+    });
+    $("plot").addEventListener("dblclick", function () { if (F.zoom) { F.zoom = ""; update({ keepLimit: true }); } });
+  }
+  var STYLE_PROPS = ["fill", "fill-opacity", "stroke", "stroke-width", "stroke-dasharray", "stroke-opacity", "opacity",
+    "font-size", "font-family", "font-weight", "font-style"];
+  function exportPlot(fmt) {
+    var svg = $("plot").querySelector("svg");
+    if (!svg || !PG) return;
+    var clone = svg.cloneNode(true), src = svg.querySelectorAll("*"), dst = clone.querySelectorAll("*");
+    for (var i = 0; i < src.length; i++) {   // CSS variables and classes do not survive outside the page: inline them
+      var cs = getComputedStyle(src[i]);
+      dst[i].setAttribute("style", STYLE_PROPS.map(function (k) { return k + ":" + cs.getPropertyValue(k); }).join(";").replace(/"/g, "'"));
+      dst[i].removeAttribute("class");
+    }
+    var page = getComputedStyle(document.querySelector(".figure")), ink = getComputedStyle(document.body).color;
+    var font = "font-family:" + getComputedStyle(document.body).fontFamily.replace(/"/g, "'") + ";fill:" + ink;
+    var leg = PG.legend.slice(0, 18), lw = leg.length || PG.bar ? 190 : 0, th = 34, fh = 22;
+    var W = PG.W + lw, H = PG.H + th + fh, o = [];
+    o.push('<svg xmlns="http://www.w3.org/2000/svg" width="' + W + '" height="' + H + '" viewBox="0 0 ' + W + " " + H + '">');
+    o.push('<rect width="' + W + '" height="' + H + '" style="fill:' + page.backgroundColor + '"/>');
+    o.push('<text x="14" y="23" style="' + font + ';font-size:16px;font-weight:600">' + esc(PG.title) + "</text>");
+    o.push('<g transform="translate(0 ' + th + ')">' + clone.innerHTML + "</g>");
+    var ly = th + PG.T + 8, lx = PG.W + 6;
+    if (leg.length) {
+      leg.forEach(function (e, k) {
+        o.push('<circle cx="' + (lx + 6) + '" cy="' + (ly + k * 18) + '" r="5" style="fill:' + e[1] + '"/>');
+        o.push('<text x="' + (lx + 18) + '" y="' + (ly + k * 18 + 4) + '" style="' + font + ';font-size:12px">' + esc(e[0]) + "</text>");
+      });
+      ly += leg.length * 18 + 8;
+    } else if (PG.bar) {
+      o.push('<text x="' + lx + '" y="' + ly + '" style="' + font + ';font-size:12px">' + esc(PG.bar.name + ": " + PG.bar.lo + " → " + PG.bar.hi) + "</text>");
+      ly += 22;
+    }
+    if (lw) {
+      o.push('<circle cx="' + (lx + 6) + '" cy="' + ly + '" r="4.5" style="fill:' + ink + '"/><text x="' + (lx + 18) + '" y="' + (ly + 4) + '" style="' + font + ';font-size:11px">checked / survey value</text>');
+      o.push('<circle cx="' + (lx + 6) + '" cy="' + (ly + 16) + '" r="4.5" style="fill:none;stroke:' + ink + ';stroke-width:1.6"/><text x="' + (lx + 18) + '" y="' + (ly + 20) + '" style="' + font + ';font-size:11px">parsed automatically</text>');
+    }
+    o.push('<text x="14" y="' + (H - 7) + '" style="' + font + ';font-size:10.5px;fill-opacity:0.6">ADC Census · ' +
+      esc(location.origin + location.pathname) + " · " + esc(META.updated || "") + "</text></svg>");
+    var xml = o.join(""), name = "adc-census-" + (F.chart === "custom" ? F.x + "-vs-" + F.y : F.chart) + "-" + (META.updated || "plot");
+    var save = function (blob, ext) {
+      var a = document.createElement("a");
+      a.href = URL.createObjectURL(blob); a.download = name + "." + ext;
+      document.body.appendChild(a); a.click(); a.remove();
+      setTimeout(function () { URL.revokeObjectURL(a.href); }, 1000);
+    };
+    if (fmt === "svg") return save(new Blob([xml], { type: "image/svg+xml" }), "svg");
+    var img = new Image(), scale = 3;
+    img.onload = function () {
+      var cv = document.createElement("canvas");
+      cv.width = W * scale; cv.height = H * scale;
+      var cx = cv.getContext("2d"); cx.scale(scale, scale); cx.drawImage(img, 0, 0);
+      cv.toBlob(function (b) { save(b, "png"); }, "image/png");
+    };
+    img.src = "data:image/svg+xml;charset=utf-8," + encodeURIComponent(xml);
+  }
+
   function downloadCSV() {
     var cols = ["id", "date", "venue", "title", "authors", "affiliations", "countries", "type", "architectures", "applications",
       "calibration", "bits", "fs_Sps", "bw_Hz", "sndr_dB", "power_W", "node_nm", "foms_dB", "foms_calc_dB", "energy_J", "survey_fields", "checked_fields", "url", "doi"];
@@ -714,7 +828,7 @@
       var axo = Object.keys(AX).map(function (k) { return '<option value="' + k + '">' + esc(AX[k].name) + "</option>"; }).join("");
       $("ax-x").innerHTML = axo; $("ax-y").innerHTML = axo;
       ALL = applyAnnotations(res[1] || [], parseCSV(res[2] || ""));
-      ALL.forEach(function (p) { BYID[p.id] = p; });
+      ALL.forEach(function (p) { BYID[p.id] = p; if (p.y > YMAX) YMAX = p.y; });
 
       var nA = ALL.filter(function (p) { return p.k === "ADC" && p.lv === "core"; }).length;
       var nD = ALL.filter(function (p) { return p.k === "DAC" && p.lv === "core"; }).length;
