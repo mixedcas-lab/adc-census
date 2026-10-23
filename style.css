@@ -266,7 +266,13 @@ select {
 .fix:hover { color: var(--signal); }
 
 /* lab and university marks above the title: small, quiet */
-.brand { display: flex; align-items: center; gap: 14px; margin-bottom: 18px; }
+.topbar { display: flex; align-items: center; justify-content: space-between; gap: 12px 20px; flex-wrap: wrap; margin-bottom: 18px; }
+.brand { display: flex; align-items: center; gap: 14px; }
+.sister { display: flex; border: 1px solid var(--rule); border-radius: var(--radius-s); overflow: hidden; }
+.sister a { padding: 5px 12px; font-size: 12.5px; font-weight: 600; letter-spacing: .03em; color: var(--ink-2); text-decoration: none; border-left: 1px solid var(--rule); }
+.sister a:first-child { border-left: 0; }
+.sister a:hover { color: var(--ink); background: var(--grid); }
+.sister a[aria-current="page"] { color: var(--panel); background: var(--signal); }
 .brand img { display: block; width: auto; }
 .brand a:first-child img { height: 26px; }
 .brand a:last-child img { height: 15px; }
