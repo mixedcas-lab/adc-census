@@ -184,7 +184,7 @@ select {
 .table { background: var(--panel); border: 1px solid var(--rule); border-radius: var(--radius-m); overflow: hidden; }
 .thead, .tr {
   display: grid;
-  grid-template-columns: 88px minmax(0, 1fr) 40px 76px 66px 72px 50px 72px;
+  grid-template-columns: 88px minmax(0, 1fr) 36px 70px 70px 62px 66px 48px 70px 70px;
   gap: 0 14px; padding: 12px 16px; align-items: baseline;
 }
 .thead { font-size: 12.5px; color: var(--muted); border-bottom: 1px solid var(--rule); padding-top: 10px; padding-bottom: 10px; }

@@ -181,6 +181,7 @@
     { k: "bw", op: ">=", label: "BW ≥", unit: "Hz", get: function (p) { return p.f.bw; } },
     { k: "fs", op: ">=", label: "fₛ ≥", unit: "S/s", get: function (p) { return p.s.fs; } },
     { k: "foms", op: ">=", label: "FoMS ≥", unit: "dB", get: function (p) { return p.foms; } },
+    { k: "fomw", op: "<=", label: "FoMW ≤", unit: "J (10f)", get: function (p) { return p.f.fomw; } },
     { k: "res", op: ">=", label: "Bits ≥", unit: "", get: function (p) { return p.s.res; } },
     { k: "node", op: "<=", label: "Node ≤", unit: "nm", get: function (p) { return p.s.node; } },
     { k: "area", op: "<=", label: "Area ≤", unit: "mm²", get: function (p) { return p.s.area; } }
@@ -240,7 +241,8 @@
     fs: function (a, b) { return (b.s.fs || 0) - (a.s.fs || 0); },
     sndr: function (a, b) { return (b.s.sndr || 0) - (a.s.sndr || 0); },
     foms: function (a, b) { return (b.foms || 0) - (a.foms || 0); },
-    energy: function (a, b) { return (a.e || Infinity) - (b.e || Infinity); }
+    energy: function (a, b) { return (a.e || Infinity) - (b.e || Infinity); },
+    fomw: function (a, b) { return ((a.f && a.f.fomw) || Infinity) - ((b.f && b.f.fomw) || Infinity); }
   };
 
   /* ------------------------------------------------------------ URL state */
@@ -367,6 +369,7 @@
   var CHARTS = {
     energy:       { name: "Energy (P/f_snyq vs. SNDR)", title: "Energy per Nyquist sample vs. SNDR", x: "sndr", y: "e", ref: refEnergy },
     foms:         { name: "FoM_S vs. f_snyq", title: "Schreier FoM vs. Nyquist sample rate", x: "fsnyq", y: "foms", ref: refFoms },
+    fomw:         { name: "FoM_W vs. f_snyq", title: "Walden FoM vs. Nyquist sample rate", x: "fsnyq", y: "fomw", ref: refFomw },
     aperture:     { name: "Aperture (SNDR vs. f_in)", title: "SNDR at high input frequency vs. input frequency", x: "fin", y: "sndr_hf", ref: refAperture },
     foms_trend:   { name: "FoM_S trend by year", title: "FoM_S envelope over time", x: "y", y: "foms", ref: refFomsTrend, faint: true },
     jitter_trend: { name: "Jitter trend by year", title: "Equivalent aperture jitter over time", x: "y", y: "jitter", ref: refJitterTrend, faint: true },
@@ -432,6 +435,14 @@
       { cls: "ref dash", label: "env − 3 dB", pts: env(3) },
       { cls: "ref dot", label: "env − 6 dB", pts: env(6) }
     ];
+  }
+  // Walden FoM: the best designs so far (5-design mean of the lowest FoM_W), as a reference level
+  function refFomw(pts, dom) {
+    var v = pts.map(function (p) { return p.f.fomw; }).filter(function (x) { return x > 0; });
+    if (v.length < 5) return [];
+    var best = mean(smallest(v, 5));
+    return [{ cls: "ref dash", label: "Best FoM_W (5-design mean) " + fmtSI(best, "J") + "/conv-step",
+      pts: [[dom[0], best], [dom[1], best]] }];
   }
   function jitterLine(j, cls, label, dom) {
     return { cls: cls, label: label, pts: sweep(Math.log10(dom[0]), Math.log10(dom[1]), 60, true).map(function (f) { return [f, -20 * Math.log10(2 * Math.PI * f * j)]; }) };
@@ -685,10 +696,15 @@
       (tags.length ? '<div class="tags">' + tags.join("") + "</div>" : "") + "</div>" +
       spec(p, "res", p.s.res ? p.s.res + " b" : "", "Bits") +
       spec(p, "fs", fmtSI(p.s.fs, "S/s"), "fₛ") +
+      (p.s.bw != null || p.ver.bw === "deleted" ? spec(p, "bw", fmtSI(p.s.bw, "Hz"), "BW")
+        : p.f.bw ? '<span class="spec auto" title="Nyquist converter: f_s / 2"><span class="lbl">BW</span>≈' + fmtSI(p.f.bw, "Hz") + "</span>" : '<span class="spec"></span>') +
       spec(p, "sndr", p.s.sndr ? p.s.sndr.toFixed(1) + " dB" : "", "SNDR") +
       spec(p, "p", fmtSI(p.s.p, "W"), "Power") +
       spec(p, "node", p.s.node ? p.s.node + " nm" : "", "Node") +
-      foms + "</div>";
+      foms +
+      (p.s.fomw != null || p.ver.fomw === "deleted" ? spec(p, "fomw", fmtSI(p.s.fomw * 1e-15, "J"), "FoMW")
+        : p.f.fomw ? '<span class="spec auto" title="Computed: P / (2^ENOB · f_snyq)"><span class="lbl">FoMW</span>≈' + fmtSI(p.f.fomw, "J") + "</span>" : '<span class="spec"></span>') +
+      "</div>";
   }
   var CMP_ROWS = [
     ["Venue", function (p) { return esc(p.v + " " + (p.y || "")); }],
@@ -955,12 +971,12 @@
 
   function downloadCSV() {
     var cols = ["id", "date", "venue", "title", "authors", "affiliations", "countries", "type", "architectures", "applications",
-      "calibration", "bits", "fs_Sps", "bw_Hz", "sndr_dB", "power_W", "node_nm", "foms_dB", "foms_calc_dB", "energy_J", "foms_basis", "value_sources", "url", "doi"];
+      "calibration", "bits", "fs_Sps", "bw_Hz", "sndr_dB", "power_W", "node_nm", "foms_dB", "foms_calc_dB", "fomw_fJ", "fomw_calc_fJ", "energy_J", "foms_basis", "value_sources", "url", "doi"];
     var q = function (v) { v = v == null ? "" : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
     var lines = [cols.join(",")].concat(VIEW.map(function (p) {
       return [p.id, p.d, p.v, p.t, (p.au || []).join("; "), (p.org || []).join("; "), (p.cn || []).join("; "), p.k,
         p.ar.join("; "), p.ap.join("; "), p.cal ? "yes" : "", p.s.res, p.s.fs, p.s.bw, p.s.sndr, p.s.p, p.s.node,
-        p.s.foms, p.fomsCalc, p.e, p.s.foms_b || "",
+        p.s.foms, p.fomsCalc, p.s.fomw, p.s.fomw == null && p.f.fomw ? +(p.f.fomw / 1e-15).toPrecision(4) : "", p.e, p.s.foms_b || "",
         Object.keys(p.vs).filter(function (k) { return p.s[k] != null || p.ver[k] === "deleted"; }).map(function (k) {
           return k + ":" + (p.ver[k] === "deleted" ? "deleted" : { t: "title", a: "abstract" }[p.vs[k]] || p.vs[k]);
         }).join("; "), p.url, p.doi].map(q).join(",");
