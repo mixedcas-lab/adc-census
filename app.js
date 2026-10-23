@@ -28,7 +28,7 @@
   function defaults() {
     return { q: "", kind: "ADC", y0: "", y1: "", venues: [], apps: [], arch: [], country: "",
       related: false, cal: false, fresh: false, sort: "date",
-      chart: "energy", src: "both", x: "fsnyq", y: "sndr", xs: "", ys: "", color: "arch" };
+      chart: "energy", x: "fsnyq", y: "sndr", xs: "", ys: "", color: "arch" };
   }
 
   /* ------------------------------------------------------------ helpers */
@@ -280,8 +280,8 @@
     }
     return true;
   }
-  function showSurvey() { return F.src !== "census" && SURVEY.length > 0; }
-  function showCensus() { return F.src !== "survey"; }
+  function showSurvey() { return SURVEY.length > 0; }
+  function showCensus() { return true; }
 
   function nmFmt(v) { return v >= 1000 ? +(v / 1000).toPrecision(3) + " µm" : +v.toPrecision(3) + " nm"; }
   var AX = {
@@ -458,7 +458,6 @@
   }
   function renderPlotControls(c) {
     $("chart").value = CHARTS[F.chart] ? F.chart : "energy";
-    Array.prototype.forEach.call($("src").children, function (b) { b.setAttribute("aria-pressed", b.dataset.v === F.src); });
     $("axes").hidden = !c.custom;
     if (c.custom) {
       $("ax-x").value = c.x; $("ax-y").value = c.y;
@@ -555,7 +554,7 @@
     $("plot").innerHTML = g.join("");
 
     var parts = [];
-    if (sur.length) parts.push(sur.length + " survey designs (filled, Murmann ISSCC & VLSI)");
+    if (sur.length) parts.push(sur.length + " ISSCC & VLSI survey designs (filled)");
     if (cen.length) parts.push(cen.length + " census papers (rings, values parsed from titles and abstracts)");
     var note = parts.length ? parts.join(" and ") + " report both values." : "No point in this selection reports both values.";
     if (c.ref && refs.length) note += " Lines follow the Murmann survey plots" + (sur.length ? ", fitted to the survey designs shown." : ", fitted to the census points shown.");
@@ -643,7 +642,6 @@
     $("more").addEventListener("click", function () { LIMIT += PAGE; renderRows(); });
     $("csv").addEventListener("click", downloadCSV);
     $("chart").addEventListener("change", function (e) { F.chart = e.target.value; F.xs = F.ys = ""; update({ keepLimit: true }); });
-    $("src").addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) { F.src = b.dataset.v; update({ keepLimit: true }); } });
     $("ax-x").addEventListener("change", function (e) { F.x = e.target.value; F.xs = ""; update({ keepLimit: true }); });
     $("ax-y").addEventListener("change", function (e) { F.y = e.target.value; F.ys = ""; update({ keepLimit: true }); });
     $("ax-xlog").addEventListener("change", function (e) { F.xs = e.target.checked ? "log" : "lin"; update({ keepLimit: true }); });
