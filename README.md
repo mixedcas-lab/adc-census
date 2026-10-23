@@ -165,6 +165,12 @@ python3 -m unittest discover -s collector
 | `s` | 추출 수치: `res`, `fs`, `bw`, `sndr`, `enob`, `p`, `node`, `foms`, `fomw` |
 | `ct`, `first`, `ins` | J/C/EA(early access), 처음 수집한 날, IEEE 등록일 |
 
+### 수치 수정 요청
+
+- 사이트의 각 논문 아래 **Report a fix**를 누르면 GitHub 이슈 작성 화면이 열립니다. 논문 id, 현재 값과 출처, annotations.csv 행 형식이 미리 채워져 있으니 고칠 항목·값·근거(표·그림·쪽)만 적으면 됩니다(GitHub 계정 필요).
+- 연구실은 이슈를 확인해 `data/annotations.csv`에 행을 추가하고 이슈를 닫습니다. 저장소 쓰기 권한이 있으면 annotations.csv를 직접 고쳐도 됩니다.
+- 수신기·송수신기·SoC·센서 논문처럼 **ADC가 시스템의 블록인 논문**(`ADC inside a system`)은 논문의 전력·속도·FoM이 시스템 전체 값이므로 자동·AI 수치를 표시하지 않고 "—"로 둡니다. Survey 값과 사람이 검수한 값은 표시합니다.
+
 ### 값의 출처와 삭제
 
 - 사이트는 값마다 출처를 표시합니다: `T` 제목, `A` 초록(둘 다 정규식 자동 추출, 회색), `S` Murmann Survey, `AI` AI 도구 추출(보라색 기울임, 미검수), `✓` 연구실 검수(진한 색).

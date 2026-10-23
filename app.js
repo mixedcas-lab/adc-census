@@ -132,6 +132,7 @@
   var AI_BY = /\b(?:codex|gpt|chatgpt|claude|gemini|copilot|llm|ai)\b/i;
   var DELETE = /^(?:-|–|na|n\/a|none|nr)$/i;   // in annotations.csv: remove the value (not reported / wrong)
   var ANN_KEYS = ["res", "fs", "bw", "sndr", "p", "node", "foms", "fomw", "sndr_hf", "fin", "area", "snr", "dr"];
+  var ANN_HEAD = ["id", "exclude", "kind", "arch", "app", "res", "fs", "bw", "sndr", "p", "node", "foms", "fomw", "sndr_hf", "fin", "area", "cal", "note", "by"];
   function applyAnnotations(papers, rows) {
     var ann = {};
     rows.forEach(function (r) { if (r.id) ann[r.id] = r; });
@@ -152,6 +153,7 @@
         ANN_KEYS.forEach(function (k) {
           var raw = (a[k] || "").trim();
           if (!raw) return;                                         // empty: keep what is there
+          if (p.sys && who === "ai") return;                        // AI numbers of a system paper describe the system
           if (RANK[who] < RANK[p.vs[k] || "t"]) {                   // an AI value never replaces survey or checked numbers
             var v0 = parseSI(raw);
             if (DELETE.test(raw) || (v0 != null && p.s[k] != null && Math.abs(v0 - p.s[k]) > 0.05 * Math.abs(p.s[k]))) p.conflicts.push(k);
@@ -649,16 +651,30 @@
       nMiss++;
       [c.x, c.y].forEach(function (k) { if (p.f && p.f[k] == null) miss[k] = (miss[k] || 0) + 1; });
     });
+    var nSys = VIEW.filter(function (p) { return p.sys && !shown[p.id]; }).length;
     var why = Object.keys(miss).sort(function (a, b) { return miss[b] - miss[a]; })
       .map(function (k) { return miss[k] + " without " + AX[k].name.toLowerCase(); });
     var note = (pts.length ? pts.length + " of " + VIEW.length + " papers shown (filled: survey or checked values; dashed rings: AI-extracted; rings: parsed from titles and abstracts)."
-      : "No paper in this selection reports both values.") + (nMiss ? " Not shown: " + (why.length ? why.join(", ") : nMiss + " below the selected value quality") + "." : "");
+      : "No paper in this selection reports both values.") + (nMiss ? " Not shown: " + (why.length ? why.join(", ") : nMiss + " below the selected value quality") + "." : "") +
+      (nSys ? " " + nSys + " of them are ADCs inside a system, whose numbers are not shown." : "");
     if (c.ref && refs.length) note += " Lines follow the Murmann survey plots, fitted to " + (sur.length >= 10 ? "the survey papers shown." : "the papers shown.");
     $("plot-note").innerHTML = esc(note) + (col.bar ? ' <span class="cbar"><span>' + esc(col.bar.name + " " + col.bar.lo) +
       '</span><span class="ramp"></span><span>' + esc(col.bar.hi) + "</span></span>" : "");
   }
 
   /* ------------------------------------------------------------ rendering: rows */
+  var SYS_DASH = '<span class="del" title="The converter is a block of the system this paper is about; its power, speed and FoM describe the system, so they are not shown">—</span>';
+  var REPO = "https://github.com/mixedcas-lab/adc-census";
+  function fixURL(p) {   // a prefilled GitHub issue: the lab checks it and adds the row to data/annotations.csv
+    var vals = Object.keys(p.s).filter(function (k) { return ANN_KEYS.indexOf(k) >= 0; }).map(function (k) {
+      return k + " = " + p.s[k] + " (" + (SRC[p.vs[k] || "t"] || ["", "parsed"])[1].toLowerCase() + ")";
+    });
+    var body = ["Paper: " + p.t, "IEEE id: " + p.id + (p.url ? " (" + p.url + ")" : ""), "",
+      "Field(s) to correct (" + ANN_KEYS.join(", ") + "):", "Correct value with unit (or - if the paper does not report it):",
+      "Where in the paper (table, figure or page):", "", "Values shown now:"].concat(vals.length ? vals : ["(none)"]).concat(["",
+      "annotations.csv row to fill in:", "id," + ANN_HEAD.slice(1).join(","), p.id + "," + ANN_HEAD.slice(1).map(function () { return ""; }).join(",")]).join("\n");
+    return REPO + "/issues/new?title=" + encodeURIComponent("Correction: " + p.t.slice(0, 80)) + "&body=" + encodeURIComponent(body);
+  }
   function badge(p, k) {
     var src = p.vs[k] || "t", b = SRC[src];
     return '<sup class="src src-' + src + '" title="' + esc(b[1]) + '">' + b[0] + "</sup>";
@@ -670,6 +686,10 @@
     return '<span class="spec' + (RANK[src] >= 3 ? "" : src === "ai" ? " ai" : " auto") + '"><span class="lbl">' + lbl + "</span>" + text + badge(p, k) + "</span>";
   }
   function rowHTML(p) {
+    var html = rowCells(p);
+    return p.sys ? html.split('<span class="spec"></span>').join('<span class="spec">' + SYS_DASH + "</span>") : html;
+  }
+  function rowCells(p) {
     var au = p.au || [];
     var names = au.slice(0, 3).join(", ") + (au.length > 3 ? " et al." : "");
     var tags = p.ar.map(function (a) {
@@ -679,6 +699,7 @@
     if (p.ct === "EA") tags.push('<span class="tag">Early access</span>');
     if (p.sv && p.sv.length) tags.push('<span class="tag">Survey values</span>');
     if (p.lv !== "core") tags.push('<span class="tag lv">Converter in abstract only</span>');
+    if (p.sys) tags.push('<span class="tag lv" title="Power, speed and FoM in this paper describe the whole system">ADC inside a system</span>');
     if (p.conflicts.length) tags.push('<span class="tag warn" title="An AI-extracted value differs from the survey or checked value; the latter is shown">Review: ' +
       esc(p.conflicts.join(", ")) + "</span>");
     var fresh = META.sweep_done && p.first === META.updated;
@@ -687,7 +708,8 @@
     return '<div class="tr" role="row" data-id="' + esc(p.id) + '">' +
       '<div class="pub" role="cell"><span class="venue">' + esc(p.v) + "</span><span>" + esc(fmtDate(p.d)) + "</span>" +
       (fresh ? '<span class="new">New</span>' : "") +
-      '<label class="cmp"><input type="checkbox" data-cmp="' + esc(p.id) + '"' + (F.cmp.indexOf(p.id) >= 0 ? " checked" : "") + "> Compare</label></div>" +
+      '<label class="cmp"><input type="checkbox" data-cmp="' + esc(p.id) + '"' + (F.cmp.indexOf(p.id) >= 0 ? " checked" : "") + "> Compare</label>" +
+      (/^m:/.test(p.id) ? "" : '<a class="fix" href="' + esc(fixURL(p)) + '" target="_blank" rel="noopener" title="Open a GitHub issue to correct a value">Report a fix</a>') + "</div>" +
       '<div class="paper" role="cell"><a class="title" href="' + esc(p.url || (p.doi ? "https://doi.org/" + p.doi : "#")) +
       '" target="_blank" rel="noopener">' + esc(p.t) + "</a>" +
       (names ? '<p class="by">' + esc(names) + "</p>" : "") +

@@ -67,6 +67,30 @@ def _adc_hit(text):
     return True
 
 
+# An ADC that is a block of a larger system: the title is about a receiver, transceiver, SoC, sensor ...
+# "with/using" an ADC, or "ADC-based <system>". Its reported power, speed and FoM belong to the system.
+_SYSTEM = (r"(?:receiver|transmitter|transceiver|TRX|\bRX\b|\bTX\b|front[- ]end|\bAFE\b|\bSoC\b|system[- ]on[- ]chip|retimer|"
+           r"\bPHY\b|\blink\b|radio|radar|image sensor|imager|readout (?:IC|circuit|system)|\bD?ROIC\b|recording (?:IC|system|SoC)|"
+           r"processor|accelerator|digitizer system|beamformer|platform|module)")
+SYSTEM_WITH = re.compile(r"\b" + _SYSTEM + r"s?\b.{0,80}?\b(?:with|using|featuring|employing|incorporating|including|based on|that uses)\b"
+                         r".{0,80}?(?:\bADCs?\b|analog[- ]to[- ]digital|quantizer|SAR|ΔΣ|delta[- ]sigma)", I)
+SYSTEM_BASED = re.compile(r"(?:\bADCs?|analog[- ]to[- ]digital)[- ](?:based|assisted|driven)\b.{0,60}?\b" + _SYSTEM, I)
+ADC_FOR_SYSTEM = re.compile(r"(?:\bADCs?|converters?|modulators?)\s+(?:\w+\s+){0,2}(?:for|in|targeting)\b", I)
+
+
+def is_system(title):
+    """True if the converter is a block inside the system the title is about."""
+    t = title or ""
+    if SYSTEM_BASED.search(t):
+        return True
+    m = SYSTEM_WITH.search(t)
+    if not m:
+        return False
+    # "A 64-GS/s ADC for 224-Gb/s Receivers with ..." is still a converter paper
+    first_adc = re.search(r"\bADCs?\b|analog[- ]to[- ]digital|\bconverter|modulator", t, I)
+    return not (first_adc and first_adc.start() < m.start() and ADC_FOR_SYSTEM.search(t[first_adc.start():m.start() + 40]))
+
+
 def relevance(title, abstract, terms):
     """Return (kind, level): kind in {ADC, DAC, None}, level in {core, related}.
     `terms` should be author keywords; IEEE's automatic index terms tag many CIM/PLL/DC-DC papers."""

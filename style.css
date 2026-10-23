@@ -263,3 +263,6 @@ select {
 .cmptable thead th { min-width: 170px; font-weight: 600; }
 .cmptable tbody th { color: var(--ink-2); font-weight: 500; white-space: nowrap; }
 .cmpt { display: block; margin-bottom: 4px; }
+
+.fix { display: block; margin-top: 3px; font-size: 12px; color: var(--muted); }
+.fix:hover { color: var(--signal); }

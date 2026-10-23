@@ -237,6 +237,9 @@ def build_record(a, venues, force_adc=False):
         return None
     arch = C.architectures(title, abstract)
     specs, src = C.spec_sources(title, abstract)
+    system = C.is_system(title)
+    if system:          # the numbers in a receiver/SoC/sensor paper describe the system, not its converter
+        specs, src = {}, {}
     authors = sorted((a.get("authors") or {}).get("authors") or [], key=lambda x: x.get("author_order") or 0)
     names, orgs, countries = [], [], []
     for au in authors:
@@ -278,6 +281,7 @@ def build_record(a, venues, force_adc=False):
         "cal": C.has_calibration(title, abstract),
         "s": specs,
         "src": src,                      # t = title, a = abstract (survey fields are listed in "sv")
+        "sys": system,                   # converter inside a larger system: its parsed numbers are dropped
         "x": C.derived(specs, arch),
         "ct": "EA" if "early" in ctype.lower() else ("C" if "conf" in ctype.lower() else "J"),
         "url": a.get("html_url") or ("https://doi.org/" + a["doi"] if a.get("doi") else ""),

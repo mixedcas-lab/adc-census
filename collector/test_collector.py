@@ -162,6 +162,16 @@ class TestSpecs(unittest.TestCase):
         self.assertNotIn("res", C.parse_specs("A CT ΔΣ Modulator With a 4-Bit Quantizer", ""))
         self.assertEqual(C.parse_specs("X", "achieves a FoM_DR of 182.1 dB")["foms_b"], "DR")
 
+    def test_adc_inside_a_system(self):
+        for t in ("A 0.093 pJ/b/dB 20 Gb/s ADC-Based PAM4 Receiver With 33 dB Loss Compensation",
+                  "A 2.16-pJ/b 112-Gb/s PAM-4 Transceiver With Time-Interleaved 2-b/3-b ADCs and Unbalanced Baud-Rate CDR",
+                  "A 3072:96 Multiplexed Neural Readout IC With Two-Step Incremental-SAR Conversion",
+                  "A 1280 × 1024 SWIR DROIC With Self-Correcting Phase-Coded TDC-Interpolated Single-Slope ADC"):
+            self.assertTrue(C.is_system(t), t)
+        for t in ("A 64-GS/s 8-b Time-Interleaved SAR ADC for 224-Gb/s PAM-4 Wireline Receivers in 5-nm FinFET",
+                  "A 12-b 1-GS/s Pipelined-SAR ADC With Background Gain Calibration"):
+            self.assertFalse(C.is_system(t), t)
+
     def test_value_sources(self):
         specs, src = C.spec_sources("A 12-b 1-GS/s SAR ADC", "It consumes 5 mW in 28-nm CMOS.")
         self.assertEqual(src, {"res": "t", "fs": "t", "p": "a", "node": "a"})
