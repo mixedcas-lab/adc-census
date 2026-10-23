@@ -216,12 +216,13 @@ class FakeClient:
 class TestPipeline(unittest.TestCase):
     def setUp(self):
         self.tmp = tempfile.mkdtemp()
-        self.saved = {k: getattr(collect, k) for k in ("DATA", "CACHE", "STATE", "PAPERS", "META")}
+        self.saved = {k: getattr(collect, k) for k in ("DATA", "CACHE", "STATE", "PAPERS", "META", "SURVEY")}
         collect.DATA = os.path.join(self.tmp, "data")
         collect.CACHE = os.path.join(self.tmp, "cache", "raw")
         collect.STATE = os.path.join(collect.DATA, "state.json")
         collect.PAPERS = os.path.join(collect.DATA, "papers.json")
         collect.META = os.path.join(collect.DATA, "meta.json")
+        collect.SURVEY = os.path.join(collect.DATA, "murmann.json")   # absent unless a test writes it
         os.makedirs(collect.DATA)
 
     def tearDown(self):
@@ -312,6 +313,35 @@ class TestPipeline(unittest.TestCase):
         papers = collect.load_json(collect.PAPERS, [])
         self.assertLess(len(papers), n)
         self.assertTrue(all(p["y"] >= 2026 for p in papers))
+
+    def test_survey_is_absorbed(self):
+        with open(os.path.join(HERE, "fixtures", "sample_articles.json"), encoding="utf-8") as f:
+            arts = json.load(f)
+        for a in arts:
+            a["doi"] = "10.1109/X.%s" % a["article_number"]
+        config = collect.load_json(collect.CONFIG, None)
+        state = {}
+        collect.init_sweep(state, config, 2025)
+        collect.run_sweep(FakeClient(arts), state, config, "2026-10-22")
+        rows = [
+            {"c": "ISSCC", "y": 2025, "doi": "10.1109/X.9000002", "ar": ["TI", "SAR"], "t": "x",
+             "sndr": 37.0, "fs": 6.4e10, "fsnyq": 6.4e10, "p": 0.3, "foms": 147.0, "fin": 3e10, "sndr_hf": 36.0},
+            {"c": "ISSCC", "y": 2025, "doi": "10.1109/X.9000002", "sndr": 30.0, "p": 0.3, "foms": 140.0},   # second mode
+            {"c": "ISSCC", "y": 2025, "doi": "10.1109/x.9000005", "ar": ["TI"], "t": "receiver", "sndr": 33.0, "p": 0.5},
+            {"c": "VLSI", "y": 2025, "doi": "10.1109/VLSIC.1997.623781", "ar": ["CT-ΔΣ"], "t": "1.2-V Audio A/D Converter",
+             "au": "Y. Matsuya, J. Terada", "sndr": 91.5, "fs": 6.14e6, "fsnyq": 4e4, "p": 6.5e-3},
+        ]
+        collect.save_json(collect.SURVEY, {"rows": rows})
+        collect.rebuild(config, "2026-10-22")
+        collect.rebuild(config, "2026-10-23")          # survey-only records are rebuilt, not duplicated
+        ids = {p["id"]: p for p in collect.load_json(collect.PAPERS, [])}
+        p = ids["9000002"]
+        self.assertEqual((p["s"]["sndr"], p["s"]["fs"], p["s"]["bw"], p["s"]["fin"]), (37.0, 6.4e10, 3.2e10, 3e10))
+        self.assertIn("sndr", p["sv"])
+        self.assertEqual(ids["9000005"]["lv"], "core")       # abstract-only receiver becomes core via the survey (DOI case ignored)
+        m = ids["m:10.1109/VLSIC.1997.623781"]
+        self.assertEqual((m["v"], m["y"], m["k"], m["ar"], m["au"]), ("VLSI", 2025, "ADC", ["CT-ΔΣ"], ["Y. Matsuya", "J. Terada"]))
+        self.assertEqual(sum(1 for k in ids if k.startswith("m:")), 1)
 
     def test_access_venue_match(self):
         venues = collect.load_json(collect.CONFIG, None)["venues"]

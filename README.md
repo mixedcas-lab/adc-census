@@ -95,11 +95,18 @@ crontab -e
 
 무료 플랜에서는 저장소가 Public이어야 Pages가 동작합니다.
 
-## 그래프
+## 그래프와 Murmann Survey
 
-사이트 상단 그래프는 Chart 메뉴에서 고릅니다. Murmann ADC Performance Survey의 다섯 가지 그래프(Energy, FoM<sub>S</sub> vs. f<sub>snyq</sub>, Aperture, FoM<sub>S</sub> 추세, jitter 추세)와 x·y축을 직접 고르는 Custom이 있습니다. 채운 점은 Murmann Survey(ISSCC·VLSI, 수작업 정리, `data/murmann.json`), 테두리 점은 이 사이트가 자동 추출한 논문입니다. 기준선(envelope, jitter 선)은 Survey 저장소의 노트북과 같은 방식으로 계산합니다.
+사이트 상단 그래프는 Chart 메뉴에서 고릅니다. Murmann ADC Performance Survey의 다섯 가지 그래프(Energy, FoM<sub>S</sub> vs. f<sub>snyq</sub>, Aperture, FoM<sub>S</sub> 추세, jitter 추세)와 x·y축을 직접 고르는 Custom이 있습니다. 기준선(envelope, jitter 선)은 Survey 저장소의 노트북과 같은 방식으로 계산합니다.
 
-`collector/murmann.py`가 https://github.com/bmurmann/ADC-survey 의 최신 엑셀을 주 1회 받아 `data/murmann.json`으로 바꿉니다(`scripts/update.sh`에서 실행). 엑셀의 ABSTRACT 열은 가져오지 않습니다. Survey는 BSD 3-Clause 라이선스이며 사이트 하단에 저작권과 인용 문구를 표시합니다.
+Survey 데이터는 수집기가 `data/papers.json`에 흡수합니다.
+
+- `collector/murmann.py`가 https://github.com/bmurmann/ADC-survey 의 최신 엑셀을 주 1회 받아 `data/murmann.json`으로 바꿉니다(ABSTRACT 열은 가져오지 않음).
+- `collect.py`가 DOI로 논문을 맞춰 Survey 수치(SNDR, f<sub>s</sub>, f<sub>snyq</sub>, 전력, FoM, 공정, 면적, f<sub>in</sub>)로 자동 추출값을 바꾸고, 그 필드를 `sv`에 적습니다. 한 논문에 설계가 여러 행이면 FoM<sub>S</sub>가 가장 높은 행을 씁니다. Survey에 있는 논문은 분류 규칙과 관계없이 core ADC가 됩니다.
+- 아직 IEEE에서 받지 않은 Survey 논문은 `m:<DOI>` id로 목록에 들어가고, 수집되면 IEEE 기록에 자동으로 합쳐집니다.
+- 우선순위: `annotations.csv`(사람 검수) > Survey > 자동 추출. 그래프에서 채운 점은 Survey나 검수 값, 테두리 점은 자동 추출 값입니다.
+
+Survey는 BSD 3-Clause 라이선스이며 사이트 하단에 저작권과 인용 문구를 표시합니다.
 
 ## 검수 값 넣기 (학생용)
 

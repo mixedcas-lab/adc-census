@@ -1,7 +1,7 @@
 /* ADC Census front end. Plain JS, no build step.
    Data: data/meta.json, data/papers.json (written by collector/collect.py),
-         data/annotations.csv (hand-checked values and corrections, optional),
-         data/murmann.json (B. Murmann's ADC Performance Survey, written by collector/murmann.py). */
+         data/annotations.csv (hand-checked values and corrections, optional).
+   Numbers from B. Murmann's ADC Performance Survey are merged into papers.json by the collector (p.sv). */
 (function () {
   "use strict";
 
@@ -22,7 +22,7 @@
   var PAGE = 150;
 
   var $ = function (id) { return document.getElementById(id); };
-  var META = {}, ALL = [], VIEW = [], LIMIT = PAGE, BYID = {}, SURVEY = [], SBYID = {}, SMETA = {};
+  var META = {}, ALL = [], VIEW = [], LIMIT = PAGE, BYID = {};
   var F = defaults();
 
   function defaults() {
@@ -108,6 +108,7 @@
     var out = [];
     papers.forEach(function (p) {
       p.s = p.s || {}; p.ar = p.ar || []; p.ap = p.ap || []; p.ver = {};
+      (p.sv || []).forEach(function (k) { p.ver[k] = "survey"; });   // curated values from the Murmann survey
       var a = ann[p.id];
       if (a) {
         if (/^(1|y|yes|true|x)$/i.test(a.exclude || "")) return;
@@ -117,7 +118,7 @@
         if (a.kind || a.arch) p.lv = "core";
         ["res", "fs", "bw", "sndr", "p", "node", "foms", "fomw", "sndr_hf", "fin", "area"].forEach(function (k) {
           var v = parseSI(a[k]);
-          if (v != null && !isNaN(v)) { p.s[k] = v; p.ver[k] = true; }
+          if (v != null && !isNaN(v)) { p.s[k] = v; p.ver[k] = "checked"; }
         });
         p.note = a.note || "";
       }
@@ -217,10 +218,7 @@
     $("sort").value = F.sort;
   }
   function renderLegend() {
-    var c = showCensus() ? counts("arch", function (p) { return p.prim === "Other" ? ["Other"] : p.ar; }) : {};
-    if (showSurvey()) SURVEY.forEach(function (m) {
-      if (matchSurvey(m, "arch")) (m.prim === "Other" ? ["Other"] : m.ar).forEach(function (a) { c[a] = (c[a] || 0) + 1; });
-    });
+    var c = counts("arch", function (p) { return p.prim === "Other" ? ["Other"] : p.ar; });
     var keys = Object.keys(c).sort(function (a, b) {
       return (a === "Other") - (b === "Other") || c[b] - c[a];
     });
@@ -242,8 +240,8 @@
   }
 
   /* ------------------------------------------------------------ plot: data and axes */
-  // Plotted values share one set of keys. Census papers get theirs from the parsed/annotated specs,
-  // survey designs (Murmann, ISSCC & VLSI) from data/murmann.json. Energies and FoM_W are in J.
+  // Plotted values share one set of keys, taken from the merged specs (survey > parsed, annotations on top).
+  // Energies and FoM_W are in J.
   function enob(sndr) { return (sndr - 1.76) / 6.02; }
   function censusFields(p) {
     var s = p.s, over = p.ar.some(function (a) { return OVERSAMPLED.indexOf(a) >= 0; });
@@ -255,41 +253,17 @@
     if (f.fin && f.sndr_hf != null) f.jitter = 1 / (2 * Math.PI * f.fin * Math.sqrt(Math.pow(10, f.sndr_hf / 10)));
     return f;
   }
-  function surveyPoint(r, i) {
-    var f = { sndr: r.sndr, sndr_hf: r.sndr_hf, fin: r.fin, fs: r.fs, fsnyq: r.fsnyq, bw: r.fsnyq ? r.fsnyq / 2 : null,
-      p: r.p, e: r.e_pj != null ? r.e_pj * 1e-12 : null, foms: r.foms, fomw: r.fomw != null ? r.fomw * 1e-15 : null,
-      node: r.node, area: r.area, snr: r.snr, sfdr: r.sfdr, dr: r.dr, y: r.y };
-    if (r.fin && r.sndr_hf != null) f.jitter = 1 / (2 * Math.PI * r.fin * Math.sqrt(Math.pow(10, r.sndr_hf / 10)));
-    var m = { id: "m" + i, src: "m", t: r.t, au: r.au, v: r.c, y: r.y, sid: r.sid, doi: r.doi, arch: r.arch, ar: r.ar || [], f: f };
-    m.prim = primaryArch(m);
-    return m;
+  // which spec fields a plotted value is computed from (any one set), to tell curated points from parsed ones
+  var BASIS = { fsnyq: [["bw"], ["fs"]], bw: [["bw"], ["fs"]], e: [["p", "bw"], ["p", "fs"]],
+    foms: [["foms"], ["sndr", "p", "bw"], ["sndr", "p", "fs"]], fomw: [["fomw"], ["sndr", "p", "bw"], ["sndr", "p", "fs"]],
+    jitter: [["fin", "sndr_hf"]], y: [[]] };
+  function curated(p, key) {
+    return (BASIS[key] || [[key]]).some(function (set) { return set.every(function (b) { return p.ver[b]; }); });
   }
-  function matchSurvey(m, skip) {
-    // the survey has no application, country or calibration tags: hide it when those filters are on
-    if (F.kind !== "ADC" || F.apps.length || F.country || F.cal || F.fresh) return false;
-    if (skip !== "year") {
-      if (F.y0 && m.y < +F.y0) return false;
-      if (F.y1 && m.y > +F.y1) return false;
-    }
-    if (skip !== "venue" && F.venues.length && F.venues.indexOf(m.v) < 0) return false;
-    if (skip !== "arch" && F.arch.length && !F.arch.some(function (a) { return a === "Other" ? m.prim === "Other" : m.ar.indexOf(a) >= 0; })) return false;
-    if (F.q) {
-      var hay = m._hay || (m._hay = [m.t, m.au, m.v, m.arch, m.ar.join(" ")].join(" ").toLowerCase());
-      var terms = F.q.toLowerCase().split(/\s+/).filter(Boolean);
-      for (var i = 0; i < terms.length; i++) if (hay.indexOf(terms[i]) < 0) return false;
-    }
-    return true;
-  }
-  function showSurvey() { return SURVEY.length > 0; }
-  function showCensus() { return true; }
-
   function nmFmt(v) { return v >= 1000 ? +(v / 1000).toPrecision(3) + " µm" : +v.toPrecision(3) + " nm"; }
   var AX = {
     sndr:    { name: "SNDR", label: "SNDR (dB)" },
     sndr_hf: { name: "SNDR at high input frequency", label: "SNDR at f_in,hf (dB)" },
-    snr:     { name: "SNR (survey)", label: "SNR (dB)" },
-    sfdr:    { name: "SFDR (survey)", label: "SFDR (dB)" },
-    dr:      { name: "DR (survey)", label: "DR (dB)" },
     foms:    { name: "Schreier FoM", label: "FoM_S (dB)" },
     fomw:    { name: "Walden FoM", label: "FoM_W (J/conv-step)", log: true, unit: "J" },
     e:       { name: "Energy per Nyquist sample", label: "P / f_snyq (J)", log: true, unit: "J" },
@@ -474,9 +448,8 @@
       var x = p.f[c.x], y = p.f[c.y];
       return x != null && y != null && isFinite(x) && isFinite(y) && (!xlog || x > 0) && (!ylog || y > 0);
     };
-    var cen = showCensus() ? VIEW.filter(function (p) { return p.f && ok(p); }) : [];
-    var sur = showSurvey() ? SURVEY.filter(function (m) { return matchSurvey(m) && ok(m); }) : [];
-    var pts = sur.concat(cen);
+    var pts = VIEW.filter(function (p) { return p.f && ok(p); });
+    var sur = pts.filter(function (p) { return p.sv && p.sv.length; });
     var tx = function (v) { return xlog ? Math.log10(v) : v; }, ty = function (v) { return ylog ? Math.log10(v) : v; };
 
     var W = Math.max(320, Math.round($("plot").clientWidth || 820));   // draw at real pixel width so text stays legible
@@ -504,8 +477,8 @@
     g.push('<text class="axis-title" x="' + ((L + R) / 2) + '" y="' + (H - 6) + '" text-anchor="middle">' + esc(AX[c.x].label) + "</text>");
     g.push('<text class="axis-title" transform="translate(12 ' + ((T + B) / 2) + ') rotate(-90)" text-anchor="middle">' + esc(AX[c.y].label) + "</text>");
 
-    // reference lines are fitted to the survey when it is shown (curated numbers), otherwise to the census points
-    var refs = c.ref ? c.ref(sur.length ? sur : cen, dx.map(function (v) { return xlog ? Math.pow(10, v) : v; })) : [];
+    // reference lines are fitted to the papers with survey numbers (curated), otherwise to everything shown
+    var refs = c.ref ? c.ref(sur.length >= 10 ? sur : pts, dx.map(function (v) { return xlog ? Math.pow(10, v) : v; })) : [];
     g.push('<g clip-path="url(#pc)">');
     refs.forEach(function (r) {
       var d = r.pts.filter(function (q) { return isFinite(q[1]) && (!ylog || q[1] > 0); })
@@ -540,25 +513,22 @@
 
     if (!pts.length) {
       g.push('<text class="placeholder" x="' + ((L + R) / 2) + '" y="' + ((T + B) / 2) + '" text-anchor="middle">' +
-        (ALL.length || SURVEY.length ? "Nothing in this selection reports both values." : "No data yet.") + "</text>");
+        (ALL.length ? "Nothing in this selection reports both values." : "No data yet.") + "</text>");
     }
     var col = colourScale(pts), r0 = narrow ? 3.2 : 4.3;
     g.push('<g clip-path="url(#pc)">');
-    // survey designs are filled dots, census papers rings; census on top so they can be clicked through to the list
-    sur.concat(cen.slice().sort(function (a, b) { return (a.d || "").localeCompare(b.d || ""); })).forEach(function (p) {
-      var fill = col.of(p), ring = p.src !== "m";
+    // filled: survey or hand-checked numbers; rings: parsed automatically. Newest on top.
+    pts.slice().sort(function (a, b) { return (a.d || "").localeCompare(b.d || ""); }).forEach(function (p) {
+      var fill = col.of(p), ring = !(curated(p, c.x) && curated(p, c.y));
       g.push('<circle data-id="' + esc(p.id) + '" class="' + (ring ? "ring" : "dot") + (c.faint ? " faint" : "") + '" cx="' + X(p.f[c.x]).toFixed(1) +
         '" cy="' + Y(p.f[c.y]).toFixed(1) + '" r="' + r0 + '" style="' + (ring ? "stroke:" + fill : "fill:" + fill) + '"/>');
     });
     g.push("</g></svg>");
     $("plot").innerHTML = g.join("");
 
-    var parts = [];
-    if (sur.length) parts.push(sur.length + " ISSCC & VLSI survey designs (filled)");
-    if (cen.length) parts.push(cen.length + " census papers (rings, values parsed from titles and abstracts)");
-    var note = parts.length ? parts.join(" and ") + " report both values." : "No point in this selection reports both values.";
-    if (c.ref && refs.length) note += " Lines follow the Murmann survey plots" + (sur.length ? ", fitted to the survey designs shown." : ", fitted to the census points shown.");
-    if (showSurvey() && !sur.length && (F.apps.length || F.country || F.cal || F.fresh)) note += " The survey has no application, country or calibration tags, so it is hidden with those filters.";
+    var note = pts.length ? pts.length + " papers in this selection report both values (filled: from the ISSCC/VLSI survey or hand-checked; rings: parsed from titles and abstracts)."
+      : "No paper in this selection reports both values.";
+    if (c.ref && refs.length) note += " Lines follow the Murmann survey plots, fitted to " + (sur.length >= 10 ? "the survey papers shown." : "the papers shown.");
     $("plot-note").innerHTML = esc(note) + (col.bar ? ' <span class="cbar"><span>' + esc(col.bar.name + " " + col.bar.lo) +
       '</span><span class="ramp"></span><span>' + esc(col.bar.hi) + "</span></span>" : "");
   }
@@ -576,6 +546,7 @@
     }).concat(p.ap.map(function (a) { return '<span class="tag">' + esc(a) + "</span>"; }));
     if (p.cal) tags.push('<span class="tag">Calibration</span>');
     if (p.ct === "EA") tags.push('<span class="tag">Early access</span>');
+    if (p.sv && p.sv.length) tags.push('<span class="tag">Survey values</span>');
     if (p.lv !== "core") tags.push('<span class="tag lv">Converter in abstract only</span>');
     var fresh = META.sweep_done && p.first === META.updated;
     var foms = p.s.foms != null ? spec(p, "foms", p.s.foms.toFixed(1) + " dB", "FoMs")
@@ -652,14 +623,13 @@
     $("plot").addEventListener("mousemove", function (e) {
       var c = e.target.closest("circle");
       if (!c) { tip.hidden = true; return; }
-      var p = BYID[c.dataset.id] || SBYID[c.dataset.id];
+      var p = BYID[c.dataset.id];
       if (!p) { tip.hidden = true; return; }
       var f = p.f, ch = chartDef();
       var vals = [ch.x, ch.y].concat(["sndr", "fsnyq", "p"]).filter(function (k, i, a) { return a.indexOf(k) === i && f[k] != null && k !== "y"; })
         .map(function (k) { return AX[k].name + " " + tickText(k, f[k]); });
       tip.innerHTML = "<b>" + esc(p.t) + "</b>" +
-        esc(p.src === "m" ? p.v + " " + p.y + (p.sid ? ", paper " + p.sid : "") + " · Murmann survey" + (p.arch ? " · " + p.arch : "")
-          : p.v + ", " + fmtDate(p.d) + " · census") + "<br>" + esc(vals.join(", "));
+        esc(p.v + ", " + fmtDate(p.d) + (p.sv && p.sv.length ? " · survey values" : "")) + "<br>" + esc(vals.join(", "));
       var r = fig.getBoundingClientRect();
       tip.hidden = false;
       var x = e.clientX - r.left + 14, y = e.clientY - r.top + 14;
@@ -670,8 +640,6 @@
     $("plot").addEventListener("click", function (e) {
       var c = e.target.closest("circle");
       if (!c) return;
-      var m = SBYID[c.dataset.id];
-      if (m) { if (m.doi) window.open("https://doi.org/" + m.doi, "_blank", "noopener"); return; }
       var idx = VIEW.indexOf(BYID[c.dataset.id]);
       if (idx >= LIMIT) { LIMIT = Math.ceil((idx + 1) / PAGE) * PAGE; renderRows(); }
       var row = document.querySelector('.tr[data-id="' + c.dataset.id + '"]');
@@ -696,12 +664,13 @@
 
   function downloadCSV() {
     var cols = ["id", "date", "venue", "title", "authors", "affiliations", "countries", "type", "architectures", "applications",
-      "calibration", "bits", "fs_Sps", "bw_Hz", "sndr_dB", "power_W", "node_nm", "foms_dB", "foms_calc_dB", "energy_J", "checked_fields", "url", "doi"];
+      "calibration", "bits", "fs_Sps", "bw_Hz", "sndr_dB", "power_W", "node_nm", "foms_dB", "foms_calc_dB", "energy_J", "survey_fields", "checked_fields", "url", "doi"];
     var q = function (v) { v = v == null ? "" : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
     var lines = [cols.join(",")].concat(VIEW.map(function (p) {
       return [p.id, p.d, p.v, p.t, (p.au || []).join("; "), (p.org || []).join("; "), (p.cn || []).join("; "), p.k,
         p.ar.join("; "), p.ap.join("; "), p.cal ? "yes" : "", p.s.res, p.s.fs, p.s.bw, p.s.sndr, p.s.p, p.s.node,
-        p.s.foms, p.fomsCalc, p.e, Object.keys(p.ver).join("; "), p.url, p.doi].map(q).join(",");
+        p.s.foms, p.fomsCalc, p.e, (p.sv || []).join("; "),
+        Object.keys(p.ver).filter(function (k) { return p.ver[k] === "checked"; }).join("; "), p.url, p.doi].map(q).join(",");
     }));
     var blob = new Blob(["﻿" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
     var a = document.createElement("a");
@@ -716,16 +685,12 @@
   function getText(u) { return fetch(u, { cache: "no-cache" }).then(function (r) { return r.ok ? r.text() : ""; }).catch(function () { return ""; }); }
 
   Promise.all([getJSON("data/meta.json").catch(function () { return {}; }), getJSON("data/papers.json").catch(function () { return []; }),
-    getText("data/annotations.csv"), getJSON("data/murmann.json").catch(function () { return {}; })])
+    getText("data/annotations.csv")])
     .then(function (res) {
       META = res[0] || {};
-      SMETA = res[3] || {};
-      SURVEY = (SMETA.rows || []).map(surveyPoint);
-      SURVEY.forEach(function (m) { SBYID[m.id] = m; });
       $("chart").innerHTML = Object.keys(CHARTS).map(function (k) { return '<option value="' + k + '">' + esc(CHARTS[k].name) + "</option>"; }).join("");
       var axo = Object.keys(AX).map(function (k) { return '<option value="' + k + '">' + esc(AX[k].name) + "</option>"; }).join("");
       $("ax-x").innerHTML = axo; $("ax-y").innerHTML = axo;
-      if (SMETA.citation) $("survey-cite").textContent = SMETA.citation;
       ALL = applyAnnotations(res[1] || [], parseCSV(res[2] || ""));
       ALL.forEach(function (p) { BYID[p.id] = p; });
 
@@ -743,7 +708,7 @@
       }
       $("fresh").parentNode.hidden = !(META.sweep_done && META.last_run_new);
 
-      var years = ALL.map(function (p) { return p.y; }).concat(SURVEY.map(function (m) { return m.y; })).filter(Boolean);
+      var years = ALL.map(function (p) { return p.y; }).filter(Boolean);
       var ymin = years.length ? Math.min.apply(null, years) : 2023, ymax = years.length ? Math.max.apply(null, years) : new Date().getFullYear();
       var opts = "";
       for (var y = ymax; y >= ymin; y--) opts += '<option value="' + y + '">' + y + "</option>";

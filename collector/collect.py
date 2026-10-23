@@ -34,6 +34,7 @@ STATE = os.path.join(DATA, "state.json")
 PAPERS = os.path.join(DATA, "papers.json")
 META = os.path.join(DATA, "meta.json")
 CONFIG = os.path.join(os.path.dirname(os.path.abspath(__file__)), "venues.json")
+SURVEY = os.path.join(DATA, "murmann.json")          # B. Murmann's ADC survey, written by collector/murmann.py
 
 API = "https://ieeexploreapi.ieee.org/api/v1/search/articles"
 PAGE = 200
@@ -215,7 +216,9 @@ def venue_of(pub_title, venues):
     return None
 
 
-def build_record(a, venues):
+def build_record(a, venues, force_adc=False):
+    """Site record for one cached IEEE article, or None if it is not an ADC/DAC paper.
+    force_adc: the paper is in the Murmann survey, so it is a core ADC paper whatever the rules say."""
     title = clean(a.get("title"))
     if not title or C.NON_PAPER.search(title):
         return None
@@ -225,7 +228,7 @@ def build_record(a, venues):
         return None
     abstract = clean(a.get("abstract"))
     terms = terms_of(a)
-    kind, level = C.relevance(title, abstract, terms)
+    kind, level = ("ADC", "core") if force_adc else C.relevance(title, abstract, terms)
     if not kind:
         return None
     arch = C.architectures(title, abstract)
@@ -279,18 +282,63 @@ def build_record(a, venues):
     return rec
 
 
+# ------------------------------------------------------------------ Murmann survey
+def survey_specs(row):
+    """Spec dict (same keys and units as classify.parse_specs) from one data/murmann.json row."""
+    s = {k: row[k] for k in ("sndr", "sndr_hf", "fin", "fs", "p", "node", "foms", "fomw", "area") if row.get(k) is not None}
+    if row.get("fsnyq"):
+        s["bw"] = row["fsnyq"] / 2.0          # Nyquist-equivalent bandwidth, so P/(2·bw) = P/f_snyq
+    return s
+
+
+def absorb_survey(merged, rows):
+    """Merge survey designs into the records by DOI: survey numbers replace parsed ones and are listed
+    in rec["sv"]; designs without an IEEE record yet become records of their own (id "m:<doi>")
+    until the sweep fetches the paper. A paper listed with several designs (operating modes) takes the
+    row with the highest FoM_S."""
+    best = {}
+    for row in rows:
+        key = (row.get("doi") or "").strip().lower() or "%s-%s-%s" % (row.get("c"), row.get("y"), row.get("sid"))
+        if key not in best or (row.get("foms") or 0) > (best[key].get("foms") or 0):
+            best[key] = row
+    by_doi = {r["doi"].lower(): r for r in merged.values() if r.get("doi")}
+    for row in best.values():
+        doi = (row.get("doi") or "").strip()
+        rec = by_doi.get(doi.lower()) if doi else None
+        if rec is None:
+            rid = "m:" + (doi or "%s-%s-%s" % (row.get("c"), row.get("y"), row.get("sid")))
+            rec = {"id": rid, "doi": doi, "t": row.get("t", ""), "v": row.get("c"), "vt": row.get("c"),
+                   "y": row.get("y"), "d": str(row.get("y") or ""), "au": [a for a in re.split(r"\s*,\s*", row.get("au") or "") if a],
+                   "org": [], "cn": [], "ar": [], "ap": [], "cal": False, "s": {}, "ct": "C",
+                   "url": "https://doi.org/" + doi if doi else "", "first": "", "ins": ""}
+            merged[rid] = rec
+        rec["k"], rec["lv"] = "ADC", "core"
+        if not rec.get("ar"):
+            rec["ar"] = list(row.get("ar") or [])
+        sv = survey_specs(row)
+        if "sndr" in sv:
+            rec["s"].pop("enob", None)
+        rec["s"].update(sv)
+        rec["sv"] = sorted(sv)
+        rec["x"] = C.derived(rec["s"], rec["ar"])
+
+
 def rebuild(config, run_date, last_run_new_ids=None):
     venues = config["venues"]
-    existing = {r["id"]: r for r in load_json(PAPERS, [])}
+    survey = (load_json(SURVEY, {}) or {}).get("rows") or []
+    survey_dois = {(r.get("doi") or "").lower() for r in survey if r.get("doi")}
+    # survey-only records are regenerated from data/murmann.json every time
+    existing = {r["id"]: r for r in load_json(PAPERS, []) if not r["id"].startswith("m:")}
     from_cache, cached_ids = {}, set()
     for a in iter_cache():
         an = str(a.get("article_number"))
         cached_ids.add(an)
-        r = build_record(a, venues)
+        r = build_record(a, venues, force_adc=(a.get("doi") or "").lower() in survey_dois)
         if r:
             from_cache[an] = r
     merged = {k: v for k, v in existing.items() if k not in cached_ids}   # keep records we have no cache for
     merged.update(from_cache)
+    absorb_survey(merged, survey)
     since = load_json(STATE, {}).get("since_year")
     if since:
         merged = {k: v for k, v in merged.items() if not v.get("y") or v["y"] >= since}
