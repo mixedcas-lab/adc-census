@@ -658,7 +658,7 @@
       : "No paper in this selection reports both values.") + (nMiss ? " Not shown: " + (why.length ? why.join(", ") : nMiss + " below the selected value quality") + "." : "") +
       (nSys ? " " + nSys + " of them are ADCs inside a system, whose numbers are not shown." : "");
     if (c.ref && refs.length) note += " Lines follow the Murmann survey plots, fitted to " + (sur.length >= 10 ? "the survey papers shown." : "the papers shown.");
-    $("plot-note").innerHTML = esc(note) + (col.bar ? ' <span class="cbar"><span>' + esc(col.bar.name + " " + col.bar.lo) +
+    $("plot-note").innerHTML = (col.bar ? '<span class="cbar"><span>' + esc(col.bar.name + " " + col.bar.lo) +
       '</span><span class="ramp"></span><span>' + esc(col.bar.hi) + "</span></span>" : "");
   }
 
