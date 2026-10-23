@@ -82,6 +82,17 @@
       <label class="check"><input type="checkbox" id="fresh"> Added in the latest update</label>
       <button type="button" class="link-btn" id="reset">Clear filters</button>
     </div>
+    <div class="row chips-row">
+      <span class="row-label">Specs</span>
+      <div class="ranges" id="ranges"></div>
+    </div>
+    <div class="row">
+      <label class="field"><span>Values</span><select id="vq">
+        <option value="">Any source</option><option value="cur">Survey or checked only</option><option value="chk">Checked by the lab only</option>
+      </select></label>
+      <span class="src-key">Value sources: <sup class="src src-t">T</sup> title · <sup class="src src-a">A</sup> abstract (both parsed automatically) ·
+        <sup class="src src-survey">S</sup> Murmann survey · <sup class="src src-ai">AI</sup> AI-extracted, not checked · <sup class="src src-checked">✓</sup> checked by the lab</span>
+    </div>
   </section>
 
   <section class="results" aria-live="polite">
@@ -116,10 +127,19 @@
     <button type="button" class="btn more" id="more" hidden>Show more</button>
     <p class="empty" id="empty" hidden></p>
   </section>
+  <div class="cmpbar" id="cmpbar" hidden>
+    <span><strong id="cmpn">0</strong> selected</span>
+    <button type="button" class="btn small" id="cmpopen">Compare</button>
+    <button type="button" class="link-btn" id="cmpclear">Clear</button>
+  </div>
+  <dialog id="cmpdlg" class="cmpdlg" aria-label="Compare papers">
+    <div class="cmphead"><h2>Compare papers</h2><button type="button" class="btn small" id="cmpclose">Close</button></div>
+    <div id="cmpbody"></div>
+  </dialog>
 </main>
 
 <footer class="wrap foot">
-  <p>Grey figures are parsed automatically from titles and abstracts and may be wrong; dark figures were checked by the lab (<a href="https://github.com/mixedcas-lab/adc-census/blob/main/data/annotations.csv">annotations.csv</a>). FoM<sub>S</sub> marked with ≈ is computed from the parsed values assuming Nyquist operation.</p>
+  <p>Grey figures are parsed automatically from titles and abstracts and may be wrong; purple italic figures were extracted by an AI tool and not checked; dark figures come from the Murmann survey or were checked by the lab (<a href="https://github.com/mixedcas-lab/adc-census/blob/main/data/annotations.csv">annotations.csv</a>). FoM<sub>S</sub> marked with ≈ is computed from the parsed values assuming Nyquist operation.</p>
   <p>Bibliographic metadata from the IEEE Xplore API; abstracts and full texts are not hosted. Maintained by <a href="https://mcas.uos.ac.kr">MCAS Lab</a>, University of Seoul. Corrections are welcome as pull requests or issues on <a href="https://github.com/mixedcas-lab/adc-census">GitHub</a>.</p>
   <p>Numbers tagged "Survey values" (filled dots) are from the ADC Performance Survey by Boris Murmann, BSD 3-Clause License, Copyright © 2022 Boris Murmann: B. Murmann, "ADC Performance Survey 1997-2026," [Online]. Available: <a href="https://github.com/bmurmann/ADC-survey">https://github.com/bmurmann/ADC-survey</a>. ISSCC and VLSI designs from the survey that are not yet in the IEEE index are listed with the survey's own title, authors and DOI. Envelope and jitter lines follow the survey's plotting notebooks.</p>
   <p>We thank Prof. 김민휘 (Chung-Ang University) for the idea behind this site.</p>

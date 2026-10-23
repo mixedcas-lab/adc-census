@@ -30,7 +30,7 @@
   function defaults() {
     return { q: "", kind: "ADC", y0: "", y1: "", venues: [], apps: [], arch: [], country: "",
       related: false, cal: false, fresh: false, sort: "date",
-      chart: "energy", x: "fsnyq", y: "sndr", xs: "", ys: "", color: "arch", hl: "", zoom: "" };
+      chart: "energy", x: "fsnyq", y: "sndr", xs: "", ys: "", color: "arch", hl: "", zoom: "", vq: "", rng: "", cmp: [] };
   }
 
   /* ------------------------------------------------------------ helpers */
@@ -121,13 +121,25 @@
     p.foms = s.foms != null ? s.foms : p.fomsCalc;
     p.prim = primaryArch(p);
   }
+  /* Where each number comes from. Priority when they disagree: checked > survey > ai > abstract/title.
+     t/a: parsed from the title/abstract by the collector; survey: Murmann ADC survey; ai: an AI tool filled the
+     annotations row (its "by" or "source" says so); checked: a person filled the row. */
+  var SRC = {
+    t: ["T", "Parsed from the title"], a: ["A", "Parsed from the abstract"], survey: ["S", "Murmann ADC Performance Survey"],
+    ai: ["AI", "Extracted by an AI tool, not checked by a person"], checked: ["✓", "Checked by the lab"]
+  };
+  var RANK = { t: 1, a: 1, ai: 2, survey: 3, checked: 4 };
+  var AI_BY = /\b(?:codex|gpt|chatgpt|claude|gemini|copilot|llm|ai)\b/i;
+  var DELETE = /^(?:-|–|na|n\/a|none|nr)$/i;   // in annotations.csv: remove the value (not reported / wrong)
+  var ANN_KEYS = ["res", "fs", "bw", "sndr", "p", "node", "foms", "fomw", "sndr_hf", "fin", "area", "snr", "dr"];
   function applyAnnotations(papers, rows) {
     var ann = {};
     rows.forEach(function (r) { if (r.id) ann[r.id] = r; });
     var out = [];
     papers.forEach(function (p) {
-      p.s = p.s || {}; p.ar = p.ar || []; p.ap = p.ap || []; p.ver = {};
-      (p.sv || []).forEach(function (k) { p.ver[k] = "survey"; });   // curated values from the Murmann survey
+      p.s = p.s || {}; p.ar = p.ar || []; p.ap = p.ap || []; p.ver = {}; p.vs = {}; p.conflicts = [];
+      Object.keys(p.src || {}).forEach(function (k) { p.vs[k] = p.src[k]; });
+      (p.sv || []).forEach(function (k) { p.ver[k] = "survey"; p.vs[k] = "survey"; });   // curated values from the Murmann survey
       var a = ann[p.id];
       if (a) {
         if (/^(1|y|yes|true|x)$/i.test(a.exclude || "")) return;
@@ -136,11 +148,23 @@
         if (a.app) p.ap = canonTags(a.app, KNOWN_APPS);
         if (a.cal) p.cal = /^(1|y|yes|true|x|o)$/i.test(a.cal);
         if (a.kind || a.arch) p.lv = "core";
-        ["res", "fs", "bw", "sndr", "p", "node", "foms", "fomw", "sndr_hf", "fin", "area"].forEach(function (k) {
-          var v = parseSI(a[k]);
-          if (v != null && !isNaN(v)) { p.s[k] = v; p.ver[k] = "checked"; }
+        var who = /^(?:ai|auto|machine)/i.test(a.source || "") || (!a.source && AI_BY.test(a.by || "")) ? "ai" : "checked";
+        ANN_KEYS.forEach(function (k) {
+          var raw = (a[k] || "").trim();
+          if (!raw) return;                                         // empty: keep what is there
+          if (RANK[who] < RANK[p.vs[k] || "t"]) {                   // an AI value never replaces survey or checked numbers
+            var v0 = parseSI(raw);
+            if (DELETE.test(raw) || (v0 != null && p.s[k] != null && Math.abs(v0 - p.s[k]) > 0.05 * Math.abs(p.s[k]))) p.conflicts.push(k);
+            return;
+          }
+          if (DELETE.test(raw)) { delete p.s[k]; p.vs[k] = who; if (who === "checked") p.ver[k] = "deleted"; else delete p.ver[k]; return; }
+          var v = parseSI(raw);
+          if (v == null || isNaN(v)) return;
+          p.s[k] = v; p.vs[k] = who;
+          if (who === "checked") p.ver[k] = "checked"; else delete p.ver[k];
         });
-        p.note = a.note || "";
+        if (who === "ai") p.aiRow = true;
+        p.note = who === "ai" ? "" : (a.note || "");   // AI rows carry extraction logs, not notes for readers
       }
       derive(p);
       p.f = censusFields(p);
@@ -150,6 +174,29 @@
   }
 
   /* ------------------------------------------------------------ filtering */
+  // numeric range filters: "key>=value" pairs in F.rng, e.g. "sndr>=80;p<=1m"
+  var RANGES = [
+    { k: "sndr", op: ">=", label: "SNDR ≥", unit: "dB", get: function (p) { return p.s.sndr; } },
+    { k: "p", op: "<=", label: "Power ≤", unit: "W", get: function (p) { return p.s.p; } },
+    { k: "bw", op: ">=", label: "BW ≥", unit: "Hz", get: function (p) { return p.f.bw; } },
+    { k: "fs", op: ">=", label: "fₛ ≥", unit: "S/s", get: function (p) { return p.s.fs; } },
+    { k: "foms", op: ">=", label: "FoMS ≥", unit: "dB", get: function (p) { return p.foms; } },
+    { k: "res", op: ">=", label: "Bits ≥", unit: "", get: function (p) { return p.s.res; } },
+    { k: "node", op: "<=", label: "Node ≤", unit: "nm", get: function (p) { return p.s.node; } },
+    { k: "area", op: "<=", label: "Area ≤", unit: "mm²", get: function (p) { return p.s.area; } }
+  ];
+  function rangeMap() {
+    var m = {};
+    (F.rng || "").split(";").forEach(function (t) { var kv = t.split(/[<>]=/); if (kv.length === 2 && kv[1] !== "") m[kv[0]] = kv[1]; });
+    return m;
+  }
+  function srcRank(p, k) { return p.s[k] == null ? 0 : (RANK[p.vs[k] || "t"] || 1); }
+  function quality(p, k) {   // a plotted value is as good as the weakest field it is computed from (best alternative)
+    return Math.max.apply(null, (BASIS[k] || [[k]]).map(function (set) {
+      return set.length ? Math.min.apply(null, set.map(function (b) { return srcRank(p, b); })) : 9;
+    }));
+  }
+  var VQ = { "": 0, cur: 3, chk: 4 };
   function match(p, skip) {
     if (p.k !== F.kind) return false;
     if (!F.related && p.lv !== "core") return false;
@@ -162,6 +209,15 @@
     if (skip !== "arch" && F.arch.length && !F.arch.some(function (a) { return a === "Other" ? p.prim === "Other" : p.ar.indexOf(a) >= 0; })) return false;
     if (skip !== "country" && F.country && (p.cn || []).indexOf(F.country) < 0) return false;
     if (F.cal && !p.cal) return false;
+    var rm = rangeMap();
+    for (var i0 = 0; i0 < RANGES.length; i0++) {
+      var r = RANGES[i0], lim = rm[r.k];
+      if (lim == null) continue;
+      var lv = parseSI(lim), v = p.f ? r.get(p) : null;
+      if (lv == null || isNaN(lv)) continue;
+      if (v == null || (r.op === ">=" ? v < lv : v > lv)) return false;
+    }
+    if (F.vq && !ANN_KEYS.some(function (k) { return srcRank(p, k) >= VQ[F.vq]; })) return false;
     if (F.fresh && p.first !== META.updated) return false;
     if (F.q) {
       var hay = p._hay || (p._hay = [p.t, (p.au || []).join(" "), (p.org || []).join(" "), p.v, p.vt, p.ar.join(" "), p.ap.join(" "), p.note || ""].join(" ").toLowerCase());
@@ -236,6 +292,14 @@
     $("y0").value = F.y0; $("y1").value = F.y1;
     $("related").checked = F.related; $("cal").checked = F.cal; $("fresh").checked = F.fresh;
     $("sort").value = F.sort;
+    $("vq").value = F.vq;
+    if (!$("ranges").contains(document.activeElement)) {   // do not rebuild the inputs while someone types in them
+      var rm = rangeMap();
+      $("ranges").innerHTML = RANGES.map(function (r) {
+        return '<label class="rng"><span>' + esc(r.label) + '</span><input type="text" inputmode="decimal" data-rng="' + r.k + '" value="' +
+          esc(rm[r.k] || "") + '" placeholder="' + esc(r.unit || "any") + '"></label>';
+      }).join("");
+    }
   }
   function renderLegend() {
     var c = counts("arch", function (p) { return p.prim === "Other" ? ["Other"] : p.ar; });
@@ -479,7 +543,8 @@
       var x = p.f[c.x], y = p.f[c.y];
       return x != null && y != null && isFinite(x) && isFinite(y) && (!xlog || x > 0) && (!ylog || y > 0);
     };
-    var pts = VIEW.filter(function (p) { return p.f && ok(p); });
+    var vq = VQ[F.vq] || 0;
+    var pts = VIEW.filter(function (p) { return p.f && ok(p) && (!vq || (quality(p, c.x) >= vq && quality(p, c.y) >= vq)); });
     var sur = pts.filter(function (p) { return p.sv && p.sv.length; });
     var tx = function (v) { return xlog ? Math.log10(v) : v; }, ty = function (v) { return ylog ? Math.log10(v) : v; };
 
@@ -555,10 +620,10 @@
     var hot = function (p) { return !F.hl || (p.y || 0) > YMAX - +F.hl; };
     var used = {};
     pts.slice().sort(function (a, b) { return (hot(a) - hot(b)) || (a.d || "").localeCompare(b.d || ""); }).forEach(function (p) {
-      var fill = col.of(p), ring = !(curated(p, c.x) && curated(p, c.y));
+      var fill = col.of(p), q = Math.min(quality(p, c.x), quality(p, c.y)), ring = q < 3;
       var px = X(p.f[c.x]), py = Y(p.f[c.y]);
       if (F.color === "arch" && px >= L && px <= R && py >= T && py <= B) used[p.prim] = fill;   // legend of what is visible
-      g.push('<circle data-id="' + esc(p.id) + '" class="' + (ring ? "ring" : "dot") + (c.faint ? " faint" : "") + (hot(p) ? "" : " dim") +
+      g.push('<circle data-id="' + esc(p.id) + '" class="' + (ring ? "ring" : "dot") + (q === 2 ? " ai" : "") + (c.faint ? " faint" : "") + (hot(p) ? "" : " dim") +
         '" cx="' + px.toFixed(1) + '" cy="' + py.toFixed(1) + '" r="' + r0 + '" style="' + (ring ? "stroke:" + fill : "fill:" + fill) + '"/>');
     });
     g.push("</g></svg>");
@@ -566,17 +631,32 @@
     PG = { W: W, H: H, L: L, R: R, T: T, B: B, dx: dx, dy: dy, title: c.title, bar: col.bar,
       legend: Object.keys(used).map(function (k) { return [k, used[k]]; }) };
 
-    var note = pts.length ? pts.length + " papers in this selection report both values (filled: from the ISSCC/VLSI survey or hand-checked; rings: parsed from titles and abstracts)."
-      : "No paper in this selection reports both values.";
+    var miss = {}, nMiss = 0, shown = {};
+    pts.forEach(function (p) { shown[p.id] = 1; });
+    VIEW.forEach(function (p) {
+      if (shown[p.id]) return;
+      nMiss++;
+      [c.x, c.y].forEach(function (k) { if (p.f && p.f[k] == null) miss[k] = (miss[k] || 0) + 1; });
+    });
+    var why = Object.keys(miss).sort(function (a, b) { return miss[b] - miss[a]; })
+      .map(function (k) { return miss[k] + " without " + AX[k].name.toLowerCase(); });
+    var note = (pts.length ? pts.length + " of " + VIEW.length + " papers shown (filled: survey or checked values; dashed rings: AI-extracted; rings: parsed from titles and abstracts)."
+      : "No paper in this selection reports both values.") + (nMiss ? " Not shown: " + (why.length ? why.join(", ") : nMiss + " below the selected value quality") + "." : "");
     if (c.ref && refs.length) note += " Lines follow the Murmann survey plots, fitted to " + (sur.length >= 10 ? "the survey papers shown." : "the papers shown.");
     $("plot-note").innerHTML = esc(note) + (col.bar ? ' <span class="cbar"><span>' + esc(col.bar.name + " " + col.bar.lo) +
       '</span><span class="ramp"></span><span>' + esc(col.bar.hi) + "</span></span>" : "");
   }
 
   /* ------------------------------------------------------------ rendering: rows */
+  function badge(p, k) {
+    var src = p.vs[k] || "t", b = SRC[src];
+    return '<sup class="src src-' + src + '" title="' + esc(b[1]) + '">' + b[0] + "</sup>";
+  }
   function spec(p, k, text, lbl) {
+    if (p.ver[k] === "deleted") return '<span class="spec"><span class="lbl">' + lbl + '</span><span class="del" title="Removed by the lab: not reported or wrong">—</span></span>';
     if (!text) return '<span class="spec"></span>';
-    return '<span class="spec' + (p.ver[k] ? "" : " auto") + '"><span class="lbl">' + lbl + "</span>" + text + "</span>";
+    var src = p.vs[k] || "t";
+    return '<span class="spec' + (RANK[src] >= 3 ? "" : src === "ai" ? " ai" : " auto") + '"><span class="lbl">' + lbl + "</span>" + text + badge(p, k) + "</span>";
   }
   function rowHTML(p) {
     var au = p.au || [];
@@ -588,12 +668,15 @@
     if (p.ct === "EA") tags.push('<span class="tag">Early access</span>');
     if (p.sv && p.sv.length) tags.push('<span class="tag">Survey values</span>');
     if (p.lv !== "core") tags.push('<span class="tag lv">Converter in abstract only</span>');
+    if (p.conflicts.length) tags.push('<span class="tag warn" title="An AI-extracted value differs from the survey or checked value; the latter is shown">Review: ' +
+      esc(p.conflicts.join(", ")) + "</span>");
     var fresh = META.sweep_done && p.first === META.updated;
-    var foms = p.s.foms != null ? spec(p, "foms", p.s.foms.toFixed(1) + " dB", "FoMs")
+    var foms = p.s.foms != null ? spec(p, "foms", p.s.foms.toFixed(1) + " dB" + (p.s.foms_b === "DR" ? " (DR)" : ""), "FoMs")
       : p.fomsCalc != null ? '<span class="spec auto"><span class="lbl">FoMs</span>≈' + p.fomsCalc.toFixed(1) + " dB</span>" : '<span class="spec"></span>';
     return '<div class="tr" role="row" data-id="' + esc(p.id) + '">' +
       '<div class="pub" role="cell"><span class="venue">' + esc(p.v) + "</span><span>" + esc(fmtDate(p.d)) + "</span>" +
-      (fresh ? '<span class="new">New</span>' : "") + "</div>" +
+      (fresh ? '<span class="new">New</span>' : "") +
+      '<label class="cmp"><input type="checkbox" data-cmp="' + esc(p.id) + '"' + (F.cmp.indexOf(p.id) >= 0 ? " checked" : "") + "> Compare</label></div>" +
       '<div class="paper" role="cell"><a class="title" href="' + esc(p.url || (p.doi ? "https://doi.org/" + p.doi : "#")) +
       '" target="_blank" rel="noopener">' + esc(p.t) + "</a>" +
       (names ? '<p class="by">' + esc(names) + "</p>" : "") +
@@ -606,6 +689,44 @@
       spec(p, "p", fmtSI(p.s.p, "W"), "Power") +
       spec(p, "node", p.s.node ? p.s.node + " nm" : "", "Node") +
       foms + "</div>";
+  }
+  var CMP_ROWS = [
+    ["Venue", function (p) { return esc(p.v + " " + (p.y || "")); }],
+    ["Architecture", function (p) { return esc(p.ar.join(", ")); }],
+    ["Application", function (p) { return esc(p.ap.join(", ")); }],
+    ["Bits", "res", function (v) { return v + " b"; }], ["fₛ", "fs", function (v) { return fmtSI(v, "S/s"); }],
+    ["Bandwidth", "bw", function (v) { return fmtSI(v, "Hz"); }], ["SNDR", "sndr", function (v) { return v.toFixed(1) + " dB"; }],
+    ["SNR", "snr", function (v) { return v.toFixed(1) + " dB"; }], ["DR", "dr", function (v) { return v.toFixed(1) + " dB"; }],
+    ["SNDR at f_in,hf", "sndr_hf", function (v) { return v.toFixed(1) + " dB"; }], ["f_in,hf", "fin", function (v) { return fmtSI(v, "Hz"); }],
+    ["Power", "p", function (v) { return fmtSI(v, "W"); }],
+    ["P / f_snyq", function (p) { return p.f.e ? fmtSI(p.f.e, "J") : ""; }],
+    ["FoMS", function (p) { return p.s.foms != null ? p.s.foms.toFixed(1) + " dB" + (p.s.foms_b ? " (" + p.s.foms_b + ")" : "") + badge(p, "foms") : p.fomsCalc != null ? "≈" + p.fomsCalc.toFixed(1) + " dB (calc.)" : ""; }],
+    ["FoMW", function (p) { return p.s.fomw != null ? p.s.fomw.toPrecision(3) + " fJ/c-s" + badge(p, "fomw") : p.f.fomw ? "≈" + (p.f.fomw / 1e-15).toPrecision(3) + " fJ/c-s (calc.)" : ""; }],
+    ["Node", "node", function (v) { return v + " nm"; }], ["Area", "area", function (v) { return v + " mm²"; }],
+    ["Calibration", function (p) { return p.cal ? "yes" : ""; }],
+    ["Link", function (p) { return '<a href="' + esc(p.url || (p.doi ? "https://doi.org/" + p.doi : "#")) + '" target="_blank" rel="noopener">IEEE Xplore</a>'; }]
+  ];
+  function renderCompare() {
+    var sel = F.cmp.map(function (id) { return BYID[id]; }).filter(Boolean);
+    $("cmpbar").hidden = !sel.length;
+    $("cmpn").textContent = sel.length;
+    if (!$("cmpdlg").open) return;
+    var h = ['<table class="cmptable"><thead><tr><th></th>'];
+    sel.forEach(function (p) { h.push('<th><span class="cmpt">' + esc(p.t) + '</span><button type="button" class="link-btn" data-uncmp="' + esc(p.id) + '">Remove</button></th>'); });
+    h.push("</tr></thead><tbody>");
+    CMP_ROWS.forEach(function (r) {
+      h.push("<tr><th>" + esc(r[0]) + "</th>");
+      sel.forEach(function (p) {
+        var cell;
+        if (typeof r[1] === "function") cell = r[1](p);
+        else if (p.ver[r[1]] === "deleted") cell = "—";
+        else cell = p.s[r[1]] != null ? esc(r[2](p.s[r[1]])) + badge(p, r[1]) : "";
+        h.push("<td>" + cell + "</td>");
+      });
+      h.push("</tr>");
+    });
+    h.push("</tbody></table>");
+    $("cmpbody").innerHTML = h.join("");
   }
   function renderRows() {
     var n = VIEW.length;
@@ -632,6 +753,7 @@
     renderLegend();
     renderPlot();
     renderRows();
+    renderCompare();
     writeHash();
   }
   function reset() { F = defaults(); update(); }
@@ -639,7 +761,40 @@
   /* ------------------------------------------------------------ interaction */
   function toggle(arr, v) { var i = arr.indexOf(v); if (i >= 0) arr.splice(i, 1); else arr.push(v); }
   function bind() {
-    var t;
+    var t, tr;
+    $("ranges").addEventListener("input", function (e) {
+      if (!e.target.closest("input[data-rng]")) return;
+      clearTimeout(tr);
+      tr = setTimeout(function () {
+        F.rng = Array.prototype.map.call($("ranges").querySelectorAll("input"), function (i) {
+          var r = RANGES.filter(function (x) { return x.k === i.dataset.rng; })[0];
+          return i.value.trim() ? r.k + r.op + i.value.trim() : "";
+        }).filter(Boolean).join(";");
+        update();
+      }, 350);
+    });
+    $("vq").addEventListener("change", function (e) { F.vq = e.target.value; update(); });
+    $("rows").addEventListener("change", function (e) {
+      var cb = e.target.closest("input[data-cmp]");
+      if (!cb) return;
+      var id = cb.dataset.cmp, i = F.cmp.indexOf(id);
+      if (cb.checked && i < 0) { if (F.cmp.length >= 6) { cb.checked = false; return; } F.cmp.push(id); }
+      if (!cb.checked && i >= 0) F.cmp.splice(i, 1);
+      renderCompare(); writeHash();
+    });
+    $("cmpopen").addEventListener("click", function () { $("cmpdlg").showModal(); renderCompare(); });
+    $("cmpclear").addEventListener("click", function () {
+      F.cmp = []; document.querySelectorAll("input[data-cmp]").forEach(function (c) { c.checked = false; }); renderCompare(); writeHash();
+    });
+    $("cmpclose").addEventListener("click", function () { $("cmpdlg").close(); });
+    $("cmpbody").addEventListener("click", function (e) {
+      var b = e.target.closest("[data-uncmp]");
+      if (!b) return;
+      F.cmp.splice(F.cmp.indexOf(b.dataset.uncmp), 1);
+      var c = document.querySelector('input[data-cmp="' + b.dataset.uncmp + '"]'); if (c) c.checked = false;
+      renderCompare(); writeHash();
+      if (!F.cmp.length) $("cmpdlg").close();
+    });
     $("q").addEventListener("input", function (e) { clearTimeout(t); t = setTimeout(function () { F.q = e.target.value.trim(); update(); }, 160); });
     $("kind").addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) { F.kind = b.dataset.v; F.arch = []; update(); } });
     $("venues").addEventListener("click", function (e) { var b = e.target.closest("button"); if (b) { toggle(F.venues, b.dataset.v); update(); } });
@@ -800,13 +955,15 @@
 
   function downloadCSV() {
     var cols = ["id", "date", "venue", "title", "authors", "affiliations", "countries", "type", "architectures", "applications",
-      "calibration", "bits", "fs_Sps", "bw_Hz", "sndr_dB", "power_W", "node_nm", "foms_dB", "foms_calc_dB", "energy_J", "survey_fields", "checked_fields", "url", "doi"];
+      "calibration", "bits", "fs_Sps", "bw_Hz", "sndr_dB", "power_W", "node_nm", "foms_dB", "foms_calc_dB", "energy_J", "foms_basis", "value_sources", "url", "doi"];
     var q = function (v) { v = v == null ? "" : String(v); return /[",\n]/.test(v) ? '"' + v.replace(/"/g, '""') + '"' : v; };
     var lines = [cols.join(",")].concat(VIEW.map(function (p) {
       return [p.id, p.d, p.v, p.t, (p.au || []).join("; "), (p.org || []).join("; "), (p.cn || []).join("; "), p.k,
         p.ar.join("; "), p.ap.join("; "), p.cal ? "yes" : "", p.s.res, p.s.fs, p.s.bw, p.s.sndr, p.s.p, p.s.node,
-        p.s.foms, p.fomsCalc, p.e, (p.sv || []).join("; "),
-        Object.keys(p.ver).filter(function (k) { return p.ver[k] === "checked"; }).join("; "), p.url, p.doi].map(q).join(",");
+        p.s.foms, p.fomsCalc, p.e, p.s.foms_b || "",
+        Object.keys(p.vs).filter(function (k) { return p.s[k] != null || p.ver[k] === "deleted"; }).map(function (k) {
+          return k + ":" + (p.ver[k] === "deleted" ? "deleted" : { t: "title", a: "abstract" }[p.vs[k]] || p.vs[k]);
+        }).join("; "), p.url, p.doi].map(q).join(",");
     }));
     var blob = new Blob(["﻿" + lines.join("\n")], { type: "text/csv;charset=utf-8" });
     var a = document.createElement("a");
