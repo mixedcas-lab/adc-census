@@ -194,6 +194,7 @@ select {
 .paper .title { font-weight: 600; color: var(--ink); text-decoration: none; line-height: 1.35; }
 .paper .title:hover { text-decoration: underline; }
 .paper .by { margin: 3px 0 0; font-size: 13px; color: var(--ink-2); }
+.paper .by.note { color: var(--muted); font-style: italic; }
 .paper .by.org { margin-top: 0; color: var(--muted); }
 .paper .tags { margin: 6px 0 0; display: flex; flex-wrap: wrap; gap: 4px; }
 .tag { font-size: 12px; padding: 1px 7px; border-radius: var(--radius-s); background: var(--grid); color: var(--ink-2); }

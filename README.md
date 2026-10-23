@@ -120,7 +120,8 @@ Survey는 BSD 3-Clause 라이선스이며 사이트 하단에 저작권과 인�
 | `arch`, `app` | 여러 개면 `;`로 구분 (예: `TI;SAR`) |
 | `res`, `fs`, `bw`, `sndr`, `p`, `node`, `foms`, `fomw` | 단위: b, S/s, Hz, dB, W, nm, dB, fJ/conv-step. `1G`, `500M`, `8.4m`, `3.7u` 같은 접미사 사용 가능 |
 | `sndr_hf`, `fin`, `area` | 고주파 입력에서의 SNDR(dB), 그때의 입력 주파수(Hz), 면적(mm²). Aperture·jitter 그래프에 쓰임 |
-| `note`, `by` | 메모, 검수자 |
+| `cal` | `1`이면 보정 기법 사용, `0`이면 미사용 (비우면 자동 판정) |
+| `note`, `by` | 메모, 검수자. 메모는 목록에 표시되고 검색창에서도 찾을 수 있습니다 |
 
 예:
 
@@ -163,6 +164,12 @@ python3 -m unittest discover -s collector
 | `ar`, `ap`, `cal` | 아키텍처, 응용, 보정 기법 여부 |
 | `s` | 추출 수치: `res`, `fs`, `bw`, `sndr`, `enob`, `p`, `node`, `foms`, `fomw` |
 | `ct`, `first`, `ins` | J/C/EA(early access), 처음 수집한 날, IEEE 등록일 |
+
+### 태그 입력 요령
+
+- `arch`, `app`을 채우면 자동 태그를 **대체**합니다. 자동 태그 중 맞는 것도 함께 적으세요.
+- 대소문자·하이픈·공백은 구분하지 않고, 자주 쓰는 약칭도 인식합니다: `DSM`→ΔΣ, `CT-DSM`→CT-ΔΣ, `pipe-sar`→Pipelined-SAR, `ti`→TI, `serdes`→Wireline/SerDes, `cis`→Image sensor.
+- `cal` 열이 헤더에 없으면 헤더 줄 끝에 `,cal`을 붙이고 쓰면 됩니다(열 순서는 상관없음).
 
 ## 감사의 글
 
