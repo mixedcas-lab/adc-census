@@ -280,4 +280,6 @@ select {
 @media (prefers-color-scheme: dark) { .brand img { filter: brightness(0) invert(1); opacity: 0.85; } }
 @media (max-width: 760px) { .brand a:first-child img { height: 21px; } .brand a:last-child img { height: 12px; } }
 
-.sister { max-width: 100
+.sister { max-width: 100%; overflow-x: auto; scrollbar-width: none; }
+.sister a { white-space: nowrap; flex: 0 0 auto; }
+@media (max-width: 760px) { .sister a { padding: 5px 8px; font-size: 11.5px; letter-spacing: 0; } }
