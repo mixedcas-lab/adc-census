@@ -201,7 +201,7 @@
   }
   var VQ = { "": 0, cur: 3, chk: 4 };
   function match(p, skip) {
-    if (p.k !== F.kind) return false;
+    if (p.k !== "ADC") return false;   // DAC papers moved to dac-census
     if (!F.related && p.lv !== "core") return false;
     if (skip !== "year") {
       if (F.y0 && (p.y || 0) < +F.y0) return false;
@@ -1023,16 +1023,14 @@
       ALL.forEach(function (p) { BYID[p.id] = p; if (p.y > YMAX) YMAX = p.y; });
 
       var nA = ALL.filter(function (p) { return p.k === "ADC" && p.lv === "core"; }).length;
-      var nD = ALL.filter(function (p) { return p.k === "DAC" && p.lv === "core"; }).length;
       var venues = Object.keys(META.by_venue || {}).length;
       if (ALL.length) {
-        $("lede").innerHTML = "<strong>" + nA.toLocaleString() + " ADC</strong> and <strong>" + nD.toLocaleString() +
-          " DAC</strong> papers from " + venues + " IEEE circuits venues, " + esc(fmtDate(META.coverage_from)) +
+        $("lede").innerHTML = "<strong>" + nA.toLocaleString() + " ADC papers</strong> from " + venues + " IEEE circuits venues, " + esc(fmtDate(META.coverage_from)) +
           " to " + esc(fmtDate(META.coverage_to)) + ". Updated automatically on the 15th of every month; last update " + esc(META.updated || "") +
-          (META.sweep_done && META.last_run_new ? ", with " + META.last_run_new + " papers added in the latest update." : ".") +
+          (META.sweep_done && META.last_run_new ? ", with " + META.last_run_new + (META.last_run_new === 1 ? " paper" : " papers") + " added in the latest update." : ".") + " DAC papers are in the <a href=\"https://mixedcas-lab.github.io/dac-census/\">DAC Census</a>." +
           (META.sweep_done ? "" : " The initial collection is still running, so earlier years may be incomplete.");
       } else {
-        $("lede").textContent = "A monthly index of ADC and DAC papers in ISSCC, VLSI, JSSC, CICC, ESSCIRC, A-SSCC, SSC-L, TCAS-I/II, TVLSI and IEEE Access. The first collection has not run yet.";
+        $("lede").textContent = "A monthly index of ADC papers in ISSCC, VLSI, JSSC, CICC, ESSCIRC, A-SSCC, SSC-L, TCAS-I/II, TVLSI and IEEE Access. The first collection has not run yet.";
       }
       $("fresh").parentNode.hidden = !(META.sweep_done && META.last_run_new);
 

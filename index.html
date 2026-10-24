@@ -4,7 +4,7 @@
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width,initial-scale=1">
 <title>ADC Census</title>
-<meta name="description" content="Monthly census of ADC and DAC papers in JSSC, ISSCC, VLSI, CICC, ESSCIRC, A-SSCC, TCAS-I/II, SSC-L, TVLSI and IEEE Access. Maintained by MCAS Lab, University of Seoul.">
+<meta name="description" content="Monthly census of ADC papers in JSSC, ISSCC, VLSI, CICC, ESSCIRC, A-SSCC, TCAS-I/II, SSC-L, TVLSI and IEEE Access. Maintained by MCAS Lab, University of Seoul.">
 <link rel="preconnect" href="https://fonts.googleapis.com">
 <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 <link href="https://fonts.googleapis.com/css2?family=Archivo:wdth,wght@62..125,400..700&display=swap" rel="stylesheet">
@@ -19,7 +19,7 @@
       <span class="brand-sep" aria-hidden="true"></span>
       <a href="https://www.uos.ac.kr" title="University of Seoul"><img src="assets/uos.png" alt="University of Seoul" height="15"></a>
     </div>
-    <nav class="sister" aria-label="Census sites"><a href="https://mixedcas-lab.github.io/adc-census/" aria-current="page">ADC</a><a href="https://mixedcas-lab.github.io/pll-census/">PLL</a><a href="https://mixedcas-lab.github.io/ldo-census/">LDO</a><a href="https://mixedcas-lab.github.io/pmic-census/">PMIC</a></nav>
+    <nav class="sister" aria-label="Census sites"><a href="https://mixedcas-lab.github.io/adc-census/" aria-current="page">ADC</a><a href="https://mixedcas-lab.github.io/dac-census/">DAC</a><a href="https://mixedcas-lab.github.io/pll-census/">PLL</a><a href="https://mixedcas-lab.github.io/ldo-census/">LDO</a><a href="https://mixedcas-lab.github.io/pmic-census/">PMIC</a></nav>
     </div>
     <h1>ADC Census</h1>
     <p class="lede" id="lede">Loading the paper index…</p>
@@ -68,9 +68,8 @@
         <span class="sr">Search</span>
         <input id="q" type="search" placeholder="Search titles, authors, affiliations, tags, notes" autocomplete="off">
       </label>
-      <div class="seg" role="group" aria-label="Converter type" id="kind">
+      <div class="seg" role="group" aria-label="Converter type" id="kind" hidden>
         <button type="button" data-v="ADC" aria-pressed="true">ADC</button>
-        <button type="button" data-v="DAC" aria-pressed="false">DAC</button>
       </div>
       <label class="field"><span>From</span><select id="y0"></select></label>
       <label class="field"><span>To</span><select id="y1"></select></label>
@@ -150,7 +149,7 @@
 
 <footer class="wrap foot">
   <p>Figures are parsed automatically from titles and abstracts, extracted by AI or checked by the lab (<a href="https://github.com/mixedcas-lab/adc-census/blob/main/data/annotations.csv">annotations.csv</a>); hover over a figure to see which. FoM<sub>S</sub> marked with ≈ is computed from the parsed values assuming Nyquist operation.</p>
-  <p>Bibliographic metadata from the IEEE Xplore API; abstracts and full texts are not hosted. Maintained by <a href="https://mixedcas-lab.github.io/">MCAS Lab</a>, University of Seoul. Sister sites: <a href="https://mixedcas-lab.github.io/pll-census/">PLL Census</a>, <a href="https://mixedcas-lab.github.io/ldo-census/">LDO Census</a> and <a href="https://mixedcas-lab.github.io/pmic-census/">PMIC Census</a> Corrections are welcome as pull requests or issues on <a href="https://github.com/mixedcas-lab/adc-census">GitHub</a>.</p>
+  <p>Bibliographic metadata from the IEEE Xplore API; abstracts and full texts are not hosted. Maintained by <a href="https://mixedcas-lab.github.io/">MCAS Lab</a>, University of Seoul. Sister sites: <a href="https://mixedcas-lab.github.io/dac-census/">DAC Census</a>, <a href="https://mixedcas-lab.github.io/pll-census/">PLL Census</a>, <a href="https://mixedcas-lab.github.io/ldo-census/">LDO Census</a> and <a href="https://mixedcas-lab.github.io/pmic-census/">PMIC Census</a> Corrections are welcome as pull requests or issues on <a href="https://github.com/mixedcas-lab/adc-census">GitHub</a>.</p>
   <p>Numbers tagged "Survey values" (filled dots) are from the ADC Performance Survey by Boris Murmann, BSD 3-Clause License, Copyright © 2022 Boris Murmann: B. Murmann, "ADC Performance Survey 1997-2026," [Online]. Available: <a href="https://github.com/bmurmann/ADC-survey">https://github.com/bmurmann/ADC-survey</a>. ISSCC and VLSI designs from the survey that are not yet in the IEEE index are listed with the survey's own title, authors and DOI. Envelope and jitter lines follow the survey's plotting notebooks.</p>
   <p>We thank Prof. 김민휘 (Chung-Ang University) for the idea behind this site.</p>
 </footer>
