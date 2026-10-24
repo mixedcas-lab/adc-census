@@ -1225,577 +1225,1596 @@
    {
     "key": "ISSCC",
     "year": 2014,
-    "done": false,
-    "next": 201
+    "done": true,
+    "next": 1201,
+    "total": 1050
    },
    {
     "key": "ISSCC",
     "year": 2015,
-    "done": false
+    "done": true,
+    "next": 601,
+    "total": 487
    },
    {
     "key": "ISSCC",
     "year": 2016,
-    "done": false
+    "done": true,
+    "next": 1001,
+    "total": 875
    },
    {
     "key": "ISSCC",
     "year": 2017,
-    "done": false
+    "done": true,
+    "next": 601,
+    "total": 484
    },
    {
     "key": "ISSCC",
     "year": 2018,
-    "done": false
+    "done": true,
+    "next": 1001,
+    "total": 842
    },
    {
     "key": "ISSCC",
     "year": 2019,
-    "done": false
+    "done": true,
+    "next": 601,
+    "total": 580
    },
    {
     "key": "ISSCC",
     "year": 2020,
-    "done": false
+    "done": true,
+    "next": 601,
+    "total": 577
    },
    {
     "key": "ISSCC",
     "year": 2021,
-    "done": false
+    "done": true,
+    "next": 401,
+    "total": 285
    },
    {
     "key": "ISSCC",
     "year": 2022,
-    "done": false
+    "done": true,
+    "next": 601,
+    "total": 592
    },
    {
     "key": "A-SSCC",
     "year": 2005,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 142
    },
    {
     "key": "A-SSCC",
     "year": 2006,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 125
    },
    {
     "key": "A-SSCC",
     "year": 2007,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 117
    },
    {
     "key": "A-SSCC",
     "year": 2008,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 130
    },
    {
     "key": "A-SSCC",
     "year": 2009,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 108
    },
    {
     "key": "A-SSCC",
     "year": 2010,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 104
    },
    {
     "key": "A-SSCC",
     "year": 2011,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 105
    },
    {
     "key": "A-SSCC",
     "year": 2012,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 103
    },
    {
     "key": "A-SSCC",
     "year": 2013,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 114
    },
    {
     "key": "A-SSCC",
     "year": 2014,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 104
    },
    {
     "key": "A-SSCC",
     "year": 2015,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 93
    },
    {
     "key": "A-SSCC",
     "year": 2016,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 97
    },
    {
     "key": "A-SSCC",
     "year": 2017,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 86
    },
    {
     "key": "A-SSCC",
     "year": 2018,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 100
    },
    {
     "key": "A-SSCC",
     "year": 2019,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 96
    },
    {
     "key": "A-SSCC",
     "year": 2020,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 49
    },
    {
     "key": "A-SSCC",
     "year": 2021,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 109
    },
    {
     "key": "A-SSCC",
     "year": 2022,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 102
    },
    {
     "key": "VLSI",
     "year": 2022,
-    "done": false
+    "done": true,
+    "next": 401,
+    "total": 215
    },
    {
     "key": "VLSI-C",
     "year": 1997,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 63
    },
    {
     "key": "VLSI-C",
     "year": 1998,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 76
    },
    {
     "key": "VLSI-C",
     "year": 1999,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 62
    },
    {
     "key": "VLSI-C",
     "year": 2000,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 68
    },
    {
     "key": "VLSI-C",
     "year": 2001,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 82
    },
    {
     "key": "VLSI-C",
     "year": 2002,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 90
    },
    {
     "key": "VLSI-C",
     "year": 2003,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 83
    },
    {
     "key": "VLSI-C",
     "year": 2004,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 184
    },
    {
     "key": "VLSI-C",
     "year": 2005,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 96
    },
    {
     "key": "VLSI-C",
     "year": 2006,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 115
    },
    {
     "key": "VLSI-C",
     "year": 2007,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 120
    },
    {
     "key": "VLSI-C",
     "year": 2008,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 87
    },
    {
     "key": "VLSI-C",
     "year": 2009,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 125
    },
    {
     "key": "VLSI-C",
     "year": 2010,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 99
    },
    {
     "key": "VLSI-C",
     "year": 2011,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 163
    },
    {
     "key": "VLSI-C",
     "year": 2012,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 103
    },
    {
     "key": "VLSI-C",
     "year": 2013,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 136
    },
    {
     "key": "VLSI-C",
     "year": 2014,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 101
    },
    {
     "key": "VLSI-C",
     "year": 2015,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 152
    },
    {
     "key": "VLSI-C",
     "year": 2016,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 108
    },
    {
     "key": "VLSI-C",
     "year": 2017,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 144
    },
    {
     "key": "VLSI-C",
     "year": 2018,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 113
    },
    {
     "key": "VLSI-C",
     "year": 2019,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 140
    },
    {
     "key": "VLSI-C",
     "year": 2020,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 125
    },
    {
     "key": "VLSI-C",
     "year": 2021,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 140
    },
    {
     "key": "CICC",
     "year": 1997,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 128
    },
    {
     "key": "CICC",
     "year": 1998,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 129
    },
    {
     "key": "CICC",
     "year": 1999,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 139
    },
    {
     "key": "CICC",
     "year": 2000,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 131
    },
    {
     "key": "CICC",
     "year": 2001,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 123
    },
    {
     "key": "CICC",
     "year": 2002,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 110
    },
    {
     "key": "CICC",
     "year": 2003,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 150
    },
    {
     "key": "CICC",
     "year": 2004,
-    "done": false
+    "done": true,
+    "next": 401,
+    "total": 231
    },
    {
     "key": "CICC",
     "year": 2005,
-    "done": false
+    "done": true,
+    "next": 401,
+    "total": 207
    },
    {
     "key": "CICC",
     "year": 2006,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 197
    },
    {
     "key": "CICC",
     "year": 2007,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 200
    },
    {
     "key": "CICC",
     "year": 2008,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 198
    },
    {
     "key": "CICC",
     "year": 2009,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 184
    },
    {
     "key": "CICC",
     "year": 2010,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 150
    },
    {
     "key": "CICC",
     "year": 2011,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 148
    },
    {
     "key": "CICC",
     "year": 2012,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 151
    },
    {
     "key": "CICC",
     "year": 2013,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 178
    },
    {
     "key": "CICC",
     "year": 2014,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 167
    },
    {
     "key": "CICC",
     "year": 2015,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 139
    },
    {
     "key": "CICC",
     "year": 2016,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 0
    },
    {
     "key": "CICC",
     "year": 2017,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 135
    },
    {
     "key": "CICC",
     "year": 2018,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 114
    },
    {
     "key": "CICC",
     "year": 2019,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 129
    },
    {
     "key": "CICC",
     "year": 2020,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 84
    },
    {
     "key": "CICC",
     "year": 2021,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 94
    },
    {
     "key": "CICC",
     "year": 2022,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 104
    },
    {
     "key": "ESSCIRC",
     "year": 1997,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 104
    },
    {
     "key": "ESSCIRC",
     "year": 1998,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 127
    },
    {
     "key": "ESSCIRC",
     "year": 1999,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 114
    },
    {
     "key": "ESSCIRC",
     "year": 2000,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 122
    },
    {
     "key": "ESSCIRC",
     "year": 2001,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 142
    },
    {
     "key": "ESSCIRC",
     "year": 2002,
-    "done": false
+    "done": true,
+    "next": 401,
+    "total": 204
    },
    {
     "key": "ESSCIRC",
     "year": 2003,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 177
    },
    {
     "key": "ESSCIRC",
     "year": 2004,
-    "done": false
+    "done": true,
+    "next": 401,
+    "total": 266
    },
    {
     "key": "ESSCIRC",
     "year": 2005,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 140
    },
    {
     "key": "ESSCIRC",
     "year": 2006,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 150
    },
    {
     "key": "ESSCIRC",
     "year": 2007,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 123
    },
    {
     "key": "ESSCIRC",
     "year": 2008,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 133
    },
    {
     "key": "ESSCIRC",
     "year": 2009,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 0
    },
    {
     "key": "ESSCIRC",
     "year": 2010,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 0
    },
    {
     "key": "ESSCIRC",
     "year": 2011,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 0
    },
    {
     "key": "ESSCIRC",
     "year": 2012,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 0
    },
    {
     "key": "ESSCIRC",
     "year": 2013,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 0
    },
    {
     "key": "ESSCIRC",
     "year": 2014,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 115
    },
    {
     "key": "ESSCIRC",
     "year": 2015,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 104
    },
    {
     "key": "ESSCIRC",
     "year": 2016,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 125
    },
    {
     "key": "ESSCIRC",
     "year": 2017,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 97
    },
    {
     "key": "ESSCIRC",
     "year": 2018,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 95
    },
    {
     "key": "ESSCIRC",
     "year": 2019,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 98
    },
    {
     "key": "ESSCIRC",
     "year": 2020,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 0
    },
    {
     "key": "ESSCIRC",
     "year": 2021,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 128
    },
    {
     "key": "ESSCIRC",
     "year": 2022,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 137
    },
    {
     "key": "Access",
     "year": 2013,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 0
    },
    {
     "key": "Access",
     "year": 2014,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 1
    },
    {
     "key": "Access",
     "year": 2015,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 6
    },
    {
     "key": "Access",
     "year": 2016,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 14
    },
    {
     "key": "Access",
     "year": 2017,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 28
    },
    {
     "key": "Access",
     "year": 2018,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 55
    },
    {
     "key": "Access",
     "year": 2019,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 147
    },
    {
     "key": "Access",
     "year": 2020,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 170
    },
    {
     "key": "Access",
     "year": 2021,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 128
    },
    {
     "key": "Access",
     "year": 2022,
+    "done": true,
+    "next": 201,
+    "total": 102
+   },
+   {
+    "key": "TCAD",
+    "year": 2012,
+    "done": true,
+    "next": 401,
+    "total": 235
+   },
+   {
+    "key": "TCAD",
+    "year": 2013,
+    "done": true,
+    "next": 401,
+    "total": 238
+   },
+   {
+    "key": "TCAD",
+    "year": 2014,
+    "done": true,
+    "next": 401,
+    "total": 238
+   },
+   {
+    "key": "TCAD",
+    "year": 2015,
+    "done": true,
+    "next": 401,
+    "total": 233
+   },
+   {
+    "key": "TCAD",
+    "year": 2016,
+    "done": true,
+    "next": 401,
+    "total": 248
+   },
+   {
+    "key": "TCAD",
+    "year": 2017,
+    "done": true,
+    "next": 401,
+    "total": 248
+   },
+   {
+    "key": "TCAD",
+    "year": 2018,
+    "done": true,
+    "next": 401,
+    "total": 336
+   },
+   {
+    "key": "TCAD",
+    "year": 2019,
+    "done": true,
+    "next": 401,
+    "total": 250
+   },
+   {
+    "key": "TCAD",
+    "year": 2020,
+    "done": true,
+    "next": 601,
+    "total": 472
+   },
+   {
+    "key": "TCAD",
+    "year": 2021,
+    "done": true,
+    "next": 401,
+    "total": 248
+   },
+   {
+    "key": "TCAD",
+    "year": 2022,
+    "done": true,
+    "next": 601,
+    "total": 496
+   },
+   {
+    "key": "TCAD",
+    "year": 2023,
+    "done": true,
+    "next": 601,
+    "total": 456
+   },
+   {
+    "key": "TCAD",
+    "year": 2024,
+    "done": true,
+    "next": 601,
+    "total": 426
+   },
+   {
+    "key": "TCAD",
+    "year": 2025,
+    "done": true,
+    "next": 601,
+    "total": 425
+   },
+   {
+    "key": "TCAD",
+    "year": 2026,
+    "done": true,
+    "next": 801,
+    "total": 767
+   },
+   {
+    "key": "TC",
+    "year": 2012,
+    "done": true,
+    "next": 401,
+    "total": 204
+   },
+   {
+    "key": "TC",
+    "year": 2013,
+    "done": true,
+    "next": 401,
+    "total": 233
+   },
+   {
+    "key": "TC",
+    "year": 2014,
+    "done": true,
+    "next": 401,
+    "total": 256
+   },
+   {
+    "key": "TC",
+    "year": 2015,
+    "done": true,
+    "next": 401,
+    "total": 289
+   },
+   {
+    "key": "TC",
+    "year": 2016,
+    "done": true,
+    "next": 401,
+    "total": 317
+   },
+   {
+    "key": "TC",
+    "year": 2017,
+    "done": false
+   },
+   {
+    "key": "TC",
+    "year": 2018,
+    "done": false
+   },
+   {
+    "key": "TC",
+    "year": 2019,
+    "done": false
+   },
+   {
+    "key": "TC",
+    "year": 2020,
+    "done": false
+   },
+   {
+    "key": "TC",
+    "year": 2021,
+    "done": false
+   },
+   {
+    "key": "TC",
+    "year": 2022,
+    "done": false
+   },
+   {
+    "key": "TC",
+    "year": 2023,
+    "done": false
+   },
+   {
+    "key": "TC",
+    "year": 2024,
+    "done": false
+   },
+   {
+    "key": "TC",
+    "year": 2025,
+    "done": false
+   },
+   {
+    "key": "TC",
+    "year": 2026,
+    "done": false
+   },
+   {
+    "key": "JETCAS",
+    "year": 2012,
+    "done": false
+   },
+   {
+    "key": "JETCAS",
+    "year": 2013,
+    "done": false
+   },
+   {
+    "key": "JETCAS",
+    "year": 2014,
+    "done": false
+   },
+   {
+    "key": "JETCAS",
+    "year": 2015,
+    "done": false
+   },
+   {
+    "key": "JETCAS",
+    "year": 2016,
+    "done": false
+   },
+   {
+    "key": "JETCAS",
+    "year": 2017,
+    "done": false
+   },
+   {
+    "key": "JETCAS",
+    "year": 2018,
+    "done": false
+   },
+   {
+    "key": "JETCAS",
+    "year": 2019,
+    "done": false
+   },
+   {
+    "key": "JETCAS",
+    "year": 2020,
+    "done": false
+   },
+   {
+    "key": "JETCAS",
+    "year": 2021,
+    "done": false
+   },
+   {
+    "key": "JETCAS",
+    "year": 2022,
+    "done": false
+   },
+   {
+    "key": "JETCAS",
+    "year": 2023,
+    "done": false
+   },
+   {
+    "key": "JETCAS",
+    "year": 2024,
+    "done": false
+   },
+   {
+    "key": "JETCAS",
+    "year": 2025,
+    "done": false
+   },
+   {
+    "key": "JETCAS",
+    "year": 2026,
+    "done": false
+   },
+   {
+    "key": "MICRO-MAG",
+    "year": 2012,
+    "done": false
+   },
+   {
+    "key": "MICRO-MAG",
+    "year": 2013,
+    "done": false
+   },
+   {
+    "key": "MICRO-MAG",
+    "year": 2014,
+    "done": false
+   },
+   {
+    "key": "MICRO-MAG",
+    "year": 2015,
+    "done": false
+   },
+   {
+    "key": "MICRO-MAG",
+    "year": 2016,
+    "done": false
+   },
+   {
+    "key": "MICRO-MAG",
+    "year": 2017,
+    "done": false
+   },
+   {
+    "key": "MICRO-MAG",
+    "year": 2018,
+    "done": false
+   },
+   {
+    "key": "MICRO-MAG",
+    "year": 2019,
+    "done": false
+   },
+   {
+    "key": "MICRO-MAG",
+    "year": 2020,
+    "done": false
+   },
+   {
+    "key": "MICRO-MAG",
+    "year": 2021,
+    "done": false
+   },
+   {
+    "key": "MICRO-MAG",
+    "year": 2022,
+    "done": false
+   },
+   {
+    "key": "MICRO-MAG",
+    "year": 2023,
+    "done": false
+   },
+   {
+    "key": "MICRO-MAG",
+    "year": 2024,
+    "done": false
+   },
+   {
+    "key": "MICRO-MAG",
+    "year": 2025,
+    "done": false
+   },
+   {
+    "key": "MICRO-MAG",
+    "year": 2026,
+    "done": false
+   },
+   {
+    "key": "DAC",
+    "year": 2012,
+    "done": false
+   },
+   {
+    "key": "DAC",
+    "year": 2013,
+    "done": false
+   },
+   {
+    "key": "DAC",
+    "year": 2014,
+    "done": false
+   },
+   {
+    "key": "DAC",
+    "year": 2015,
+    "done": false
+   },
+   {
+    "key": "DAC",
+    "year": 2016,
+    "done": false
+   },
+   {
+    "key": "DAC",
+    "year": 2017,
+    "done": false
+   },
+   {
+    "key": "DAC",
+    "year": 2018,
+    "done": false
+   },
+   {
+    "key": "DAC",
+    "year": 2019,
+    "done": false
+   },
+   {
+    "key": "DAC",
+    "year": 2020,
+    "done": false
+   },
+   {
+    "key": "DAC",
+    "year": 2021,
+    "done": false
+   },
+   {
+    "key": "DAC",
+    "year": 2022,
+    "done": false
+   },
+   {
+    "key": "DAC",
+    "year": 2023,
+    "done": false
+   },
+   {
+    "key": "DAC",
+    "year": 2024,
+    "done": false
+   },
+   {
+    "key": "DAC",
+    "year": 2025,
+    "done": false
+   },
+   {
+    "key": "DAC",
+    "year": 2026,
+    "done": false
+   },
+   {
+    "key": "ICCAD",
+    "year": 2012,
+    "done": false
+   },
+   {
+    "key": "ICCAD",
+    "year": 2013,
+    "done": false
+   },
+   {
+    "key": "ICCAD",
+    "year": 2014,
+    "done": false
+   },
+   {
+    "key": "ICCAD",
+    "year": 2015,
+    "done": false
+   },
+   {
+    "key": "ICCAD",
+    "year": 2016,
+    "done": false
+   },
+   {
+    "key": "ICCAD",
+    "year": 2017,
+    "done": false
+   },
+   {
+    "key": "ICCAD",
+    "year": 2018,
+    "done": false
+   },
+   {
+    "key": "ICCAD",
+    "year": 2019,
+    "done": false
+   },
+   {
+    "key": "ICCAD",
+    "year": 2020,
+    "done": false
+   },
+   {
+    "key": "ICCAD",
+    "year": 2021,
+    "done": false
+   },
+   {
+    "key": "ICCAD",
+    "year": 2022,
+    "done": false
+   },
+   {
+    "key": "ICCAD",
+    "year": 2023,
+    "done": false
+   },
+   {
+    "key": "ICCAD",
+    "year": 2024,
+    "done": false
+   },
+   {
+    "key": "ICCAD",
+    "year": 2025,
+    "done": false
+   },
+   {
+    "key": "ICCAD",
+    "year": 2026,
+    "done": false
+   },
+   {
+    "key": "DATE",
+    "year": 2012,
+    "done": false
+   },
+   {
+    "key": "DATE",
+    "year": 2013,
+    "done": false
+   },
+   {
+    "key": "DATE",
+    "year": 2014,
+    "done": false
+   },
+   {
+    "key": "DATE",
+    "year": 2015,
+    "done": false
+   },
+   {
+    "key": "DATE",
+    "year": 2016,
+    "done": false
+   },
+   {
+    "key": "DATE",
+    "year": 2017,
+    "done": false
+   },
+   {
+    "key": "DATE",
+    "year": 2018,
+    "done": false
+   },
+   {
+    "key": "DATE",
+    "year": 2019,
+    "done": false
+   },
+   {
+    "key": "DATE",
+    "year": 2020,
+    "done": false
+   },
+   {
+    "key": "DATE",
+    "year": 2021,
+    "done": false
+   },
+   {
+    "key": "DATE",
+    "year": 2022,
+    "done": false
+   },
+   {
+    "key": "DATE",
+    "year": 2023,
+    "done": false
+   },
+   {
+    "key": "DATE",
+    "year": 2024,
+    "done": false
+   },
+   {
+    "key": "DATE",
+    "year": 2025,
+    "done": false
+   },
+   {
+    "key": "DATE",
+    "year": 2026,
+    "done": false
+   },
+   {
+    "key": "HPCA",
+    "year": 2012,
+    "done": false
+   },
+   {
+    "key": "HPCA",
+    "year": 2013,
+    "done": false
+   },
+   {
+    "key": "HPCA",
+    "year": 2014,
+    "done": false
+   },
+   {
+    "key": "HPCA",
+    "year": 2015,
+    "done": false
+   },
+   {
+    "key": "HPCA",
+    "year": 2016,
+    "done": false
+   },
+   {
+    "key": "HPCA",
+    "year": 2017,
+    "done": false
+   },
+   {
+    "key": "HPCA",
+    "year": 2018,
+    "done": false
+   },
+   {
+    "key": "HPCA",
+    "year": 2019,
+    "done": false
+   },
+   {
+    "key": "HPCA",
+    "year": 2020,
+    "done": false
+   },
+   {
+    "key": "HPCA",
+    "year": 2021,
+    "done": false
+   },
+   {
+    "key": "HPCA",
+    "year": 2022,
+    "done": false
+   },
+   {
+    "key": "HPCA",
+    "year": 2023,
+    "done": false
+   },
+   {
+    "key": "HPCA",
+    "year": 2024,
+    "done": false
+   },
+   {
+    "key": "HPCA",
+    "year": 2025,
+    "done": false
+   },
+   {
+    "key": "HPCA",
+    "year": 2026,
+    "done": false
+   },
+   {
+    "key": "MICRO",
+    "year": 2012,
+    "done": false
+   },
+   {
+    "key": "MICRO",
+    "year": 2013,
+    "done": false
+   },
+   {
+    "key": "MICRO",
+    "year": 2014,
+    "done": false
+   },
+   {
+    "key": "MICRO",
+    "year": 2015,
+    "done": false
+   },
+   {
+    "key": "MICRO",
+    "year": 2016,
+    "done": false
+   },
+   {
+    "key": "MICRO",
+    "year": 2017,
+    "done": false
+   },
+   {
+    "key": "MICRO",
+    "year": 2018,
+    "done": false
+   },
+   {
+    "key": "MICRO",
+    "year": 2019,
+    "done": false
+   },
+   {
+    "key": "MICRO",
+    "year": 2020,
+    "done": false
+   },
+   {
+    "key": "MICRO",
+    "year": 2021,
+    "done": false
+   },
+   {
+    "key": "MICRO",
+    "year": 2022,
+    "done": false
+   },
+   {
+    "key": "MICRO",
+    "year": 2023,
+    "done": false
+   },
+   {
+    "key": "MICRO",
+    "year": 2024,
+    "done": false
+   },
+   {
+    "key": "MICRO",
+    "year": 2025,
+    "done": false
+   },
+   {
+    "key": "MICRO",
+    "year": 2026,
+    "done": false
+   },
+   {
+    "key": "ISCA",
+    "year": 2012,
+    "done": false
+   },
+   {
+    "key": "ISCA",
+    "year": 2013,
+    "done": false
+   },
+   {
+    "key": "ISCA",
+    "year": 2014,
+    "done": false
+   },
+   {
+    "key": "ISCA",
+    "year": 2015,
+    "done": false
+   },
+   {
+    "key": "ISCA",
+    "year": 2016,
+    "done": false
+   },
+   {
+    "key": "ISCA",
+    "year": 2017,
+    "done": false
+   },
+   {
+    "key": "ISCA",
+    "year": 2018,
+    "done": false
+   },
+   {
+    "key": "ISCA",
+    "year": 2019,
+    "done": false
+   },
+   {
+    "key": "ISCA",
+    "year": 2020,
+    "done": false
+   },
+   {
+    "key": "ISCA",
+    "year": 2021,
+    "done": false
+   },
+   {
+    "key": "ISCA",
+    "year": 2022,
+    "done": false
+   },
+   {
+    "key": "ISCA",
+    "year": 2023,
+    "done": false
+   },
+   {
+    "key": "ISCA",
+    "year": 2024,
+    "done": false
+   },
+   {
+    "key": "ISCA",
+    "year": 2025,
+    "done": false
+   },
+   {
+    "key": "ISCA",
+    "year": 2026,
     "done": false
    }
   ]
@@ -1814,7 +2833,10 @@
   "ESSERC": true,
   "Access": true,
   "TCAS-I-1992": true,
-  "TCAS-II-1992": true
+  "TCAS-II-1992": true,
+  "VLSI-C": true,
+  "TCAD": true,
+  "TC": true
  },
  "last_delta_end": "20261023"
 }
