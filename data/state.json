@@ -2170,577 +2170,807 @@
    {
     "key": "TC",
     "year": 2017,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 180
    },
    {
     "key": "TC",
     "year": 2018,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 153
    },
    {
     "key": "TC",
     "year": 2019,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 150
    },
    {
     "key": "TC",
     "year": 2020,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 147
    },
    {
     "key": "TC",
     "year": 2021,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 175
    },
    {
     "key": "TC",
     "year": 2022,
-    "done": false
+    "done": true,
+    "next": 401,
+    "total": 260
    },
    {
     "key": "TC",
     "year": 2023,
-    "done": false
+    "done": true,
+    "next": 401,
+    "total": 273
    },
    {
     "key": "TC",
     "year": 2024,
-    "done": false
+    "done": true,
+    "next": 401,
+    "total": 215
    },
    {
     "key": "TC",
     "year": 2025,
-    "done": false
+    "done": true,
+    "next": 401,
+    "total": 306
    },
    {
     "key": "TC",
     "year": 2026,
-    "done": false
+    "done": true,
+    "next": 401,
+    "total": 379
    },
    {
     "key": "JETCAS",
     "year": 2012,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 90
    },
    {
     "key": "JETCAS",
     "year": 2013,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 87
    },
    {
     "key": "JETCAS",
     "year": 2014,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 71
    },
    {
     "key": "JETCAS",
     "year": 2015,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 83
    },
    {
     "key": "JETCAS",
     "year": 2016,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 76
    },
    {
     "key": "JETCAS",
     "year": 2017,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 79
    },
    {
     "key": "JETCAS",
     "year": 2018,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 95
    },
    {
     "key": "JETCAS",
     "year": 2019,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 86
    },
    {
     "key": "JETCAS",
     "year": 2020,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 70
    },
    {
     "key": "JETCAS",
     "year": 2021,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 95
    },
    {
     "key": "JETCAS",
     "year": 2022,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 110
    },
    {
     "key": "JETCAS",
     "year": 2023,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 120
    },
    {
     "key": "JETCAS",
     "year": 2024,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 87
    },
    {
     "key": "JETCAS",
     "year": 2025,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 71
    },
    {
     "key": "JETCAS",
     "year": 2026,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 110
    },
    {
     "key": "MICRO-MAG",
     "year": 2012,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 102
    },
    {
     "key": "MICRO-MAG",
     "year": 2013,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 125
    },
    {
     "key": "MICRO-MAG",
     "year": 2014,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 109
    },
    {
     "key": "MICRO-MAG",
     "year": 2015,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 116
    },
    {
     "key": "MICRO-MAG",
     "year": 2016,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 115
    },
    {
     "key": "MICRO-MAG",
     "year": 2017,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 136
    },
    {
     "key": "MICRO-MAG",
     "year": 2018,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 116
    },
    {
     "key": "MICRO-MAG",
     "year": 2019,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 131
    },
    {
     "key": "MICRO-MAG",
     "year": 2020,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 149
    },
    {
     "key": "MICRO-MAG",
     "year": 2021,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 185
    },
    {
     "key": "MICRO-MAG",
     "year": 2022,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 170
    },
    {
     "key": "MICRO-MAG",
     "year": 2023,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 168
    },
    {
     "key": "MICRO-MAG",
     "year": 2024,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 148
    },
    {
     "key": "MICRO-MAG",
     "year": 2025,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 166
    },
    {
     "key": "MICRO-MAG",
     "year": 2026,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 155
    },
    {
     "key": "DAC",
     "year": 2012,
-    "done": false
+    "done": true,
+    "next": 801,
+    "total": 681
    },
    {
     "key": "DAC",
     "year": 2013,
-    "done": false
+    "done": true,
+    "next": 801,
+    "total": 711
    },
    {
     "key": "DAC",
     "year": 2014,
-    "done": false
+    "done": true,
+    "next": 801,
+    "total": 768
    },
    {
     "key": "DAC",
     "year": 2015,
-    "done": false
+    "done": true,
+    "next": 801,
+    "total": 688
    },
    {
     "key": "DAC",
     "year": 2016,
-    "done": false
+    "done": true,
+    "next": 801,
+    "total": 620
    },
    {
     "key": "DAC",
     "year": 2017,
-    "done": false
+    "done": true,
+    "next": 801,
+    "total": 698
    },
    {
     "key": "DAC",
     "year": 2018,
-    "done": false
+    "done": true,
+    "next": 801,
+    "total": 680
    },
    {
     "key": "DAC",
     "year": 2019,
-    "done": false
+    "done": true,
+    "next": 801,
+    "total": 706
    },
    {
     "key": "DAC",
     "year": 2020,
-    "done": false
+    "done": true,
+    "next": 801,
+    "total": 771
    },
    {
     "key": "DAC",
     "year": 2021,
-    "done": false
+    "done": true,
+    "next": 1001,
+    "total": 841
    },
    {
     "key": "DAC",
     "year": 2022,
-    "done": false
+    "done": true,
+    "next": 801,
+    "total": 733
    },
    {
     "key": "DAC",
     "year": 2023,
-    "done": false
+    "done": true,
+    "next": 1001,
+    "total": 846
    },
    {
     "key": "DAC",
     "year": 2024,
-    "done": false
+    "done": true,
+    "next": 1001,
+    "total": 975
    },
    {
     "key": "DAC",
     "year": 2025,
-    "done": false
+    "done": true,
+    "next": 1001,
+    "total": 949
    },
    {
     "key": "DAC",
     "year": 2026,
-    "done": false
+    "done": true,
+    "next": 801,
+    "total": 703
    },
    {
     "key": "ICCAD",
     "year": 2012,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 129
    },
    {
     "key": "ICCAD",
     "year": 2013,
-    "done": false
+    "done": true,
+    "next": 401,
+    "total": 227
    },
    {
     "key": "ICCAD",
     "year": 2014,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 123
    },
    {
     "key": "ICCAD",
     "year": 2015,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 196
    },
    {
     "key": "ICCAD",
     "year": 2016,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 165
    },
    {
     "key": "ICCAD",
     "year": 2017,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 154
    },
    {
     "key": "ICCAD",
     "year": 2018,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 143
    },
    {
     "key": "ICCAD",
     "year": 2019,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 141
    },
    {
     "key": "ICCAD",
     "year": 2020,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 177
    },
    {
     "key": "ICCAD",
     "year": 2021,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 158
    },
    {
     "key": "ICCAD",
     "year": 2022,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 166
    },
    {
     "key": "ICCAD",
     "year": 2023,
-    "done": false
+    "done": true,
+    "next": 401,
+    "total": 205
    },
    {
     "key": "ICCAD",
     "year": 2024,
-    "done": false
+    "done": true,
+    "next": 401,
+    "total": 241
    },
    {
     "key": "ICCAD",
     "year": 2025,
-    "done": false
+    "done": true,
+    "next": 401,
+    "total": 316
    },
    {
     "key": "ICCAD",
     "year": 2026,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 0
    },
    {
     "key": "DATE",
     "year": 2012,
-    "done": false
+    "done": true,
+    "next": 401,
+    "total": 326
    },
    {
     "key": "DATE",
     "year": 2013,
-    "done": false
+    "done": true,
+    "next": 401,
+    "total": 375
    },
    {
     "key": "DATE",
     "year": 2014,
-    "done": false
+    "done": true,
+    "next": 401,
+    "total": 386
    },
    {
     "key": "DATE",
     "year": 2015,
-    "done": false
+    "done": true,
+    "next": 401,
+    "total": 323
    },
    {
     "key": "DATE",
     "year": 2016,
-    "done": false
+    "done": true,
+    "next": 401,
+    "total": 309
    },
    {
     "key": "DATE",
     "year": 2017,
-    "done": false
+    "done": true,
+    "next": 401,
+    "total": 338
    },
    {
     "key": "DATE",
     "year": 2018,
-    "done": false
+    "done": true,
+    "next": 401,
+    "total": 312
    },
    {
     "key": "DATE",
     "year": 2019,
-    "done": false
+    "done": true,
+    "next": 401,
+    "total": 332
    },
    {
     "key": "DATE",
     "year": 2020,
-    "done": false
+    "done": true,
+    "next": 401,
+    "total": 325
    },
    {
     "key": "DATE",
     "year": 2021,
-    "done": false
+    "done": true,
+    "next": 401,
+    "total": 359
    },
    {
     "key": "DATE",
     "year": 2022,
-    "done": false
+    "done": true,
+    "next": 401,
+    "total": 283
    },
    {
     "key": "DATE",
     "year": 2023,
-    "done": false
+    "done": true,
+    "next": 401,
+    "total": 341
    },
    {
     "key": "DATE",
     "year": 2024,
-    "done": false
+    "done": true,
+    "next": 401,
+    "total": 397
    },
    {
     "key": "DATE",
     "year": 2025,
-    "done": false
+    "done": true,
+    "next": 601,
+    "total": 444
    },
    {
     "key": "DATE",
     "year": 2026,
-    "done": false
+    "done": true,
+    "next": 601,
+    "total": 463
    },
    {
     "key": "HPCA",
     "year": 2012,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 49
    },
    {
     "key": "HPCA",
     "year": 2013,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 97
    },
    {
     "key": "HPCA",
     "year": 2014,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 153
    },
    {
     "key": "HPCA",
     "year": 2015,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 130
    },
    {
     "key": "HPCA",
     "year": 2016,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 131
    },
    {
     "key": "HPCA",
     "year": 2017,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 129
    },
    {
     "key": "HPCA",
     "year": 2018,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 153
    },
    {
     "key": "HPCA",
     "year": 2019,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 116
    },
    {
     "key": "HPCA",
     "year": 2020,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 118
    },
    {
     "key": "HPCA",
     "year": 2021,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 133
    },
    {
     "key": "HPCA",
     "year": 2022,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 159
    },
    {
     "key": "HPCA",
     "year": 2023,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 166
    },
    {
     "key": "HPCA",
     "year": 2024,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 144
    },
    {
     "key": "HPCA",
     "year": 2025,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 199
    },
    {
     "key": "HPCA",
     "year": 2026,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 123
    },
    {
     "key": "MICRO",
     "year": 2012,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 76
    },
    {
     "key": "MICRO",
     "year": 2013,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 41
    },
    {
     "key": "MICRO",
     "year": 2014,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 67
    },
    {
     "key": "MICRO",
     "year": 2015,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 62
    },
    {
     "key": "MICRO",
     "year": 2016,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 72
    },
    {
     "key": "MICRO",
     "year": 2017,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 63
    },
    {
     "key": "MICRO",
     "year": 2018,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 84
    },
    {
     "key": "MICRO",
     "year": 2019,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 0
    },
    {
     "key": "MICRO",
     "year": 2020,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 96
    },
    {
     "key": "MICRO",
     "year": 2021,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 0
    },
    {
     "key": "MICRO",
     "year": 2022,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 98
    },
    {
     "key": "MICRO",
     "year": 2023,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 102
    },
    {
     "key": "MICRO",
     "year": 2024,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 124
    },
    {
     "key": "MICRO",
     "year": 2025,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 0
    },
    {
     "key": "MICRO",
     "year": 2026,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 0
    },
    {
     "key": "ISCA",
@@ -2836,7 +3066,14 @@
   "TCAS-II-1992": true,
   "VLSI-C": true,
   "TCAD": true,
-  "TC": true
+  "TC": true,
+  "JETCAS": true,
+  "MICRO-MAG": true,
+  "DAC": true,
+  "ICCAD": true,
+  "DATE": true,
+  "HPCA": true,
+  "MICRO": true
  },
  "last_delta_end": "20261023"
 }

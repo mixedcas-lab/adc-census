@@ -1,7 +1,7 @@
 {
  "title": "ADC Census",
  "source": "IEEE Xplore API",
- "updated": "2026-10-25",
+ "updated": "2026-10-26",
  "coverage_from": "1997-01",
  "coverage_to": "2026-10",
  "total": 7648,
@@ -23,5 +23,5 @@
   "ESSCIRC": 517
  },
  "sweep_done": false,
- "last_run_new": 2249
+ "last_run_new": 0
 }
