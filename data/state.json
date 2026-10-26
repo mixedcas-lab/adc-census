@@ -1,7 +1,7 @@
 {
  "since_year": 1997,
  "sweep": {
-  "done": false,
+  "done": true,
   "started": "2026-10-23",
   "tasks": [
    {
@@ -2975,77 +2975,107 @@
    {
     "key": "ISCA",
     "year": 2012,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 53
    },
    {
     "key": "ISCA",
     "year": 2013,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 0
    },
    {
     "key": "ISCA",
     "year": 2014,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 0
    },
    {
     "key": "ISCA",
     "year": 2015,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 60
    },
    {
     "key": "ISCA",
     "year": 2016,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 70
    },
    {
     "key": "ISCA",
     "year": 2017,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 54
    },
    {
     "key": "ISCA",
     "year": 2018,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 77
    },
    {
     "key": "ISCA",
     "year": 2019,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 64
    },
    {
     "key": "ISCA",
     "year": 2020,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 94
    },
    {
     "key": "ISCA",
     "year": 2021,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 92
    },
    {
     "key": "ISCA",
     "year": 2022,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 0
    },
    {
     "key": "ISCA",
     "year": 2023,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 0
    },
    {
     "key": "ISCA",
     "year": 2024,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 98
    },
    {
     "key": "ISCA",
     "year": 2025,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 0
    },
    {
     "key": "ISCA",
     "year": 2026,
-    "done": false
+    "done": true,
+    "next": 201,
+    "total": 189
    }
   ]
  },
@@ -3073,7 +3103,8 @@
   "ICCAD": true,
   "DATE": true,
   "HPCA": true,
-  "MICRO": true
+  "MICRO": true,
+  "ISCA": true
  },
  "last_delta_end": "20261023"
 }
