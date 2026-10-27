@@ -1,6 +1,6 @@
 // Conference deadline bar shown above the Census masthead.
 // Data: deadlines.json (edited by hand). The nearest confirmed deadline is pinned on the left;
-// the rest rotate one card at a time when they do not all fit.
+// the rest rotate one card at a time when they do not all fit. Cards are sized so none is cut off.
 (function () {
   "use strict";
   const SRC = "deadlines.json";
@@ -29,18 +29,16 @@
     </a>`;
   }
 
-  function ics(list) {
-    const stamp = d => new Date(d).toISOString().replace(/[-:]/g, "").replace(/\.\d+Z$/, "Z");
-    const lines = ["BEGIN:VCALENDAR", "VERSION:2.0", "PRODID:-//MCAS Lab//Census deadlines//EN", "CALSCALE:GREGORIAN"];
-    list.forEach(c => lines.push("BEGIN:VEVENT", `UID:${c.id}-${c.edition}-deadline@mixedcas-lab.github.io`, `DTSTAMP:${stamp(Date.now())}`,
-      `DTSTART:${stamp(c.t)}`, `DTEND:${stamp(c.t)}`, `SUMMARY:${c.id} ${c.edition} paper deadline`,
-      `DESCRIPTION:${(c.name + " · " + venueLocal(c) + (c.note ? " · " + c.note : "")).replace(/[,;]/g, "\\$&")}`, `URL:${c.url || ""}`,
-      "BEGIN:VALARM", "ACTION:DISPLAY", "DESCRIPTION:Deadline in 7 days", "TRIGGER:-P7D", "END:VALARM", "END:VEVENT"));
-    lines.push("END:VCALENDAR");
-    const a = document.createElement("a");
-    a.href = URL.createObjectURL(new Blob([lines.join("\r\n")], { type: "text/calendar" }));
-    a.download = "circuits-deadlines.ics";
-    document.body.appendChild(a); a.click(); a.remove();
+
+  // Size the rotating cards so a whole number of them fills the space: no card is ever cut off.
+  const MIN_W = 150, MAX_W = 210;
+  function fit(view, track) {
+    const gap = parseFloat(getComputedStyle(track).columnGap) || 8;
+    const avail = view.clientWidth, count = track.children.length;
+    if (!avail || !count) return;
+    const n = Math.max(1, Math.floor((avail + gap) / (MIN_W + gap)));
+    const w = n >= count ? Math.min(MAX_W, (avail - (count - 1) * gap) / count) : (avail - (n - 1) * gap) / n;
+    track.style.setProperty("--dl-w", Math.floor(w) + "px");
   }
 
   function rotate(view, track) {
@@ -57,7 +55,7 @@
       if (paused || busy || document.hidden || track.children.length < 2) return;
       if (track.scrollWidth <= view.clientWidth + 2) return;           // everything fits: stay still
       const first = track.firstElementChild;
-      const step = first.getBoundingClientRect().width + parseFloat(getComputedStyle(track).columnGap || 8);
+      const step = first.getBoundingClientRect().width + (parseFloat(getComputedStyle(track).columnGap) || 8);
       busy = true;
       track.style.transition = "transform .6s cubic-bezier(.4,0,.2,1)";
       track.style.transform = `translateX(${-step}px)`;
@@ -96,12 +94,13 @@
       <div class="dl-lab"><span>DEADLINES</span><small>KST · live</small></div>
       ${next ? `<div class="dl-pin">${card(next, true)}</div>` : ""}
       <div class="dl-view"><div class="dl-track">${rest.map(c => card(c, false)).join("")}</div></div>
-      ${live.length ? `<button type="button" class="dl-ics" title="Download confirmed deadlines as a calendar file (.ics), with a reminder 7 days before">+ Calendar</button>` : ""}
     </div>`;
     document.body.prepend(bar);
 
-    const btn = bar.querySelector(".dl-ics");
-    if (btn) btn.addEventListener("click", () => ics(live));
+    const view = bar.querySelector(".dl-view"), track = bar.querySelector(".dl-track");
+    fit(view, track);
+    if (window.ResizeObserver) new ResizeObserver(() => fit(view, track)).observe(view);
+    else addEventListener("resize", () => fit(view, track));
 
     const tick = () => bar.querySelectorAll(".dl-cd[data-t]").forEach(n => {
       let s = Math.max(0, Math.floor((+n.dataset.t - Date.now()) / 1000));
@@ -113,7 +112,7 @@
     });
     tick(); setInterval(tick, 1000);
 
-    if (!reduced) rotate(bar.querySelector(".dl-view"), bar.querySelector(".dl-track"));
+    if (!reduced) rotate(view, track);
   }
 
   fetch(SRC, { cache: "no-cache" }).then(r => r.ok ? r.json() : null).then(d => d && render(d)).catch(() => {});

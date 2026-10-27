@@ -11,10 +11,10 @@
 .dl-lab span { font-size: 11px; font-weight: 700; letter-spacing: .16em; color: var(--dl-cyan); }
 .dl-lab small { font-size: 11px; color: var(--dl-mute); }
 .dl-pin { flex: none; display: flex; }
-.dl-view { flex: 1; min-width: 0; overflow: hidden;
-  -webkit-mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent);
-          mask-image: linear-gradient(90deg, #000 calc(100% - 36px), transparent); }
+.dl-view { flex: 1; min-width: 0; overflow: hidden; }
 .dl-track { display: flex; column-gap: 8px; height: 100%; will-change: transform; }
+.dl-track .dl-c, .dl-track .dl-c.est { width: var(--dl-w, 160px); min-width: 0; }
+.dl-track .dl-c > span { overflow: hidden; text-overflow: ellipsis; }
 
 .dl-c { flex: none; min-width: 156px; display: flex; flex-direction: column; gap: 1px; padding: 7px 12px 8px;
   border: 1px solid var(--dl-line); border-radius: 10px; background: var(--dl-card); transition: border-color .15s; }
@@ -36,20 +36,15 @@
 .dl-c.est { min-width: 130px; border-style: dashed; background: transparent; }
 .dl-c.est .dl-cd { font-size: 16px; color: #c6cbef; font-weight: 600; font-style: italic; margin-top: 2px; }
 
-.dl-ics { flex: none; align-self: center; border: 0; cursor: pointer; font: inherit; background: var(--dl-cyan);
-  color: #14173a; font-weight: 700; font-size: 12.5px; padding: 8px 12px; border-radius: 10px; white-space: nowrap; }
-.dl-ics:hover { background: var(--dl-hi); }
-
 @media (prefers-reduced-motion: reduce) {
   .dl-dot { animation: none; }
   .dl-view { overflow-x: auto; scrollbar-width: none; }
 }
 @media (max-width: 720px) {
-  .dl-in { gap: 8px; padding-left: 12px; padding-right: 0; }
+  .dl-in { gap: 8px; padding-left: 12px; padding-right: 12px; }
   .dl-lab small { display: none; }
   .dl-lab span { writing-mode: vertical-rl; transform: rotate(180deg); font-size: 10px; }
   .dl-c { min-width: 140px; padding: 6px 10px 7px; }
   .dl-c.est { min-width: 118px; }
   .dl-cd { font-size: 17px; }
-  .dl-ics { display: none; }
 }
