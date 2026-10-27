@@ -205,8 +205,10 @@ python3 -m unittest discover -s collector
 The bar above the masthead is shared by all Census sites. `deadlines.js`, `deadlines.css` and `deadlines.json` live in this repository, and every Census page loads them with one line:
 
 ```html
-<script src="https://mixedcas-lab.github.io/adc-census/deadlines.js" data-field="pll" defer></script>
+<script src="https://mixedcas-lab.github.io/adc-census/deadlines.js?v=6" data-field="pll" defer></script>
 ```
+
+Editing `deadlines.json` takes effect on all pages at once (it is always fetched fresh). After changing `deadlines.js` or `deadlines.css`, bump `?v=` in all eight `index.html` files so browsers drop their cached copy.
 
 `deadlines.json` is edited by hand (the collector does not touch it):
 

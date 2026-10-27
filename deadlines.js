@@ -1,6 +1,6 @@
 // Conference deadline bar shown above the masthead of every Census site.
 // Shared copy: served from adc-census and loaded by all Census pages with
-//   <script src="https://mixedcas-lab.github.io/adc-census/deadlines.js" data-field="pll" defer></script>
+//   <script src="https://mixedcas-lab.github.io/adc-census/deadlines.js?v=6" data-field="pll" defer></script>
 // data-field picks the conferences tagged with that field in deadlines.json (edited by hand).
 // All cards rotate one at a time when they do not all fit (nearest confirmed deadline highlighted);
 // swipe or drag to move by hand. Cards are sized so none is cut off.
