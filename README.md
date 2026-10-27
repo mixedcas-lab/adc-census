@@ -199,3 +199,12 @@ python3 -m unittest discover -s collector
 
 - IEEE Xplore API 이용약관을 따릅니다. 초록과 본문은 공개하지 않고, 서지 정보와 Xplore 링크만 제공합니다.
 - 자동 추출 수치는 오류가 있을 수 있습니다. 인용·비교에는 원문을 확인하세요.
+
+## Conference deadline bar
+
+The bar above the masthead (`deadlines.js`, `deadlines.css`) reads `deadlines.json`, which is edited by hand (the collector does not touch it).
+
+- `due`: the deadline exactly as published, with its UTC offset (e.g. `2026-11-16T23:59:00-08:00`) and `tz` for the label. The bar shows a live KST countdown.
+- `est`: `YYYY-MM` for a cycle that is not announced yet. Shown as `~Apr 2027`, without a countdown.
+- When a `due` passes, the bar rolls that conference over to next year's edition as an estimate until the file is updated.
+- The nearest confirmed deadline is pinned on the left; the others rotate when they do not fit. "+ Calendar" downloads the confirmed ones as `.ics`.

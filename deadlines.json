@@ -1,0 +1,62 @@
+{
+  "updated": "2026-10-27",
+  "note": "Edit by hand. 'due' is the deadline exactly as published, with its UTC offset. Leave 'due' out and set 'est' when the next cycle is not announced yet. Past deadlines drop off the bar automatically.",
+  "conferences": [
+    {
+      "id": "CICC", "edition": "2027",
+      "name": "IEEE Custom Integrated Circuits Conference",
+      "venue": "San Diego, USA", "dates": "Apr 18–22, 2027",
+      "due": "2026-11-16T23:59:00-08:00", "tz": "PST", "note": "firm, no extension",
+      "url": "https://www.ieee-cicc.org/2027-call-for-papers/"
+    },
+    {
+      "id": "VLSI", "edition": "2027",
+      "name": "Symposium on VLSI Technology and Circuits",
+      "venue": "Kyoto, Japan", "dates": "Jun 20–24, 2027",
+      "due": "2027-01-25T23:59:00+09:00", "tz": "JST",
+      "url": "https://www.vlsisymposium.org/assets/pdf/VLSI2027_1stCFP.pdf"
+    },
+    {
+      "id": "ESSERC", "edition": "2027",
+      "name": "IEEE European Solid-State Electronics Research Conference",
+      "venue": "Helsinki, Finland", "dates": "Sep 6–9, 2027",
+      "est": "2027-04", "ref": "2026 deadline: Apr 10, 2026 (extended)",
+      "url": "https://www.esserc.org/"
+    },
+    {
+      "id": "ISICAS", "edition": "2027",
+      "name": "IEEE International Symposium on Integrated Circuits and Systems",
+      "venue": "Athens, Greece (tbc)", "dates": "Oct 2027 (tbc)",
+      "est": "2027-05", "ref": "2026: TCAS-I/TVLSI track May 11, TCAS-II/OJCAS track Jun 1, 2026",
+      "url": "https://ieee-cas.org/conference-events"
+    },
+    {
+      "id": "ISLPED", "edition": "2027",
+      "name": "ACM/IEEE International Symposium on Low Power Electronics and Design",
+      "venue": "TBA", "dates": "Aug 2027",
+      "est": "2027-03", "ref": "2026: abstract Mar 11, full paper Mar 18, 2026 (extended)",
+      "url": "https://www.islped.org/"
+    },
+    {
+      "id": "A-SSCC", "edition": "2027",
+      "name": "IEEE Asian Solid-State Circuits Conference",
+      "venue": "TBA", "dates": "Nov 2027",
+      "est": "2027-06", "ref": "2026 deadline: Jun 3, 2026",
+      "url": "https://sscs.ieee.org/conferences/upcoming-conferences/"
+    },
+    {
+      "id": "ISSCC", "edition": "2028",
+      "name": "IEEE International Solid-State Circuits Conference",
+      "venue": "San Francisco, USA", "dates": "Feb 20–24, 2028",
+      "est": "2027-09", "ref": "ISSCC 2027 deadline: Sep 9, 2026, 3 PM EDT",
+      "url": "https://www.isscc.org/future-conferences"
+    },
+    {
+      "id": "ISCAS", "edition": "2028",
+      "name": "IEEE International Symposium on Circuits and Systems",
+      "venue": "Minneapolis, USA", "dates": "May 28–31, 2028",
+      "est": "2027-10", "ref": "ISCAS 2027 deadline: Oct 26, 2026 (extended)",
+      "url": "https://ieee-cas.org/event/conference/2028-ieee-international-symposium-circuits-and-systems"
+    }
+  ]
+}
