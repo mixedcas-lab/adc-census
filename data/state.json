@@ -3076,6 +3076,636 @@
     "done": true,
     "next": 201,
     "total": 189
+   },
+   {
+    "key": "IMW",
+    "year": 2009,
+    "done": true,
+    "next": 201,
+    "total": 77
+   },
+   {
+    "key": "IMW",
+    "year": 2010,
+    "done": true,
+    "next": 201,
+    "total": 62
+   },
+   {
+    "key": "IMW",
+    "year": 2011,
+    "done": true,
+    "next": 201,
+    "total": 61
+   },
+   {
+    "key": "IMW",
+    "year": 2012,
+    "done": true,
+    "next": 201,
+    "total": 70
+   },
+   {
+    "key": "IMW",
+    "year": 2013,
+    "done": true,
+    "next": 201,
+    "total": 58
+   },
+   {
+    "key": "IMW",
+    "year": 2014,
+    "done": true,
+    "next": 201,
+    "total": 50
+   },
+   {
+    "key": "IMW",
+    "year": 2015,
+    "done": true,
+    "next": 201,
+    "total": 56
+   },
+   {
+    "key": "IMW",
+    "year": 2016,
+    "done": true,
+    "next": 201,
+    "total": 52
+   },
+   {
+    "key": "IMW",
+    "year": 2017,
+    "done": true,
+    "next": 201,
+    "total": 49
+   },
+   {
+    "key": "IMW",
+    "year": 2018,
+    "done": true,
+    "next": 201,
+    "total": 51
+   },
+   {
+    "key": "IMW",
+    "year": 2019,
+    "done": true,
+    "next": 201,
+    "total": 56
+   },
+   {
+    "key": "IMW",
+    "year": 2020,
+    "done": true,
+    "next": 201,
+    "total": 45
+   },
+   {
+    "key": "IMW",
+    "year": 2021,
+    "done": true,
+    "next": 201,
+    "total": 41
+   },
+   {
+    "key": "IMW",
+    "year": 2022,
+    "done": true,
+    "next": 201,
+    "total": 47
+   },
+   {
+    "key": "IMW",
+    "year": 2023,
+    "done": true,
+    "next": 201,
+    "total": 49
+   },
+   {
+    "key": "IMW",
+    "year": 2024,
+    "done": true,
+    "next": 201,
+    "total": 51
+   },
+   {
+    "key": "IMW",
+    "year": 2025,
+    "done": true,
+    "next": 201,
+    "total": 52
+   },
+   {
+    "key": "IMW",
+    "year": 2026,
+    "done": true,
+    "next": 201,
+    "total": 62
+   },
+   {
+    "key": "NVSMW",
+    "year": 1997,
+    "done": true,
+    "next": 201,
+    "total": 0
+   },
+   {
+    "key": "NVSMW",
+    "year": 1998,
+    "done": true,
+    "next": 201,
+    "total": 0
+   },
+   {
+    "key": "NVSMW",
+    "year": 1999,
+    "done": true,
+    "next": 201,
+    "total": 0
+   },
+   {
+    "key": "NVSMW",
+    "year": 2000,
+    "done": true,
+    "next": 201,
+    "total": 0
+   },
+   {
+    "key": "NVSMW",
+    "year": 2001,
+    "done": true,
+    "next": 201,
+    "total": 0
+   },
+   {
+    "key": "NVSMW",
+    "year": 2002,
+    "done": true,
+    "next": 201,
+    "total": 0
+   },
+   {
+    "key": "NVSMW",
+    "year": 2003,
+    "done": true,
+    "next": 201,
+    "total": 0
+   },
+   {
+    "key": "NVSMW",
+    "year": 2004,
+    "done": true,
+    "next": 201,
+    "total": 0
+   },
+   {
+    "key": "NVSMW",
+    "year": 2005,
+    "done": true,
+    "next": 201,
+    "total": 0
+   },
+   {
+    "key": "NVSMW",
+    "year": 2006,
+    "done": true,
+    "next": 201,
+    "total": 40
+   },
+   {
+    "key": "NVSMW",
+    "year": 2007,
+    "done": true,
+    "next": 201,
+    "total": 51
+   },
+   {
+    "key": "NVSMW",
+    "year": 2008,
+    "done": true,
+    "next": 201,
+    "total": 46
+   },
+   {
+    "key": "IEDM",
+    "year": 1997,
+    "done": true,
+    "next": 201,
+    "total": 12
+   },
+   {
+    "key": "IEDM",
+    "year": 1998,
+    "done": true,
+    "next": 201,
+    "total": 13
+   },
+   {
+    "key": "IEDM",
+    "year": 1999,
+    "done": true,
+    "next": 201,
+    "total": 8
+   },
+   {
+    "key": "IEDM",
+    "year": 2000,
+    "done": true,
+    "next": 201,
+    "total": 11
+   },
+   {
+    "key": "IEDM",
+    "year": 2001,
+    "done": true,
+    "next": 201,
+    "total": 18
+   },
+   {
+    "key": "IEDM",
+    "year": 2002,
+    "done": true,
+    "next": 201,
+    "total": 10
+   },
+   {
+    "key": "IEDM",
+    "year": 2003,
+    "done": true,
+    "next": 201,
+    "total": 17
+   },
+   {
+    "key": "IEDM",
+    "year": 2004,
+    "done": true,
+    "next": 201,
+    "total": 18
+   },
+   {
+    "key": "IEDM",
+    "year": 2005,
+    "done": true,
+    "next": 201,
+    "total": 0
+   },
+   {
+    "key": "IEDM",
+    "year": 2006,
+    "done": true,
+    "next": 201,
+    "total": 26
+   },
+   {
+    "key": "IEDM",
+    "year": 2007,
+    "done": true,
+    "next": 201,
+    "total": 24
+   },
+   {
+    "key": "IEDM",
+    "year": 2008,
+    "done": true,
+    "next": 201,
+    "total": 25
+   },
+   {
+    "key": "IEDM",
+    "year": 2009,
+    "done": true,
+    "next": 201,
+    "total": 20
+   },
+   {
+    "key": "IEDM",
+    "year": 2010,
+    "done": true,
+    "next": 201,
+    "total": 15
+   },
+   {
+    "key": "IEDM",
+    "year": 2011,
+    "done": true,
+    "next": 201,
+    "total": 16
+   },
+   {
+    "key": "IEDM",
+    "year": 2012,
+    "done": true,
+    "next": 201,
+    "total": 13
+   },
+   {
+    "key": "IEDM",
+    "year": 2013,
+    "done": true,
+    "next": 201,
+    "total": 6
+   },
+   {
+    "key": "IEDM",
+    "year": 2014,
+    "done": true,
+    "next": 201,
+    "total": 7
+   },
+   {
+    "key": "IEDM",
+    "year": 2015,
+    "done": true,
+    "next": 201,
+    "total": 11
+   },
+   {
+    "key": "IEDM",
+    "year": 2016,
+    "done": true,
+    "next": 201,
+    "total": 12
+   },
+   {
+    "key": "IEDM",
+    "year": 2017,
+    "done": true,
+    "next": 201,
+    "total": 17
+   },
+   {
+    "key": "IEDM",
+    "year": 2018,
+    "done": true,
+    "next": 201,
+    "total": 13
+   },
+   {
+    "key": "IEDM",
+    "year": 2019,
+    "done": true,
+    "next": 201,
+    "total": 12
+   },
+   {
+    "key": "IEDM",
+    "year": 2020,
+    "done": true,
+    "next": 201,
+    "total": 10
+   },
+   {
+    "key": "IEDM",
+    "year": 2021,
+    "done": true,
+    "next": 201,
+    "total": 9
+   },
+   {
+    "key": "IEDM",
+    "year": 2022,
+    "done": true,
+    "next": 201,
+    "total": 11
+   },
+   {
+    "key": "IEDM",
+    "year": 2023,
+    "done": true,
+    "next": 201,
+    "total": 13
+   },
+   {
+    "key": "IEDM",
+    "year": 2024,
+    "done": true,
+    "next": 201,
+    "total": 22
+   },
+   {
+    "key": "IEDM",
+    "year": 2025,
+    "done": true,
+    "next": 201,
+    "total": 22
+   },
+   {
+    "key": "IEDM",
+    "year": 2026,
+    "done": true,
+    "next": 201,
+    "total": 0
+   },
+   {
+    "key": "TED",
+    "year": 1997,
+    "done": true,
+    "next": 201,
+    "total": 9
+   },
+   {
+    "key": "TED",
+    "year": 1998,
+    "done": true,
+    "next": 201,
+    "total": 12
+   },
+   {
+    "key": "TED",
+    "year": 1999,
+    "done": true,
+    "next": 201,
+    "total": 13
+   },
+   {
+    "key": "TED",
+    "year": 2000,
+    "done": true,
+    "next": 201,
+    "total": 14
+   },
+   {
+    "key": "TED",
+    "year": 2001,
+    "done": true,
+    "next": 201,
+    "total": 20
+   },
+   {
+    "key": "TED",
+    "year": 2002,
+    "done": true,
+    "next": 201,
+    "total": 14
+   },
+   {
+    "key": "TED",
+    "year": 2003,
+    "done": true,
+    "next": 201,
+    "total": 22
+   },
+   {
+    "key": "TED",
+    "year": 2004,
+    "done": true,
+    "next": 201,
+    "total": 20
+   },
+   {
+    "key": "TED",
+    "year": 2005,
+    "done": true,
+    "next": 201,
+    "total": 22
+   },
+   {
+    "key": "TED",
+    "year": 2006,
+    "done": true,
+    "next": 201,
+    "total": 22
+   },
+   {
+    "key": "TED",
+    "year": 2007,
+    "done": true,
+    "next": 201,
+    "total": 25
+   },
+   {
+    "key": "TED",
+    "year": 2008,
+    "done": true,
+    "next": 201,
+    "total": 22
+   },
+   {
+    "key": "TED",
+    "year": 2009,
+    "done": true,
+    "next": 201,
+    "total": 27
+   },
+   {
+    "key": "TED",
+    "year": 2010,
+    "done": true,
+    "next": 201,
+    "total": 27
+   },
+   {
+    "key": "TED",
+    "year": 2011,
+    "done": true,
+    "next": 201,
+    "total": 46
+   },
+   {
+    "key": "TED",
+    "year": 2012,
+    "done": true,
+    "next": 201,
+    "total": 35
+   },
+   {
+    "key": "TED",
+    "year": 2013,
+    "done": true,
+    "next": 201,
+    "total": 22
+   },
+   {
+    "key": "TED",
+    "year": 2014,
+    "done": true,
+    "next": 201,
+    "total": 25
+   },
+   {
+    "key": "TED",
+    "year": 2015,
+    "done": true,
+    "next": 201,
+    "total": 17
+   },
+   {
+    "key": "TED",
+    "year": 2016,
+    "done": true,
+    "next": 201,
+    "total": 27
+   },
+   {
+    "key": "TED",
+    "year": 2017,
+    "done": true,
+    "next": 201,
+    "total": 21
+   },
+   {
+    "key": "TED",
+    "year": 2018,
+    "done": true,
+    "next": 201,
+    "total": 25
+   },
+   {
+    "key": "TED",
+    "year": 2019,
+    "done": true,
+    "next": 201,
+    "total": 31
+   },
+   {
+    "key": "TED",
+    "year": 2020,
+    "done": true,
+    "next": 201,
+    "total": 44
+   },
+   {
+    "key": "TED",
+    "year": 2021,
+    "done": true,
+    "next": 201,
+    "total": 25
+   },
+   {
+    "key": "TED",
+    "year": 2022,
+    "done": true,
+    "next": 201,
+    "total": 37
+   },
+   {
+    "key": "TED",
+    "year": 2023,
+    "done": true,
+    "next": 201,
+    "total": 30
+   },
+   {
+    "key": "TED",
+    "year": 2024,
+    "done": true,
+    "next": 201,
+    "total": 50
+   },
+   {
+    "key": "TED",
+    "year": 2025,
+    "done": true,
+    "next": 201,
+    "total": 45
+   },
+   {
+    "key": "TED",
+    "year": 2026,
+    "done": true,
+    "next": 201,
+    "total": 46
    }
   ]
  },
@@ -3104,7 +3734,11 @@
   "DATE": true,
   "HPCA": true,
   "MICRO": true,
-  "ISCA": true
+  "ISCA": true,
+  "IMW": true,
+  "NVSMW": true,
+  "IEDM": true,
+  "TED": true
  },
  "last_delta_end": "20261023"
 }
