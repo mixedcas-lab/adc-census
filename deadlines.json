@@ -1,6 +1,6 @@
 {
  "updated": "2026-10-27",
- "note": "Shared by all Census sites. Edit by hand. 'fields' picks the Census pages a conference appears on (adc, dac, pll, ldo, pmic, wireline, eda, accel). 'due' is the deadline exactly as published, with its UTC offset; leave it out and set 'est' (YYYY-MM) when the next cycle is not announced. Past deadlines roll over to next year's edition as an estimate automatically. Some entries for architecture/EDA venues were cross-checked against AI Hardware Deadlines by Prof. Donghyeon Han (Chung-Ang University).",
+ "note": "Shared by all Census sites. Edit by hand. 'fields' picks the Census pages a conference appears on (adc, dac, pll, ldo, pmic, wireline, eda, accel, nand). 'due' is the deadline exactly as published, with its UTC offset; leave it out and set 'est' (YYYY-MM) when the next cycle is not announced. Past deadlines roll over to next year's edition as an estimate automatically. Some entries for architecture/EDA venues were cross-checked against AI Hardware Deadlines by Prof. Donghyeon Han (Chung-Ang University).",
  "conferences": [
   {
    "id": "CICC",
@@ -15,7 +15,8 @@
     "ldo",
     "pmic",
     "wireline",
-    "accel"
+    "accel",
+    "nand"
    ],
    "due": "2026-11-16T23:59:00-08:00",
    "tz": "PST",
@@ -35,7 +36,8 @@
     "ldo",
     "pmic",
     "wireline",
-    "accel"
+    "accel",
+    "nand"
    ],
    "due": "2027-01-25T23:59:00+09:00",
    "tz": "JST",
@@ -54,7 +56,8 @@
     "ldo",
     "pmic",
     "wireline",
-    "accel"
+    "accel",
+    "nand"
    ],
    "est": "2027-04",
    "ref": "2026 deadline: Apr 10, 2026 (extended)",
@@ -73,7 +76,8 @@
     "ldo",
     "pmic",
     "wireline",
-    "accel"
+    "accel",
+    "nand"
    ],
    "est": "2027-06",
    "ref": "2026 deadline: Jun 3, 2026",
@@ -92,7 +96,8 @@
     "ldo",
     "pmic",
     "wireline",
-    "accel"
+    "accel",
+    "nand"
    ],
    "est": "2027-09",
    "ref": "ISSCC 2027 deadline: Sep 9, 2026, 3 PM EDT",
@@ -572,6 +577,45 @@
    "tz": "JST",
    "note": "date only; 23:59 JST assumed",
    "url": "https://www.coolchips.org/2027/call-for-contributions/"
+  },
+  {
+   "id": "IMW",
+   "edition": "2027",
+   "name": "IEEE International Memory Workshop",
+   "venue": "Monterey, USA",
+   "dates": "May 9–12, 2027",
+   "fields": [
+    "nand"
+   ],
+   "est": "2027-02",
+   "ref": "IMW 2026 deadline: Feb 1, 2026",
+   "url": "https://ewh.ieee.org/soc/eds/imw"
+  },
+  {
+   "id": "IEDM",
+   "edition": "2027",
+   "name": "IEEE International Electron Devices Meeting",
+   "venue": "San Francisco, USA",
+   "dates": "Dec 2027",
+   "fields": [
+    "nand"
+   ],
+   "est": "2027-07",
+   "ref": "IEDM 2026 deadline: Jul 16, 2026, 23:59 PDT",
+   "url": "https://www.ieee-iedm.org/"
+  },
+  {
+   "id": "IRPS",
+   "edition": "2028",
+   "name": "IEEE International Reliability Physics Symposium",
+   "venue": "TBA",
+   "dates": "Spring 2028",
+   "fields": [
+    "nand"
+   ],
+   "est": "2027-10",
+   "ref": "IRPS 2027 abstract deadline: Oct 18, 2026, 23:59 PDT",
+   "url": "https://www.irps.org/"
   }
  ]
 }
