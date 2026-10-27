@@ -56,6 +56,7 @@
       if (track.scrollWidth <= view.clientWidth + 2) return;           // everything fits: stay still
       const first = track.firstElementChild;
       const step = first.getBoundingClientRect().width + (parseFloat(getComputedStyle(track).columnGap) || 8);
+      if (reduced) { track.appendChild(first); return; }               // reduced motion: switch without sliding
       busy = true;
       track.style.transition = "transform .6s cubic-bezier(.4,0,.2,1)";
       track.style.transform = `translateX(${-step}px)`;
@@ -112,7 +113,7 @@
     });
     tick(); setInterval(tick, 1000);
 
-    if (!reduced) rotate(view, track);
+    rotate(view, track);
   }
 
   fetch(SRC, { cache: "no-cache" }).then(r => r.ok ? r.json() : null).then(d => d && render(d)).catch(() => {});

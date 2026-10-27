@@ -36,10 +36,7 @@
 .dl-c.est { min-width: 130px; border-style: dashed; background: transparent; }
 .dl-c.est .dl-cd { font-size: 16px; color: #c6cbef; font-weight: 600; font-style: italic; margin-top: 2px; }
 
-@media (prefers-reduced-motion: reduce) {
-  .dl-dot { animation: none; }
-  .dl-view { overflow-x: auto; scrollbar-width: none; }
-}
+@media (prefers-reduced-motion: reduce) { .dl-dot { animation: none; } }
 @media (max-width: 720px) {
   .dl-in { gap: 8px; padding-left: 12px; padding-right: 12px; }
   .dl-lab small { display: none; }
