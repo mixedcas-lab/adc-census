@@ -1,6 +1,6 @@
 // Conference deadline bar shown above the Census masthead.
-// Data: deadlines.json (edited by hand). The nearest confirmed deadline is pinned on the left;
-// the rest rotate one card at a time when they do not all fit. Cards are sized so none is cut off.
+// Data: deadlines.json (edited by hand). All cards rotate one at a time when they do not all fit
+// (nearest confirmed deadline highlighted); swipe or drag to move by hand. Cards are sized so none is cut off.
 (function () {
   "use strict";
   const SRC = "deadlines.json";
@@ -41,33 +41,60 @@
     track.style.setProperty("--dl-w", Math.floor(w) + "px");
   }
 
+  // Auto-advance one card every ROTATE_MS; swipe (touch) or drag sideways to move by hand.
   function rotate(view, track) {
-    let paused = false, busy = false, resume;
-    const pause = () => { paused = true; clearTimeout(resume); };
-    const play = (ms) => { clearTimeout(resume); resume = setTimeout(() => { paused = false; }, ms || 0); };
-    view.addEventListener("mouseenter", pause);
-    view.addEventListener("mouseleave", () => play(600));
-    view.addEventListener("focusin", pause);
-    view.addEventListener("focusout", () => play(600));
-    view.addEventListener("touchstart", pause, { passive: true });
-    view.addEventListener("touchend", () => play(6000), { passive: true });
-    setInterval(() => {
-      if (paused || busy || document.hidden || track.children.length < 2) return;
-      if (track.scrollWidth <= view.clientWidth + 2) return;           // everything fits: stay still
-      const first = track.firstElementChild;
-      const step = first.getBoundingClientRect().width + (parseFloat(getComputedStyle(track).columnGap) || 8);
-      if (reduced) { track.appendChild(first); return; }               // reduced motion: switch without sliding
+    let paused = false, busy = false, resume, x0 = null, y0 = 0;
+    const gap = () => parseFloat(getComputedStyle(track).columnGap) || 8;
+    const fits = () => track.scrollWidth <= view.clientWidth + 2;
+    const hold = ms => { paused = true; clearTimeout(resume); if (ms) resume = setTimeout(() => { paused = false; }, ms); };
+
+    function step(dir) {                                // dir = +1: next card, -1: previous card
+      if (busy || track.children.length < 2 || fits()) return;
+      const first = track.firstElementChild, last = track.lastElementChild;
+      const w = first.getBoundingClientRect().width + gap();
+      if (reduced) { dir > 0 ? track.appendChild(first) : track.prepend(last); return; }
       busy = true;
-      track.style.transition = "transform .6s cubic-bezier(.4,0,.2,1)";
-      track.style.transform = `translateX(${-step}px)`;
+      if (dir < 0) {                                    // put the last card in front, then slide it in
+        track.style.transition = "none";
+        track.prepend(last);
+        track.style.transform = `translateX(${-w}px)`;
+        void track.offsetWidth;
+      }
+      track.style.transition = "transform .5s cubic-bezier(.4,0,.2,1)";
+      track.style.transform = dir > 0 ? `translateX(${-w}px)` : "translateX(0)";
       track.addEventListener("transitionend", function done() {
         track.removeEventListener("transitionend", done);
         track.style.transition = "none";
-        track.appendChild(first);
+        if (dir > 0) track.appendChild(first);
         track.style.transform = "none";
         busy = false;
       });
-    }, ROTATE_MS);
+    }
+
+    // mouse over a card pauses (so it can be clicked); leaving resumes
+    track.addEventListener("mouseover", e => { if (e.target.closest(".dl-c")) hold(); });
+    track.addEventListener("mouseleave", () => hold(800));
+    view.addEventListener("focusin", () => hold());
+    view.addEventListener("focusout", () => hold(800));
+
+    // touch swipe and mouse drag
+    const down = (x, y) => { x0 = x; y0 = y; hold(); };
+    const up = (x, y) => {
+      if (x0 === null) return;
+      const dx = x - x0, dy = y - y0; x0 = null;
+      if (Math.abs(dx) > 30 && Math.abs(dx) > Math.abs(dy)) step(dx < 0 ? 1 : -1);
+      hold(6000);
+      return Math.abs(dx) > 30;
+    };
+    view.addEventListener("touchstart", e => down(e.touches[0].clientX, e.touches[0].clientY), { passive: true });
+    view.addEventListener("touchend", e => up(e.changedTouches[0].clientX, e.changedTouches[0].clientY), { passive: true });
+    let dragged = false;
+    view.addEventListener("pointerdown", e => { if (e.pointerType === "mouse") { dragged = false; down(e.clientX, e.clientY); } });
+    addEventListener("pointerup", e => { if (e.pointerType === "mouse" && x0 !== null) dragged = up(e.clientX, e.clientY); });
+    view.addEventListener("click", e => { if (dragged) { e.preventDefault(); dragged = false; } }, true);
+    view.addEventListener("dragstart", e => e.preventDefault());
+
+    setInterval(() => { if (!paused && !document.hidden) step(1); }, ROTATE_MS);
   }
 
   function render(data) {
@@ -86,15 +113,13 @@
     if (!list.length) return;
     const live = list.filter(c => c.t);
     const next = live[0];
-    const rest = list.filter(c => c !== next);
 
     const bar = document.createElement("section");
     bar.className = "dl";
     bar.setAttribute("aria-label", "Upcoming paper deadlines");
     bar.innerHTML = `<div class="wrap dl-in">
       <div class="dl-lab"><span>DEADLINES</span><small>KST · live</small></div>
-      ${next ? `<div class="dl-pin">${card(next, true)}</div>` : ""}
-      <div class="dl-view"><div class="dl-track">${rest.map(c => card(c, false)).join("")}</div></div>
+      <div class="dl-view"><div class="dl-track">${list.map(c => card(c, c === next)).join("")}</div></div>
     </div>`;
     document.body.prepend(bar);
 

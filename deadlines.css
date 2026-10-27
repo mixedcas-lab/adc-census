@@ -10,8 +10,7 @@
 .dl-lab { display: flex; flex-direction: column; justify-content: center; gap: 2px; flex: none; padding-right: 2px; }
 .dl-lab span { font-size: 11px; font-weight: 700; letter-spacing: .16em; color: var(--dl-cyan); }
 .dl-lab small { font-size: 11px; color: var(--dl-mute); }
-.dl-pin { flex: none; display: flex; }
-.dl-view { flex: 1; min-width: 0; overflow: hidden; }
+.dl-view { flex: 1; min-width: 0; overflow: hidden; touch-action: pan-y; user-select: none; -webkit-user-select: none; }
 .dl-track { display: flex; column-gap: 8px; height: 100%; will-change: transform; }
 .dl-track .dl-c, .dl-track .dl-c.est { width: var(--dl-w, 160px); min-width: 0; }
 .dl-track .dl-c > span { overflow: hidden; text-overflow: ellipsis; }

@@ -207,4 +207,4 @@ The bar above the masthead (`deadlines.js`, `deadlines.css`) reads `deadlines.js
 - `due`: the deadline exactly as published, with its UTC offset (e.g. `2026-11-16T23:59:00-08:00`) and `tz` for the label. The bar shows a live KST countdown.
 - `est`: `YYYY-MM` for a cycle that is not announced yet. Shown as `~Apr 2027`, without a countdown.
 - When a `due` passes, the bar rolls that conference over to next year's edition as an estimate until the file is updated.
-- The nearest confirmed deadline is pinned on the left; the others rotate when they do not fit, sized so that no card is cut off.
+- The nearest confirmed deadline is highlighted. Cards rotate every few seconds when they do not all fit (sized so that none is cut off); swipe or drag sideways to move them by hand.
