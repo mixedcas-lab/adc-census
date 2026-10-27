@@ -407,6 +407,28 @@ class TestPipeline(unittest.TestCase):
         self.assertEqual(collect.update_due(d(2026, 11, 15), d(2026, 12, 18), 15), (d(2026, 12, 15), True))   # missed day
         self.assertEqual(collect.update_due(d(2026, 12, 20), d(2027, 1, 3), 15), (d(2026, 12, 15), False))   # across a year
 
+    def test_memory_venues_are_cache_only(self):
+        # IMW/NVSMW/IEDM/TED feed nand-census through the shared cache; they are not ADC Census venues
+        config = collect.load_json(collect.CONFIG, None)
+        keys = {q["key"]: q for q in config["queries"]}
+        for k in ("IMW", "NVSMW", "IEDM", "TED"):
+            self.assertIn(k, keys)
+        for pub in ("2024 IEEE International Memory Workshop (IMW)",
+                    "2008 Joint Non-Volatile Semiconductor Memory Workshop and International Conference on Memory Technology and Design",
+                    "2023 International Electron Devices Meeting (IEDM)",
+                    "IEEE Transactions on Electron Devices"):
+            self.assertIsNone(collect.venue_of(pub, config["venues"]), pub)
+        self.assertEqual(list(collect.query_years(keys["IMW"], 1997))[0], 2009)
+        self.assertEqual(list(collect.query_years(keys["NVSMW"], 1997))[-1], 2008)
+        for k in ("IEDM", "TED"):   # keyword-limited, and never together with issn (the API would ignore the issn)
+            self.assertIn("querytext", keys[k]["params"])
+            self.assertNotIn("issn", keys[k]["params"])
+        old = {"queries": [q for q in config["queries"] if q["key"] not in ("IMW", "NVSMW", "IEDM", "TED")], "venues": config["venues"]}
+        state = {}
+        collect.init_sweep(state, old, 2025)
+        added = collect.add_missing_tasks(state, config)
+        self.assertEqual({k for k, _ in added}, {"IMW", "IEDM", "TED"})   # NVSMW ends in 2008, before since_year
+
     def test_access_venue_match(self):
         venues = collect.load_json(collect.CONFIG, None)["venues"]
         self.assertEqual(collect.venue_of("IEEE Access", venues), "Access")

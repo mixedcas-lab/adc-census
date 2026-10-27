@@ -26,6 +26,13 @@
     {"key": "HPCA",   "params": {"publication_title": "High-Performance Computer Architecture", "content_type": "Conferences"}, "from": 2012},
     {"key": "MICRO",  "params": {"publication_title": "International Symposium on Microarchitecture", "content_type": "Conferences"}, "from": 2012},
     {"key": "ISCA",   "params": {"publication_title": "Annual International Symposium on Computer Architecture", "content_type": "Conferences"}, "from": 2012, "_comment": "ISCA alternates between IEEE and ACM: the ACM years return no records here and are fetched by accel-census from Crossref/OpenAlex"},
+    {"key": "IMW",    "params": {"publication_title": "International Memory Workshop", "content_type": "Conferences"},
+     "from": 2009, "_comment": "memory device venues below feed nand-census only; not in this site's venue list. IMW (from 2009) was NVSMW before."},
+    {"key": "NVSMW",  "params": {"publication_title": "Non-Volatile Semiconductor Memory Workshop", "content_type": "Conferences"}, "to": 2008},
+    {"key": "IEDM",   "params": {"querytext": "(\"Publication Title\":\"Electron Devices Meeting\") AND (NAND OR \"flash memory\" OR \"flash memories\" OR \"charge trap\" OR \"charge-trap\" OR \"floating gate\" OR \"floating-gate\" OR \"V-NAND\")"},
+     "_comment": "~250 papers/year, mostly not memory: only NAND/flash keyword hits are fetched"},
+    {"key": "TED",    "params": {"querytext": "(\"Publication Title\":\"IEEE Transactions on Electron Devices\") AND (NAND OR \"flash memory\" OR \"flash memories\" OR \"charge trap\" OR \"charge-trap\" OR \"floating gate\" OR \"floating-gate\" OR \"V-NAND\")"},
+     "_comment": "~1500 papers/year: only NAND/flash keyword hits are fetched (querytext, not issn - the API ignores issn next to querytext)"},
     {"key": "Access", "params": {"querytext": "(\"Publication Title\":\"IEEE Access\") AND (\"analog-to-digital\" OR \"digital-to-analog\" OR \"delta-sigma\" OR \"sigma-delta\" OR \"successive approximation\" OR \"noise-shaping\" OR \"time-interleaved\" OR ADC OR DAC)"},
      "from": 2013, "_comment": "launched 2013; ~20k papers/year, so only keyword hits are fetched. Do not combine issn with querytext: the API then ignores the issn."}
   ],

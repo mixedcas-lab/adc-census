@@ -29,6 +29,7 @@ cache/                          IEEE 원본 응답 (초록 포함, git 제외, �
 ## 동작 방식
 
 1. **초기 수집**: `collector/venues.json`의 `since_year`(현재 1997)부터 venue별·연도별로 전체 논문을 받아옵니다. 표준 API 키는 하루 호출 수가 제한되어 있어 하루 190회까지만 쓰고 멈춘 뒤, 다음 날 이어서 받습니다. 30년치는 며칠 걸립니다.
+   - 이 캐시는 자매 사이트(DAC·PLL·LDO·PMIC·Wireline·EDA·AI Accelerator·NAND Census)도 함께 읽습니다. `queries`에만 있고 `venues`에 없는 venue(TCAD·MICRO 등 아키텍처 venue, IMW·NVSMW·IEDM·TED 메모리 소자 venue)는 캐시에만 들어가고 ADC Census에는 나오지 않습니다. IEDM·TED는 NAND/flash 키워드에 걸리는 논문만 받습니다.
 2. **월간 갱신**: 초기 수집이 끝나면 IEEE에 새로 등록된 논문(insert date 기준)만 받아옵니다. 한 번에 수십 회 호출이면 충분합니다. `collector/venues.json`에 venue를 새로 추가하거나 `since_year`를 앞당기면, 다음 실행 때 빠진 venue·연도만 먼저 받아옵니다.
 3. **분류**: 제목·초록·IEEE 색인어로 ADC/DAC 여부를 판별하고 아키텍처(SAR, NS-SAR, Pipelined-SAR, TI, CT-ΔΣ, VCO 등)와 응용(SerDes, RF, Bio, CIS, NAND, CIM 등)을 태깅합니다. 제목과 초록에서 해상도, f<sub>s</sub>, SNDR, 전력, 공정, FoM을 정규식으로 뽑아 energy plot에 씁니다. 초록은 분류에만 쓰고 공개 데이터에는 넣지 않습니다.
 4. **공개**: `data/*.json`이 바뀌면 커밋·push하고, GitHub Pages가 자동으로 반영합니다.
