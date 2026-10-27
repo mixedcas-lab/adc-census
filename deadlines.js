@@ -1,9 +1,21 @@
-// Conference deadline bar shown above the Census masthead.
-// Data: deadlines.json (edited by hand). All cards rotate one at a time when they do not all fit
-// (nearest confirmed deadline highlighted); swipe or drag to move by hand. Cards are sized so none is cut off.
+// Conference deadline bar shown above the masthead of every Census site.
+// Shared copy: served from adc-census and loaded by all Census pages with
+//   <script src="https://mixedcas-lab.github.io/adc-census/deadlines.js" data-field="pll" defer></script>
+// data-field picks the conferences tagged with that field in deadlines.json (edited by hand).
+// All cards rotate one at a time when they do not all fit (nearest confirmed deadline highlighted);
+// swipe or drag to move by hand. Cards are sized so none is cut off.
 (function () {
   "use strict";
-  const SRC = "deadlines.json";
+  const me = document.currentScript;
+  const BASE = new URL(".", (me && me.src) || location.href);
+  const FIELD = ((me && me.dataset.field) || "adc").toLowerCase();
+  const SRC = new URL("deadlines.json", BASE).href;
+  if (!document.querySelector('link[href*="deadlines.css"]')) {
+    const css = document.createElement("link");
+    css.rel = "stylesheet";
+    css.href = new URL("deadlines.css", BASE).href + ((me && me.src.match(/\?v=[^&]+/)) || [""])[0];
+    document.head.appendChild(css);
+  }
   const ROTATE_MS = 3800;
   const MONTHS = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
   const reduced = window.matchMedia && matchMedia("(prefers-reduced-motion: reduce)").matches;
@@ -99,7 +111,8 @@
 
   function render(data) {
     const now = Date.now();
-    const all = (data.conferences || []).map(c => Object.assign({}, c, { t: c.due ? Date.parse(c.due) : null }));
+    const all = (data.conferences || []).filter(c => (c.fields || []).includes(FIELD))
+      .map(c => Object.assign({}, c, { t: c.due ? Date.parse(c.due) : null }));
     const has = new Set(all.map(c => c.id + "|" + c.edition));
     // A passed deadline rolls over to next year's edition as an estimate, until deadlines.json is updated.
     const list = all.map(c => {
@@ -133,7 +146,7 @@
       const d = Math.floor(s / 86400); s -= d * 86400;
       const h = Math.floor(s / 3600); s -= h * 3600;
       const m = Math.floor(s / 60); s -= m * 60;
-      n.innerHTML = `${d ? d + "<small>d</small> " : ""}${pad(h)}:${pad(m)}:${pad(s)}`;
+      n.innerHTML = `${d ? d + "<small>d</small> " : ""}${pad(h)}:${pad(m)}${d < 100 ? ":" + pad(s) : ""}`;   // 100+ days: drop seconds to fit
       n.closest(".dl-c").classList.toggle("soon", d < 7);
     });
     tick(); setInterval(tick, 1000);

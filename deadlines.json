@@ -1,62 +1,577 @@
 {
-  "updated": "2026-10-27",
-  "note": "Edit by hand. 'due' is the deadline exactly as published, with its UTC offset. Leave 'due' out and set 'est' when the next cycle is not announced yet. Past deadlines drop off the bar automatically.",
-  "conferences": [
-    {
-      "id": "CICC", "edition": "2027",
-      "name": "IEEE Custom Integrated Circuits Conference",
-      "venue": "San Diego, USA", "dates": "Apr 18–22, 2027",
-      "due": "2026-11-16T23:59:00-08:00", "tz": "PST", "note": "firm, no extension",
-      "url": "https://www.ieee-cicc.org/2027-call-for-papers/"
-    },
-    {
-      "id": "VLSI", "edition": "2027",
-      "name": "Symposium on VLSI Technology and Circuits",
-      "venue": "Kyoto, Japan", "dates": "Jun 20–24, 2027",
-      "due": "2027-01-25T23:59:00+09:00", "tz": "JST",
-      "url": "https://www.vlsisymposium.org/assets/pdf/VLSI2027_1stCFP.pdf"
-    },
-    {
-      "id": "ESSERC", "edition": "2027",
-      "name": "IEEE European Solid-State Electronics Research Conference",
-      "venue": "Helsinki, Finland", "dates": "Sep 6–9, 2027",
-      "est": "2027-04", "ref": "2026 deadline: Apr 10, 2026 (extended)",
-      "url": "https://www.esserc.org/"
-    },
-    {
-      "id": "ISICAS", "edition": "2027",
-      "name": "IEEE International Symposium on Integrated Circuits and Systems",
-      "venue": "Athens, Greece (tbc)", "dates": "Oct 2027 (tbc)",
-      "est": "2027-05", "ref": "2026: TCAS-I/TVLSI track May 11, TCAS-II/OJCAS track Jun 1, 2026",
-      "url": "https://ieee-cas.org/conference-events"
-    },
-    {
-      "id": "ISLPED", "edition": "2027",
-      "name": "ACM/IEEE International Symposium on Low Power Electronics and Design",
-      "venue": "TBA", "dates": "Aug 2027",
-      "est": "2027-03", "ref": "2026: abstract Mar 11, full paper Mar 18, 2026 (extended)",
-      "url": "https://www.islped.org/"
-    },
-    {
-      "id": "A-SSCC", "edition": "2027",
-      "name": "IEEE Asian Solid-State Circuits Conference",
-      "venue": "TBA", "dates": "Nov 2027",
-      "est": "2027-06", "ref": "2026 deadline: Jun 3, 2026",
-      "url": "https://sscs.ieee.org/conferences/upcoming-conferences/"
-    },
-    {
-      "id": "ISSCC", "edition": "2028",
-      "name": "IEEE International Solid-State Circuits Conference",
-      "venue": "San Francisco, USA", "dates": "Feb 20–24, 2028",
-      "est": "2027-09", "ref": "ISSCC 2027 deadline: Sep 9, 2026, 3 PM EDT",
-      "url": "https://www.isscc.org/future-conferences"
-    },
-    {
-      "id": "ISCAS", "edition": "2028",
-      "name": "IEEE International Symposium on Circuits and Systems",
-      "venue": "Minneapolis, USA", "dates": "May 28–31, 2028",
-      "est": "2027-10", "ref": "ISCAS 2027 deadline: Oct 26, 2026 (extended)",
-      "url": "https://ieee-cas.org/event/conference/2028-ieee-international-symposium-circuits-and-systems"
-    }
-  ]
+ "updated": "2026-10-27",
+ "note": "Shared by all Census sites. Edit by hand. 'fields' picks the Census pages a conference appears on (adc, dac, pll, ldo, pmic, wireline, eda, accel). 'due' is the deadline exactly as published, with its UTC offset; leave it out and set 'est' (YYYY-MM) when the next cycle is not announced. Past deadlines roll over to next year's edition as an estimate automatically. Some entries for architecture/EDA venues were cross-checked against AI Hardware Deadlines by Prof. Donghyeon Han (Chung-Ang University).",
+ "conferences": [
+  {
+   "id": "CICC",
+   "edition": "2027",
+   "name": "IEEE Custom Integrated Circuits Conference",
+   "venue": "San Diego, USA",
+   "dates": "Apr 18–22, 2027",
+   "fields": [
+    "adc",
+    "dac",
+    "pll",
+    "ldo",
+    "pmic",
+    "wireline",
+    "accel"
+   ],
+   "due": "2026-11-16T23:59:00-08:00",
+   "tz": "PST",
+   "note": "firm, no extension",
+   "url": "https://www.ieee-cicc.org/2027-call-for-papers/"
+  },
+  {
+   "id": "VLSI",
+   "edition": "2027",
+   "name": "Symposium on VLSI Technology and Circuits",
+   "venue": "Kyoto, Japan",
+   "dates": "Jun 20–24, 2027",
+   "fields": [
+    "adc",
+    "dac",
+    "pll",
+    "ldo",
+    "pmic",
+    "wireline",
+    "accel"
+   ],
+   "due": "2027-01-25T23:59:00+09:00",
+   "tz": "JST",
+   "url": "https://www.vlsisymposium.org/assets/pdf/VLSI2027_1stCFP.pdf"
+  },
+  {
+   "id": "ESSERC",
+   "edition": "2027",
+   "name": "IEEE European Solid-State Electronics Research Conference",
+   "venue": "Helsinki, Finland",
+   "dates": "Sep 6–9, 2027",
+   "fields": [
+    "adc",
+    "dac",
+    "pll",
+    "ldo",
+    "pmic",
+    "wireline",
+    "accel"
+   ],
+   "est": "2027-04",
+   "ref": "2026 deadline: Apr 10, 2026 (extended)",
+   "url": "https://www.esserc.org/"
+  },
+  {
+   "id": "A-SSCC",
+   "edition": "2027",
+   "name": "IEEE Asian Solid-State Circuits Conference",
+   "venue": "TBA",
+   "dates": "Nov 2027",
+   "fields": [
+    "adc",
+    "dac",
+    "pll",
+    "ldo",
+    "pmic",
+    "wireline",
+    "accel"
+   ],
+   "est": "2027-06",
+   "ref": "2026 deadline: Jun 3, 2026",
+   "url": "https://sscs.ieee.org/conferences/upcoming-conferences/"
+  },
+  {
+   "id": "ISSCC",
+   "edition": "2028",
+   "name": "IEEE International Solid-State Circuits Conference",
+   "venue": "San Francisco, USA",
+   "dates": "Feb 20–24, 2028",
+   "fields": [
+    "adc",
+    "dac",
+    "pll",
+    "ldo",
+    "pmic",
+    "wireline",
+    "accel"
+   ],
+   "est": "2027-09",
+   "ref": "ISSCC 2027 deadline: Sep 9, 2026, 3 PM EDT",
+   "url": "https://www.isscc.org/future-conferences"
+  },
+  {
+   "id": "ISCAS",
+   "edition": "2028",
+   "name": "IEEE International Symposium on Circuits and Systems",
+   "venue": "Minneapolis, USA",
+   "dates": "May 28–31, 2028",
+   "fields": [
+    "adc",
+    "dac",
+    "pll",
+    "ldo"
+   ],
+   "est": "2027-10",
+   "ref": "ISCAS 2027 deadline: Oct 26, 2026 (extended)",
+   "url": "https://ieee-cas.org/event/conference/2028-ieee-international-symposium-circuits-and-systems"
+  },
+  {
+   "id": "ISICAS",
+   "edition": "2027",
+   "name": "IEEE International Symposium on Integrated Circuits and Systems",
+   "venue": "Athens (tbc)",
+   "dates": "Oct 2027 (tbc)",
+   "fields": [
+    "adc",
+    "dac"
+   ],
+   "est": "2027-05",
+   "ref": "2026: TCAS-I/TVLSI track May 11, TCAS-II/OJCAS track Jun 1, 2026",
+   "url": "https://ieee-cas.org/conference-events"
+  },
+  {
+   "id": "ISLPED",
+   "edition": "2027",
+   "name": "ACM/IEEE International Symposium on Low Power Electronics and Design",
+   "venue": "TBA",
+   "dates": "Aug 2027",
+   "fields": [
+    "adc",
+    "ldo",
+    "accel"
+   ],
+   "est": "2027-03",
+   "ref": "2026: abstract Mar 11, full paper Mar 18, 2026 (extended)",
+   "url": "https://www.islped.org/"
+  },
+  {
+   "id": "RFIC",
+   "edition": "2027",
+   "name": "IEEE Radio Frequency Integrated Circuits Symposium",
+   "venue": "San Antonio, USA",
+   "dates": "May 23–26, 2027",
+   "fields": [
+    "dac",
+    "pll"
+   ],
+   "due": "2027-01-06T23:59:00-12:00",
+   "tz": "AoE",
+   "note": "time not published; AoE assumed",
+   "url": "https://ims-ieee.org/authortools2027"
+  },
+  {
+   "id": "IMS",
+   "edition": "2027",
+   "name": "IEEE MTT-S International Microwave Symposium (RFSA/RFTT)",
+   "venue": "San Antonio, USA",
+   "dates": "May 23–28, 2027",
+   "fields": [
+    "dac",
+    "pll"
+   ],
+   "due": "2026-12-08T23:59:00-12:00",
+   "tz": "AoE",
+   "note": "RFSA & RFTT tracks; time not published; AoE assumed",
+   "url": "https://ims-ieee.org/authortools2027"
+  },
+  {
+   "id": "IFCS-EFTF",
+   "edition": "2027",
+   "name": "Joint IEEE IFCS and European Frequency and Time Forum",
+   "venue": "Munich (tbc)",
+   "dates": "Apr 2027",
+   "fields": [
+    "pll"
+   ],
+   "est": "2026-12",
+   "ref": "2026 abstract deadline: Dec 14, 2025",
+   "url": "https://ieee-uffc.org/"
+  },
+  {
+   "id": "APEC",
+   "edition": "2028",
+   "name": "IEEE Applied Power Electronics Conference",
+   "venue": "Phoenix, USA",
+   "dates": "Mar 5–9, 2028",
+   "fields": [
+    "ldo",
+    "pmic"
+   ],
+   "est": "2027-08",
+   "ref": "APEC 2027 digest deadline: Aug 21, 2026 (extended)",
+   "url": "https://apec-conf.org/speakers/ts-author-info/"
+  },
+  {
+   "id": "ECCE",
+   "edition": "2027",
+   "name": "IEEE Energy Conversion Congress and Exposition",
+   "venue": "Providence, USA",
+   "dates": "Sep 12–17, 2027",
+   "fields": [
+    "pmic"
+   ],
+   "est": "2027-02",
+   "ref": "2026 digest deadline: ~Feb 27, 2026",
+   "url": "https://www.ieee-pels.org/conferences/conference-schedule"
+  },
+  {
+   "id": "ISPSD",
+   "edition": "2027",
+   "name": "IEEE International Symposium on Power Semiconductor Devices and ICs",
+   "venue": "Taipei, Taiwan",
+   "dates": "Jun 13–17, 2027",
+   "fields": [
+    "pmic"
+   ],
+   "due": "2026-12-16T23:59:00-12:00",
+   "tz": "AoE",
+   "note": "4-page paper; time not published; AoE assumed",
+   "url": "https://ispsd2027.com/"
+  },
+  {
+   "id": "COMPEL",
+   "edition": "2027",
+   "name": "IEEE Workshop on Control and Modeling for Power Electronics",
+   "venue": "Austin, USA",
+   "dates": "Jun 2027",
+   "fields": [
+    "pmic"
+   ],
+   "est": "2027-03",
+   "ref": "2026 digest deadline: Mar 31, 2026",
+   "url": "https://www.ieee-pels.org/conferences/conference-schedule"
+  },
+  {
+   "id": "PwrSoC",
+   "edition": "2027",
+   "name": "International Workshop on Power Supply on Chip",
+   "venue": "North America (TBA)",
+   "dates": "Fall 2027",
+   "fields": [
+    "ldo",
+    "pmic"
+   ],
+   "est": "2027-07",
+   "ref": "biennial; 2025 abstract deadline: Jul 18, 2025",
+   "url": "https://www.psma.com/conferences/PwrSoC"
+  },
+  {
+   "id": "OFC",
+   "edition": "2028",
+   "name": "Optical Fiber Communication Conference",
+   "venue": "TBA",
+   "dates": "Mar 2028",
+   "fields": [
+    "wireline"
+   ],
+   "est": "2027-10",
+   "ref": "OFC 2027 deadline: Oct 20, 2026",
+   "url": "https://www.ofcconference.org/submit-a-paper/"
+  },
+  {
+   "id": "ECOC",
+   "edition": "2027",
+   "name": "European Conference on Optical Communication",
+   "venue": "Milan (tbc)",
+   "dates": "Oct 10–14, 2027",
+   "fields": [
+    "wireline"
+   ],
+   "est": "2027-04",
+   "ref": "2026 deadline: Apr 22, 2026",
+   "url": "https://www.ecocexhibition.com/"
+  },
+  {
+   "id": "DesignCon",
+   "edition": "2028",
+   "name": "DesignCon",
+   "venue": "Santa Clara, USA",
+   "dates": "Jan/Feb 2028",
+   "fields": [
+    "wireline"
+   ],
+   "est": "2027-06",
+   "ref": "DesignCon 2027 abstract deadline: Jun 30, 2026",
+   "url": "https://www.designcon.com/"
+  },
+  {
+   "id": "EPEPS",
+   "edition": "2027",
+   "name": "IEEE Conf. on Electrical Performance of Electronic Packaging and Systems",
+   "venue": "TBA",
+   "dates": "Oct 2027",
+   "fields": [
+    "wireline"
+   ],
+   "est": "2027-06",
+   "ref": "2026 deadline: Jun 29, 2026 (extended to Jul 22)",
+   "url": "https://www.epeps.org/papers.html"
+  },
+  {
+   "id": "HotI",
+   "edition": "2027",
+   "name": "IEEE Symposium on High-Performance Interconnects (Hot Interconnects)",
+   "venue": "TBA",
+   "dates": "Aug 2027",
+   "fields": [
+    "wireline"
+   ],
+   "est": "2027-05",
+   "ref": "2026 paper deadline: May 20, 2026 AoE (extended)",
+   "url": "https://hoti.org/"
+  },
+  {
+   "id": "DAC",
+   "edition": "2027",
+   "name": "ACM/IEEE Design Automation Conference",
+   "venue": "San Jose, USA",
+   "dates": "Jul 11–14, 2027",
+   "fields": [
+    "eda",
+    "accel"
+   ],
+   "due": "2026-11-18T17:00:00-08:00",
+   "tz": "PST",
+   "note": "abstract Nov 11, 17:00 PST",
+   "url": "https://dac.com/2027/program/research-manuscript-submissions"
+  },
+  {
+   "id": "ICCAD",
+   "edition": "2027",
+   "name": "IEEE/ACM International Conference on Computer-Aided Design",
+   "venue": "TBA",
+   "dates": "Nov 2027",
+   "fields": [
+    "eda",
+    "accel"
+   ],
+   "est": "2027-04",
+   "ref": "2026: abstract Apr 7, paper Apr 14, 2026",
+   "url": "https://iccad.com/"
+  },
+  {
+   "id": "DATE",
+   "edition": "2028",
+   "name": "Design, Automation and Test in Europe",
+   "venue": "TBA",
+   "dates": "Mar 2028",
+   "fields": [
+    "eda",
+    "accel"
+   ],
+   "est": "2027-09",
+   "ref": "DATE 2027: abstract Sep 13, paper Sep 20, 2026 AoE",
+   "url": "https://www.date-conference.com/"
+  },
+  {
+   "id": "ASP-DAC",
+   "edition": "2028",
+   "name": "Asia and South Pacific Design Automation Conference",
+   "venue": "TBA",
+   "dates": "Jan 2028",
+   "fields": [
+    "eda"
+   ],
+   "est": "2027-07",
+   "ref": "ASP-DAC 2027: abstract Jul 11, paper Jul 18, 2026",
+   "url": "https://www.aspdac.com/"
+  },
+  {
+   "id": "ISPD",
+   "edition": "2028",
+   "name": "ACM International Symposium on Physical Design",
+   "venue": "TBA",
+   "dates": "Mar 2028",
+   "fields": [
+    "eda"
+   ],
+   "est": "2027-09",
+   "ref": "ISPD 2027: abstract Sep 21, paper Sep 28, 2026",
+   "url": "https://ispd.cc/"
+  },
+  {
+   "id": "MLCAD",
+   "edition": "2027",
+   "name": "ACM/IEEE Symposium on Machine Learning for CAD",
+   "venue": "TBA",
+   "dates": "Sep 2027",
+   "fields": [
+    "eda"
+   ],
+   "est": "2027-05",
+   "ref": "2026: abstract May 16, paper May 23, 2026",
+   "url": "https://mlcad.org/"
+  },
+  {
+   "id": "ISQED",
+   "edition": "2027",
+   "name": "International Symposium on Quality Electronic Design",
+   "venue": "San Francisco (tbc)",
+   "dates": "Apr 2027",
+   "fields": [
+    "eda"
+   ],
+   "due": "2026-11-17T23:59:00-08:00",
+   "tz": "PST",
+   "note": "final (extended) submission deadline",
+   "url": "https://isqed.org/English/Conference/Call_for_Papers.html"
+  },
+  {
+   "id": "SMACD",
+   "edition": "2027",
+   "name": "Int'l Conf. on Synthesis, Modeling, Analysis and Simulation Methods for Circuit Design",
+   "venue": "TBA",
+   "dates": "Jun/Jul 2027",
+   "fields": [
+    "eda"
+   ],
+   "est": "2027-03",
+   "ref": "2026 deadline: Mar 27, 2026 (extended)",
+   "url": "https://smacd-conference.org/"
+  },
+  {
+   "id": "LAD",
+   "edition": "2027",
+   "name": "IEEE International Conference on LLM-Aided Design",
+   "venue": "TBA",
+   "dates": "Jul 2027",
+   "fields": [
+    "eda"
+   ],
+   "est": "2027-03",
+   "ref": "2026: abstract Mar 2, paper Mar 9, 2026 AoE",
+   "url": "https://iclad.ai/"
+  },
+  {
+   "id": "GLSVLSI",
+   "edition": "2027",
+   "name": "ACM Great Lakes Symposium on VLSI",
+   "venue": "TBA",
+   "dates": "Jun 2027",
+   "fields": [
+    "eda"
+   ],
+   "est": "2027-03",
+   "ref": "2026 deadline: Mar 2, 2026 (extended to Mar 23)",
+   "url": "https://glsvlsi.org/"
+  },
+  {
+   "id": "ISCA",
+   "edition": "2027",
+   "name": "ACM/IEEE International Symposium on Computer Architecture",
+   "venue": "Atlanta, USA",
+   "dates": "Jun 5–9, 2027",
+   "fields": [
+    "accel"
+   ],
+   "due": "2026-11-16T23:59:00-12:00",
+   "tz": "AoE",
+   "note": "abstract Nov 9 AoE",
+   "url": "https://iscaconf.org/isca2027/submit/callforpapers.php"
+  },
+  {
+   "id": "MICRO",
+   "edition": "2027",
+   "name": "IEEE/ACM International Symposium on Microarchitecture",
+   "venue": "TBA",
+   "dates": "Oct 2027",
+   "fields": [
+    "accel"
+   ],
+   "est": "2027-04",
+   "ref": "2026 deadline: Apr 7, 2026, 23:59 EDT",
+   "url": "https://www.microarch.org/"
+  },
+  {
+   "id": "HPCA",
+   "edition": "2028",
+   "name": "IEEE International Symposium on High-Performance Computer Architecture",
+   "venue": "TBA",
+   "dates": "Feb/Mar 2028",
+   "fields": [
+    "accel"
+   ],
+   "est": "2027-07",
+   "ref": "HPCA 2027: abstract Jul 24, paper Jul 31, 2026 AoE",
+   "url": "https://www.hpca-conf.org/"
+  },
+  {
+   "id": "ASPLOS",
+   "edition": "2028",
+   "name": "ACM Int'l Conf. on Architectural Support for Programming Languages and Operating Systems",
+   "venue": "TBA",
+   "dates": "2028",
+   "fields": [
+    "accel"
+   ],
+   "est": "2027-04",
+   "ref": "ASPLOS 2027 had two cycles (spring and Sep 10, 2026)",
+   "url": "https://www.asplos-conference.org/"
+  },
+  {
+   "id": "MLSys",
+   "edition": "2027",
+   "name": "Conference on Machine Learning and Systems",
+   "venue": "Bellevue, USA",
+   "dates": "Jun 21–25, 2027",
+   "fields": [
+    "accel"
+   ],
+   "due": "2026-10-30T12:00:00-07:00",
+   "tz": "PDT",
+   "url": "https://mlsys.org/Conferences/2027/CallForResearchPapers"
+  },
+  {
+   "id": "AICAS",
+   "edition": "2027",
+   "name": "IEEE International Conference on AI Circuits and Systems",
+   "venue": "Hangzhou, China",
+   "dates": "Sep 20–22, 2027",
+   "fields": [
+    "accel"
+   ],
+   "est": "2027-04",
+   "ref": "2026 deadline: Apr 5, 2026",
+   "url": "https://ieee-cas.org/event/conference/2027-ieee-9th-international-conference-artificial-intelligence-circuits-and"
+  },
+  {
+   "id": "Hot Chips",
+   "edition": "2027",
+   "name": "Hot Chips: A Symposium on High-Performance Chips",
+   "venue": "TBA",
+   "dates": "Aug 2027",
+   "fields": [
+    "accel"
+   ],
+   "est": "2027-04",
+   "ref": "2026 proposal deadline: Apr 8, 2026",
+   "url": "https://hotchips.org/call_for_contrib/"
+  },
+  {
+   "id": "FPGA",
+   "edition": "2028",
+   "name": "ACM/SIGDA International Symposium on Field-Programmable Gate Arrays",
+   "venue": "TBA",
+   "dates": "Mar 2028",
+   "fields": [
+    "accel"
+   ],
+   "est": "2027-10",
+   "ref": "FPGA 2027 deadline: Oct 8, 2026 AoE",
+   "url": "https://www.isfpga.org/"
+  },
+  {
+   "id": "COOL Chips",
+   "edition": "2027",
+   "name": "IEEE Symposium on Low-Power and High-Speed Chips and Systems",
+   "venue": "Tokyo, Japan",
+   "dates": "Apr 14–16, 2027",
+   "fields": [
+    "accel"
+   ],
+   "due": "2027-02-05T23:59:00+09:00",
+   "tz": "JST",
+   "note": "date only; 23:59 JST assumed",
+   "url": "https://www.coolchips.org/2027/call-for-contributions/"
+  }
+ ]
 }

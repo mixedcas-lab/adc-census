@@ -202,9 +202,18 @@ python3 -m unittest discover -s collector
 
 ## Conference deadline bar
 
-The bar above the masthead (`deadlines.js`, `deadlines.css`) reads `deadlines.json`, which is edited by hand (the collector does not touch it).
+The bar above the masthead is shared by all Census sites. `deadlines.js`, `deadlines.css` and `deadlines.json` live in this repository, and every Census page loads them with one line:
 
+```html
+<script src="https://mixedcas-lab.github.io/adc-census/deadlines.js" data-field="pll" defer></script>
+```
+
+`deadlines.json` is edited by hand (the collector does not touch it):
+
+- `fields`: the Census pages a conference appears on (`adc`, `dac`, `pll`, `ldo`, `pmic`, `wireline`, `eda`, `accel`).
 - `due`: the deadline exactly as published, with its UTC offset (e.g. `2026-11-16T23:59:00-08:00`) and `tz` for the label. The bar shows a live KST countdown.
 - `est`: `YYYY-MM` for a cycle that is not announced yet. Shown as `~Apr 2027`, without a countdown.
 - When a `due` passes, the bar rolls that conference over to next year's edition as an estimate until the file is updated.
 - The nearest confirmed deadline is highlighted. Cards rotate every few seconds when they do not all fit (sized so that none is cut off); swipe or drag sideways to move them by hand.
+
+Some architecture and EDA entries were cross-checked against AI Hardware Deadlines by Prof. Donghyeon Han (Chung-Ang University).
