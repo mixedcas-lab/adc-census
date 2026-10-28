@@ -411,23 +411,26 @@ class TestPipeline(unittest.TestCase):
         # IMW/NVSMW/IEDM/TED feed nand-census through the shared cache; they are not ADC Census venues
         config = collect.load_json(collect.CONFIG, None)
         keys = {q["key"]: q for q in config["queries"]}
-        for k in ("IMW", "NVSMW", "IEDM", "TED"):
+        for k in ("IMW", "NVSMW", "IEDM", "TED", "VLSI-T", "IRPS", "EDL"):
             self.assertIn(k, keys)
         for pub in ("2024 IEEE International Memory Workshop (IMW)",
                     "2008 Joint Non-Volatile Semiconductor Memory Workshop and International Conference on Memory Technology and Design",
                     "2023 International Electron Devices Meeting (IEDM)",
-                    "IEEE Transactions on Electron Devices"):
+                    "IEEE Transactions on Electron Devices",
+                    "2024 IEEE International Reliability Physics Symposium (IRPS)",
+                    "IEEE Electron Device Letters"):
             self.assertIsNone(collect.venue_of(pub, config["venues"]), pub)
         self.assertEqual(list(collect.query_years(keys["IMW"], 1997))[0], 2009)
         self.assertEqual(list(collect.query_years(keys["NVSMW"], 1997))[-1], 2008)
-        for k in ("IEDM", "TED"):   # keyword-limited, and never together with issn (the API would ignore the issn)
+        self.assertEqual(list(collect.query_years(keys["VLSI-T"], 1997))[-1], 2021)   # merged into VLSI from 2022
+        for k in ("IEDM", "TED", "VLSI-T", "IRPS", "EDL"):   # keyword-limited, and never together with issn (the API would ignore the issn)
             self.assertIn("querytext", keys[k]["params"])
             self.assertNotIn("issn", keys[k]["params"])
-        old = {"queries": [q for q in config["queries"] if q["key"] not in ("IMW", "NVSMW", "IEDM", "TED")], "venues": config["venues"]}
+        old = {"queries": [q for q in config["queries"] if q["key"] not in ("IMW", "NVSMW", "IEDM", "TED", "IRPS", "EDL")], "venues": config["venues"]}
         state = {}
         collect.init_sweep(state, old, 2025)
         added = collect.add_missing_tasks(state, config)
-        self.assertEqual({k for k, _ in added}, {"IMW", "IEDM", "TED"})   # NVSMW ends in 2008, before since_year
+        self.assertEqual({k for k, _ in added}, {"IMW", "IEDM", "TED", "IRPS", "EDL"})   # NVSMW ends in 2008, before since_year
 
     def test_access_venue_match(self):
         venues = collect.load_json(collect.CONFIG, None)["venues"]
