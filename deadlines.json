@@ -1,5 +1,5 @@
 {
- "updated": "2026-10-27",
+ "updated": "2026-10-31",
  "note": "Shared by all Census sites. Edit by hand. 'fields' picks the Census pages a conference appears on (adc, dac, pll, ldo, pmic, wireline, eda, accel, nand). 'due' is the deadline exactly as published, with its UTC offset; leave it out and set 'est' (YYYY-MM) when the next cycle is not announced. Past deadlines roll over to next year's edition as an estimate automatically. Some entries for architecture/EDA venues were cross-checked against AI Hardware Deadlines by Prof. Donghyeon Han (Chung-Ang University).",
  "conferences": [
   {
@@ -182,14 +182,14 @@
    "id": "IFCS-EFTF",
    "edition": "2027",
    "name": "Joint IEEE IFCS and European Frequency and Time Forum",
-   "venue": "Munich (tbc)",
-   "dates": "Apr 2027",
+   "venue": "Munich, Germany",
+   "dates": "Apr 4–9, 2027",
    "fields": [
     "pll"
    ],
    "est": "2026-12",
    "ref": "2026 abstract deadline: Dec 14, 2025",
-   "url": "https://ieee-uffc.org/"
+   "url": "https://www.eftf.org/next-meeting"
   },
   {
    "id": "APEC",
@@ -514,16 +514,16 @@
   },
   {
    "id": "MLSys",
-   "edition": "2027",
+   "edition": "2028",
    "name": "Conference on Machine Learning and Systems",
-   "venue": "Bellevue, USA",
-   "dates": "Jun 21–25, 2027",
+   "venue": "TBA",
+   "dates": "TBA",
    "fields": [
     "accel"
    ],
-   "due": "2026-10-30T12:00:00-07:00",
-   "tz": "PDT",
-   "url": "https://mlsys.org/Conferences/2027/CallForResearchPapers"
+   "est": "2027-10",
+   "ref": "MLSys 2027 deadline: Oct 30, 2026",
+   "url": "https://mlsys.org/"
   },
   {
    "id": "AICAS",
